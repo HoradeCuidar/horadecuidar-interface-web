@@ -1,73 +1,79 @@
-# React + TypeScript + Vite
+# Hora de Cuidar (HDC)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Visão Geral
 
-Currently, two official plugins are available:
+O **Hora de Cuidar (HDC)** é um sistema voltado para o acompanhamento de pessoas com doenças crônicas, com foco nos pilares de **medicação**, **nutrição** e **atividade física**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+O objetivo do sistema é auxiliar profissionais de saúde no planejamento e monitoramento dos tratamentos, ao mesmo tempo em que incentiva os pacientes a seguirem corretamente as recomendações definidas.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Padrão de Commits
 
-## Expanding the ESLint configuration
+O projeto utiliza um padrão de commits baseado no **Conventional Commits**, com o objetivo de manter um histórico claro, padronizado e fácil de entender.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Cada commit deve seguir o formato: `<emoji><tipo>(escopo): <descrição curta>`
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Exemplo: ✨feat(backend): adicionar cadastro de pacientes
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, associando cada tipo a um **emoji** correspondente.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Type     | Emoji                 | code                    |
+|:---------|:----------------------|:------------------------|
+| feat     | :sparkles:            | `:sparkles:`            |
+| fix      | :bug:                 | `:bug:`                 |
+| docs     | :books:               | `:books:`               |
+| style    | :gem:                 | `:gem:`                 |
+| refactor | :hammer:              | `:hammer:`              |
+| perf     | :rocket:              | `:rocket:`              |
+| test     | :rotating_light:      | `:rotating_light:`      |
+| build    | :package:             | `:package:`             |
+| ci       | :construction_worker: | `:construction_worker:` |
+| chore    | :wrench:              | `:wrench:`              |
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+--- 
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Fluxo de Desenvolvimento e Controle de Branches
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Este projeto adota um fluxo de versionamento baseado em **Pull Requests**, com o objetivo de garantir maior organização, qualidade do código e evitar alterações diretas em branches críticas.
+
+### Estrutura de Branches
+
+- **`main`**  
+  Branch estável, que representa a versão principal do sistema.
+
+- **`developer`**  
+  Branch de integração, onde as funcionalidades são consolidadas antes de irem para a `main`.
+
+- **`feat/*`**  
+  Branches utilizadas para o desenvolvimento de novas funcionalidades, correções ou melhorias.
+
+### Restrições de Push
+
+Para manter a integridade do código:
+
+- ❌ **Push direto é bloqueado** nas branches `main` e `developer`
+- ✔️ Alterações nessas branches **só podem ocorrer via Pull Request**
+- ✔️ Pull Requests podem exigir revisão antes do merge
+
+Essas regras são aplicadas através das **Branch Protection Rules** do GitHub.
+
+---
+
+### Fluxo de Trabalho
+
+1. Criar uma branch a partir de `developer`:
+   ```bash
+   git checkout -b feat/nova-funcionalidade
+    ```
+2. Desenvolver a funcionalidade e realizar commits normalmente.
+3. Abrir um Pull Request de:
+   ```
+   feat/* → developer
+    ```
+4. Após validação e aprovação, a branch é integrada à developer.
+5. Quando o conjunto de funcionalidades estiver estável, é aberto um Pull Request de:
+      ```
+   developer → main
+    ```
+---
