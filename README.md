@@ -16,6 +16,23 @@ Cada commit deve seguir o formato: `<emoji><tipo>(escopo): <descrição curta>`
 
 Exemplo: ✨feat(backend): adicionar cadastro de pacientes
 
+<<<<<<< feat/setup
+
+A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, associando cada tipo a um **emoji** correspondente.
+
+| Type     | Emoji | code                    |
+|:---------|:------|:------------------------|
+| feat     | ✨    | `:sparkles:`            |
+| fix      | 🐛    | `:bug:`                 |
+| docs     | 📚    | `:books:`               |
+| style    | 💎    | `:gem:`                 |
+| refactor | 🔨    | `:hammer:`              |
+| perf     | 🚀    | `:rocket:`              |
+| test     | 🚨    | `:rotating_light:`      |
+| build    | 📦    | `:package:`             |
+| ci       | 👷    | `:construction_worker:` |
+| chore    | 🔧    | `:wrench:`              |
+=======
 A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, associando cada tipo a um **emoji** correspondente.
 
 | Type     | Emoji                 | code                    |
@@ -30,6 +47,7 @@ A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, asso
 | build    | :package:             | `:package:`             |
 | ci       | :construction_worker: | `:construction_worker:` |
 | chore    | :wrench:              | `:wrench:`              |
+>>>>>>> developer
 
 --- 
 
