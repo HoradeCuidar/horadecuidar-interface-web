@@ -33,21 +33,6 @@ A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, asso
 | ci       | 👷    | `:construction_worker:` |
 | chore    | 🔧    | `:wrench:`              |
 =======
-A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, associando cada tipo a um **emoji** correspondente.
-
-| Type     | Emoji                 | code                    |
-|:---------|:----------------------|:------------------------|
-| feat     | :sparkles:            | `:sparkles:`            |
-| fix      | :bug:                 | `:bug:`                 |
-| docs     | :books:               | `:books:`               |
-| style    | :gem:                 | `:gem:`                 |
-| refactor | :hammer:              | `:hammer:`              |
-| perf     | :rocket:              | `:rocket:`              |
-| test     | :rotating_light:      | `:rotating_light:`      |
-| build    | :package:             | `:package:`             |
-| ci       | :construction_worker: | `:construction_worker:` |
-| chore    | :wrench:              | `:wrench:`              |
->>>>>>> developer
 
 --- 
 
