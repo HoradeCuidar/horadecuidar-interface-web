@@ -1,13 +1,35 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-50: #E8F9FC;
+  --color-brand-100: #E6EEFF;
+  --color-brand-200: #CCDDFF;
+  --color-brand-300: #99BBFF;
+  --color-brand-400: #6C9DFF;
+  --color-brand-500: #6699FF;
+  --color-brand-600: #3377FF;
+  --color-brand-700: #0044CC;
+  --color-brand-800: #003399;
+  --color-brand-900: #001133;
+  --color-surface-50: #FFFFFF;
+  --color-surface-100: #ECECEC;
+  --color-surface-200: #E6EEFF;
+  --color-surface-900: #05272E;
+  --color-text: #333333;
+  --color-text-muted: #667A8A;
+  --color-text-inverse: #FFFFFF;
+  --color-success: #2EAD6D;
+  --color-error: #E5533D;
+  --font-sans: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Poppins', system-ui, sans-serif;
+}
+
 :root {
-  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
-
-  color: #333333;
-  background-color: #E6EEFF;
-
+  color: var(--color-text);
+  background-color: var(--color-surface-50);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,6 +40,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #E6EEFF;
+  background-color: var(--color-surface-50);
+}
+
+input::placeholder {
+  color: #667A8A;
 }
 
