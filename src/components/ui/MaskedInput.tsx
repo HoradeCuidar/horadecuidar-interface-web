@@ -16,6 +16,7 @@ type MaskedInputProps = {
   disabled?: boolean
   autoComplete?: string
   className?: string
+  size?: 'default' | 'compact'
 }
 
 export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
@@ -34,6 +35,7 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
       placeholder,
       disabled,
       autoComplete,
+      size = 'default',
       className = '',
     },
     ref
@@ -42,16 +44,17 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
     useImperativeHandle(ref, () => innerInputRef.current as HTMLInputElement)
 
     const inputId = id ?? label.toLowerCase().replace(/\s/g, '-')
+    const isCompact = size === 'compact'
 
     return (
       <div className="w-full">
         <label
           htmlFor={inputId}
-          className="mb-1.5 block text-left text-sm font-medium text-text"
+          className={`block text-left font-medium text-text ${isCompact ? 'mb-1.5 text-sm' : 'mb-1.5 text-sm'}`}
         >
           {label}
         </label>
-        <div className="flex items-center gap-3 rounded-lg bg-surface-100 px-4 py-3">
+        <div className={`flex items-center gap-2 rounded-lg bg-surface-100 ${isCompact ? 'px-3.5 py-2.5' : 'px-4 py-3'}`}>
           {leftIcon && <span className="shrink-0">{leftIcon}</span>}
           <IMaskInput
             inputRef={innerInputRef}
@@ -64,7 +67,7 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
             placeholder={placeholder}
             disabled={disabled}
             autoComplete={autoComplete}
-            className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-text-muted focus:ring-0 focus:outline-none ${className}`}
+            className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-text-muted focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
           />
           {rightSlot && <span className="shrink-0">{rightSlot}</span>}
         </div>

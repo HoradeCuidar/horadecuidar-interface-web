@@ -4,4 +4,7 @@ export const API_ENDPOINTS = {
   auth: {
     login: '/api/auth/logar',
   },
+  profissional: {
+    cadastrar: '/api/profissional/cadastrar',
+  },
 }
