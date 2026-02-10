@@ -5,3 +5,9 @@ export interface AuthResponse {
   token: string
   role: Role
 }
+
+export interface UserStorage {
+  id: number
+  role: Role
+  username: string
+}
