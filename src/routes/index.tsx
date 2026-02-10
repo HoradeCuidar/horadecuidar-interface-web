@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuthLayout, MainLayout } from '@/layouts'
-import { Home, Login } from '@/pages'
+import { Home, Login, Profissionais, Pacientes, MeuPerfil } from '@/pages'
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/login" replace /> },
@@ -12,10 +12,13 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/home',
+    path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: <Home /> },
+      { path: 'home', element: <Home /> },
+      { path: 'profissionais', element: <Profissionais /> },
+      { path: 'pacientes', element: <Pacientes /> },
+      { path: 'meu-perfil', element: <MeuPerfil /> },
     ],
   },
   { path: '*', element: <Navigate to="/login" replace /> },

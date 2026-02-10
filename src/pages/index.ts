@@ -1,2 +1,5 @@
 export { Home } from './Home'
 export { Login } from './Login'
+export { Profissionais } from './Profissionais'
+export { Pacientes } from './Pacientes'
+export { MeuPerfil } from './MeuPerfil'
