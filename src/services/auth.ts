@@ -1,5 +1,5 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/config/api'
-import type { AuthResponse } from '@/types'
+import type { AuthResponse, UserStorage } from '@/types'
 
 const TOKEN_KEY = 'hdc_token'
 const USER_KEY = 'hdc_user'
@@ -33,7 +33,11 @@ export const authService = {
     localStorage.setItem(TOKEN_KEY, data.token)
     localStorage.setItem(
       USER_KEY,
-      JSON.stringify({ id: data.id, role: data.role })
+      JSON.stringify({
+        id: data.id,
+        role: data.role,
+        username,
+      })
     )
 
     return data
@@ -51,4 +55,15 @@ export const authService = {
   isAuthenticated(): boolean {
     return Boolean(this.getToken())
   },
+
+  getUser(): UserStorage | null {
+    const raw = localStorage.getItem(USER_KEY)
+    if (!raw) return null
+    try {
+      return JSON.parse(raw) as UserStorage
+    } catch {
+      return null
+    }
+  },
+
 }
