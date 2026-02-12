@@ -1,23 +1,33 @@
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { EmptyState, ButtonCadastro, ModalCadastroProfissional } from '@/components'
-import { profissionalService } from '@/services'
-import emptystateSvg from '@/assets/emptystate.svg'
+import { useState } from "react";
+import { toast } from "sonner";
+import {
+  EmptyState,
+  ButtonCadastro,
+  ModalCadastroProfissional,
+  TableViewProfessional,
+} from "@/components";
+import { profissionalService } from "@/services";
+import emptystateSvg from "@/assets/emptystate.svg";
 
 export function Profissionais() {
-  const [modalAberto, setModalAberto] = useState(false)
+  const [modalAberto, setModalAberto] = useState(false);
+  const [tabelaVisivel, setTabelaVisivel] = useState(true);
 
   function handleAdicionarProfissional() {
-    setModalAberto(true)
+    setModalAberto(true);
   }
 
   async function handleSubmitCadastro(dados: Record<string, string>) {
     try {
-      await profissionalService.cadastrar(dados)
-      toast.success('Profissional cadastrado com sucesso.')
+      await profissionalService.cadastrar(dados);
+      toast.success("Profissional cadastrado com sucesso.");
+      setModalAberto(false);
+      setTabelaVisivel(true);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Erro ao cadastrar profissional.')
-      throw e
+      toast.error(
+        e instanceof Error ? e.message : "Erro ao cadastrar profissional.",
+      );
+      throw e;
     }
   }
 
@@ -30,16 +40,22 @@ export function Profissionais() {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col">
-        <EmptyState
-          illustration={<img src={emptystateSvg} alt="" className="max-h-[16rem] w-auto" />}
-          title="Nenhum profissional da saúde encontrado!"
-          description="Cadastre um novo profissional para visualizar suas informações."
-        >
-          <ButtonCadastro
-            label="Adicionar profissional"
-            onClick={handleAdicionarProfissional}
-          />
-        </EmptyState>
+        {tabelaVisivel ? (
+          <TableViewProfessional />
+        ) : (
+          <EmptyState
+            illustration={
+              <img src={emptystateSvg} alt="" className="max-h-64 w-auto" />
+            }
+            title="Nenhum profissional da saúde encontrado!"
+            description="Cadastre um novo profissional para visualizar suas informações."
+          >
+            <ButtonCadastro
+              label="Adicionar profissional"
+              onClick={handleAdicionarProfissional}
+            />
+          </EmptyState>
+        )}
       </div>
 
       <ModalCadastroProfissional
@@ -48,5 +64,5 @@ export function Profissionais() {
         onSubmit={handleSubmitCadastro}
       />
     </div>
-  )
+  );
 }
