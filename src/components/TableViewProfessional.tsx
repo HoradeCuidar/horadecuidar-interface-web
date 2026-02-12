@@ -9,42 +9,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconeOlho, IconeEditar, IconeFechar } from "@/components/icons";
+export interface Professional {
+  id: number;
+  name: string;
+  phone: string;
+  status: "active" | "inactive";
+}
 
-//dados mocados, vou deixar aqui mesmo, quando for fazer a req é so remover
-const professionals = [
-  {
-    id: 1,
-    name: "Ana Clara Silva",
-    phone: "(11) 99999-1234",
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Roberto Almeida",
-    phone: "(21) 98888-5678",
-    status: "inactive",
-  },
-  {
-    id: 3,
-    name: "Mariana Costa",
-    phone: "(31) 97777-9012",
-    status: "active",
-  },
-  {
-    id: 4,
-    name: "João Pedro Santos",
-    phone: "(41) 96666-3456",
-    status: "active",
-  },
-  {
-    id: 5,
-    name: "Fernanda Oliveira",
-    phone: "(51) 95555-7890",
-    status: "inactive",
-  },
-];
+interface TableViewProfessionalProps {
+  profissionais: Professional[];
+}
 
-export function TableViewProfessional() {
+export function TableViewProfessional({
+  profissionais = [],
+}: TableViewProfessionalProps) {
   return (
     <div className="w-full rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950">
       <Table>
@@ -66,7 +44,7 @@ export function TableViewProfessional() {
         </TableHeader>
 
         <TableBody>
-          {professionals.map((professional) => (
+          {profissionais.map((professional) => (
             <TableRow
               key={professional.id}
               className="bg-[#FAFAFA] border-none hover:bg-white shadow-sm transition-all"

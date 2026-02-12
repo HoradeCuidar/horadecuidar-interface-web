@@ -7,12 +7,52 @@ import {
   TableViewProfessional,
   InputBusca,
 } from "@/components";
+import type { Professional } from "@/components/TableViewProfessional";
 import { profissionalService } from "@/services";
 import emptystateSvg from "@/assets/emptystate.svg";
 
+// vou deixar esse mock aqui, quando for pra fazer a integracao so tirar
+const profissionaisMock: Professional[] = [
+  {
+    id: 1,
+    name: "Ana Clara Silva",
+    phone: "(11) 99999-1234",
+    status: "active",
+  },
+  {
+    id: 2,
+    name: "Roberto Almeida",
+    phone: "(21) 98888-5678",
+    status: "inactive",
+  },
+  {
+    id: 3,
+    name: "Mariana Costa",
+    phone: "(31) 97777-9012",
+    status: "active",
+  },
+  {
+    id: 4,
+    name: "João Pedro Santos",
+    phone: "(41) 96666-3456",
+    status: "active",
+  },
+  {
+    id: 5,
+    name: "Fernanda Oliveira",
+    phone: "(51) 95555-7890",
+    status: "inactive",
+  },
+];
+
 export function Profissionais() {
   const [modalAberto, setModalAberto] = useState(false);
-  const [tabelaVisivel, setTabelaVisivel] = useState(true);
+  const [termoBusca, setTermoBusca] = useState("");
+  const [profissionais] = useState<Professional[]>(profissionaisMock);
+
+  const profissionaisFiltrados = profissionais.filter((prof) =>
+    prof.name.toLowerCase().includes(termoBusca.toLowerCase()),
+  );
 
   function handleAdicionarProfissional() {
     setModalAberto(true);
@@ -23,7 +63,6 @@ export function Profissionais() {
       await profissionalService.cadastrar(dados);
       toast.success("Profissional cadastrado com sucesso.");
       setModalAberto(false);
-      setTabelaVisivel(true);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Erro ao cadastrar profissional.",
@@ -41,11 +80,14 @@ export function Profissionais() {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col mt-6">
-        {tabelaVisivel ? (
+        {profissionais.length > 0 ? (
           <div className="flex flex-col gap-4">
             <div className="flex w-full items-center gap-4">
-              <div className="flex-2">
-                <InputBusca />
+              <div className="flex-1">
+                <InputBusca
+                  value={termoBusca}
+                  onChange={(e) => setTermoBusca(e.target.value)}
+                />
               </div>
 
               <ButtonCadastro
@@ -54,7 +96,7 @@ export function Profissionais() {
               />
             </div>
 
-            <TableViewProfessional />
+            <TableViewProfessional profissionais={profissionaisFiltrados} />
           </div>
         ) : (
           <EmptyState
