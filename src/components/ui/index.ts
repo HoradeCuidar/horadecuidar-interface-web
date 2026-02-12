@@ -8,3 +8,4 @@ export { TituloSecao } from "./TituloSecao";
 export { Select } from "./Select";
 export { BotaoCancelar } from "./BotaoCancelar";
 export { BotaoSalvar } from "./BotaoSalvar";
+export { InputBusca } from "./InputBusca";

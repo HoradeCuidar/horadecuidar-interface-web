@@ -5,6 +5,7 @@ import {
   ButtonCadastro,
   ModalCadastroProfissional,
   TableViewProfessional,
+  InputBusca,
 } from "@/components";
 import { profissionalService } from "@/services";
 import emptystateSvg from "@/assets/emptystate.svg";
@@ -39,9 +40,22 @@ export function Profissionais() {
         </h1>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col mt-6">
         {tabelaVisivel ? (
-          <TableViewProfessional />
+          <div className="flex flex-col gap-4">
+            <div className="flex w-full items-center gap-4">
+              <div className="flex-2">
+                <InputBusca />
+              </div>
+
+              <ButtonCadastro
+                label="Adicionar profissional"
+                onClick={handleAdicionarProfissional}
+              />
+            </div>
+
+            <TableViewProfessional />
+          </div>
         ) : (
           <EmptyState
             illustration={

@@ -9,6 +9,7 @@ export {
   Select,
   BotaoCancelar,
   BotaoSalvar,
+  InputBusca,
 } from "./ui";
 export { ModalCadastroProfissional } from "./ModalCadastroProfissional";
 export { EmptyState } from "./EmptyState";

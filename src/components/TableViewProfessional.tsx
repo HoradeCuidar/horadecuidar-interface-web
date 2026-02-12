@@ -46,7 +46,7 @@ const professionals = [
 
 export function TableViewProfessional() {
   return (
-    <div className="w-full mt-8 rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950">
+    <div className="w-full rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950">
       <Table>
         <TableHeader>
           <TableRow className="border-none hover:bg-transparent">
