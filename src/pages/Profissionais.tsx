@@ -43,6 +43,66 @@ const profissionaisMock: Professional[] = [
     phone: "(51) 95555-7890",
     status: "inactive",
   },
+  {
+    id: 6,
+    name: "Carlos Souza",
+    phone: "(61) 94444-1234",
+    status: "active",
+  },
+  {
+    id: 7,
+    name: "Juliana Santos",
+    phone: "(71) 93333-5678",
+    status: "active",
+  },
+  {
+    id: 8,
+    name: "Felipe Mendes",
+    phone: "(81) 92222-9012",
+    status: "inactive",
+  },
+  {
+    id: 9,
+    name: "Beatriz Lima",
+    phone: "(91) 91111-3456",
+    status: "active",
+  },
+  {
+    id: 10,
+    name: "Daniel Ferreira",
+    phone: "(85) 98765-4321",
+    status: "active",
+  },
+  {
+    id: 11,
+    name: "Isabela Martins",
+    phone: "(31) 97654-3210",
+    status: "inactive",
+  },
+  {
+    id: 12,
+    name: "Lucas Dias",
+    phone: "(41) 96543-2109",
+    status: "active",
+  },
+  {
+    id: 13,
+    name: "Marina Gomes",
+    phone: "(51) 95432-1098",
+    status: "active",
+  },
+  {
+    id: 14,
+    name: "Paulo Xavier",
+    phone: "(61) 94321-0987",
+    status: "inactive",
+  },
+  {
+    id: 15,
+    name: "Amanda Costa",
+    phone: "(71) 93210-9876",
+    status: "active",
+  },
 ];
 
 export function Profissionais() {
@@ -96,7 +156,10 @@ export function Profissionais() {
               />
             </div>
 
-            <TableViewProfessional profissionais={profissionaisFiltrados} />
+            <TableViewProfessional
+              key={termoBusca}
+              profissionais={profissionaisFiltrados}
+            />
           </div>
         ) : (
           <EmptyState

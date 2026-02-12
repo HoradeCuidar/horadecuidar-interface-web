@@ -9,3 +9,11 @@ export { Select } from "./Select";
 export { BotaoCancelar } from "./BotaoCancelar";
 export { BotaoSalvar } from "./BotaoSalvar";
 export { InputBusca } from "./InputBusca";
+export {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./pagination";

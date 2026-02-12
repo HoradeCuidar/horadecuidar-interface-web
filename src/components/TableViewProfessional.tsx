@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,7 +9,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { IconeOlho, IconeEditar, IconeFechar } from "@/components/icons";
+
 export interface Professional {
   id: number;
   name: string;
@@ -20,9 +30,29 @@ interface TableViewProfessionalProps {
   profissionais: Professional[];
 }
 
+const ITEMS_PER_PAGE = 5;
+
 export function TableViewProfessional({
   profissionais = [],
 }: TableViewProfessionalProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(profissionais.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const profissionaisPaginados = profissionais.slice(startIndex, endIndex);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
   return (
     <div className="w-full rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950">
       <Table>
@@ -44,7 +74,7 @@ export function TableViewProfessional({
         </TableHeader>
 
         <TableBody>
-          {profissionais.map((professional) => (
+          {profissionaisPaginados.map((professional) => (
             <TableRow
               key={professional.id}
               className="bg-[#FAFAFA] border-none hover:bg-white shadow-sm transition-all"
@@ -104,6 +134,47 @@ export function TableViewProfessional({
           ))}
         </TableBody>
       </Table>
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={handlePreviousPage}
+                  className={
+                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                  }
+                />
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      onClick={() => handlePageChange(page)}
+                      isActive={page === currentPage}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={handleNextPage}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 }
