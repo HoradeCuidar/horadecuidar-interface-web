@@ -108,6 +108,7 @@ const profissionaisMock: Professional[] = [
 export function Profissionais() {
   const [modalAberto, setModalAberto] = useState(false);
   const [termoBusca, setTermoBusca] = useState("");
+  const [tabelaVisivel, setTabelaVisivel] = useState(false);
   const [profissionais] = useState<Professional[]>(profissionaisMock);
 
   const profissionaisFiltrados = profissionais.filter((prof) =>
@@ -123,6 +124,7 @@ export function Profissionais() {
       await profissionalService.cadastrar(dados);
       toast.success("Profissional cadastrado com sucesso.");
       setModalAberto(false);
+      setTabelaVisivel(true);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Erro ao cadastrar profissional.",
@@ -140,7 +142,7 @@ export function Profissionais() {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col mt-6">
-        {profissionais.length > 0 ? (
+        {tabelaVisivel ? (
           <div className="flex flex-col gap-4">
             <div className="flex w-full items-center gap-4">
               <div className="flex-1">
