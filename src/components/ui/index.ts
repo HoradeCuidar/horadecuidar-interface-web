@@ -1,4 +1,4 @@
-export { Input } from "./Input";
+export { Input } from "./InputLogin";
 export { Button } from "./ButtonLogin";
 export { MaskedInput } from "./MaskedInput";
 export { Avatar } from "./Avatar";
