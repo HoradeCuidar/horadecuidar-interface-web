@@ -105,4 +105,52 @@ export const profissionalService = {
 
     return json.content ?? []
   },
+
+  async buscarPorId(
+    id: number
+  ): Promise<{
+    id: number
+    nome: string
+    email?: string
+    telefone?: string
+    dataNascimento?: string
+    genero?: string
+    status?: string
+    rua?: string
+    numeroDaCasa?: string
+    bairro?: string
+    cidade?: string
+    estado?: string
+  }> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.detalhes(id)}`
+    const token = authService.getToken()
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    }
+    if (token) headers.Authorization = `Bearer ${token}`
+
+    const res = await fetch(url, { method: 'GET', headers })
+    if (!res.ok) {
+      if (res.status === 404) throw new Error('Profissional não encontrado.')
+      if (res.status === 403) throw new Error('Acesso negado.')
+      const text = await res.text()
+      let msg = 'Não foi possível carregar os detalhes do profissional.'
+      try {
+        const json = JSON.parse(text)
+        if (typeof json.message === 'string' && json.message.trim()) {
+          msg = json.message.includes('static resource') || res.status === 500
+            ? 'Detalhes do profissional indisponíveis no momento. Tente novamente mais tarde.'
+            : json.message
+        }
+      } catch {
+        if (text.trim()) msg = text.slice(0, 200)
+      }
+      throw new Error(msg)
+    }
+    const data = await res.json()
+    return {
+      ...data,
+      dataNascimento: data.dataDeNascimento ?? data.dataNascimento,
+    }
+  },
 }
