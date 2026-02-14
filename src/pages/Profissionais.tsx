@@ -5,6 +5,7 @@ import {
   EmptyState,
   ButtonCadastro,
   ModalCadastroProfissional,
+  ModalDetalhesProfissional,
   TableViewProfessional,
   InputBusca,
 } from "@/components";
@@ -17,6 +18,7 @@ import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
 
 export function Profissionais() {
   const [modalAberto, setModalAberto] = useState(false);
+  const [detalhesId, setDetalhesId] = useState<number | null>(null);
   const [termoBusca, setTermoBusca] = useState("");
   const [profissionais, setProfissionais] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
@@ -150,7 +152,10 @@ export function Profissionais() {
 
       
             {profissionais.length > 0 ? (
-              <TableViewProfessional profissionais={profissionais} />
+              <TableViewProfessional
+                profissionais={profissionais}
+                onVerDetalhes={(p) => setDetalhesId(p.id)}
+              />
             ) : termoBusca.trim() !== "" ? (
               <EmptyState
                 illustration={<EmptyPesquisar />}
@@ -187,6 +192,12 @@ export function Profissionais() {
         aberto={modalAberto}
         onFechar={() => setModalAberto(false)}
         onSubmit={handleSubmitCadastro}
+      />
+
+      <ModalDetalhesProfissional
+        aberto={detalhesId !== null}
+        onFechar={() => setDetalhesId(null)}
+        profissionalId={detalhesId}
       />
     </div>
   );
