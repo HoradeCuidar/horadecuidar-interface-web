@@ -28,12 +28,14 @@ export interface Professional {
 
 interface TableViewProfessionalProps {
   profissionais: Professional[];
+  onVerDetalhes?: (professional: Professional) => void;
 }
 
 const ITEMS_PER_PAGE = 7;
 
 export function TableViewProfessional({
   profissionais = [],
+  onVerDetalhes,
 }: TableViewProfessionalProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -118,6 +120,7 @@ export function TableViewProfessional({
                       size="icon"
                       className="h-9 w-9 text-zinc-400 hover:text-blue-600 hover:bg-blue-100 rounded-full"
                       title="Visualizar"
+                      onClick={() => onVerDetalhes?.(professional)}
                     >
                       <IconeOlho />
                     </Button>
