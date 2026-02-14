@@ -142,9 +142,9 @@ export function TableViewProfessional({
               <PaginationItem>
                 <PaginationPrevious
                   onClick={handlePreviousPage}
-                  className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
-                  }
+                  className={`${
+                    currentPage === 1 ? "pointer-events-none opacity-50" : "bg-brand-100 text-brand-600 hover:bg-brand-200"
+                  }`}
                 />
               </PaginationItem>
 
@@ -154,6 +154,11 @@ export function TableViewProfessional({
                     <PaginationLink
                       onClick={() => handlePageChange(page)}
                       isActive={page === currentPage}
+                      className={
+                        page === currentPage
+                          ? "bg-brand-600 text-white hover:bg-brand-700 border-brand-600"
+                          : "bg-brand-100 text-brand-600 hover:bg-brand-200 border-brand-100"
+                      }
                     >
                       {page}
                     </PaginationLink>
@@ -164,11 +169,11 @@ export function TableViewProfessional({
               <PaginationItem>
                 <PaginationNext
                   onClick={handleNextPage}
-                  className={
+                  className={`${
                     currentPage === totalPages
                       ? "pointer-events-none opacity-50"
-                      : ""
-                  }
+                      : "bg-brand-100 text-brand-600 hover:bg-brand-200"
+                  }`}
                 />
               </PaginationItem>
             </PaginationContent>
