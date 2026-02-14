@@ -6,6 +6,7 @@ type EmptyStateProps = {
   illustration?: ReactNode
   children?: ReactNode
   className?: string
+  illustrationClassName?: string
 }
 
 export function EmptyState({
@@ -14,6 +15,7 @@ export function EmptyState({
   illustration,
   children,
   className = '',
+  illustrationClassName = '',
 }: EmptyStateProps) {
   return (
     <div
@@ -22,7 +24,7 @@ export function EmptyState({
       aria-label={title}
     >
       {illustration && (
-        <div className="mb-4 flex justify-center text-brand-200 [&_svg]:max-h-[16rem] [&_svg]:w-auto [&_img]:max-h-[16rem] [&_img]:w-auto">
+        <div className={`mb-4 flex justify-center text-brand-200 [&_svg]:max-h-[16rem] [&_svg]:w-auto [&_img]:max-h-[16rem] [&_img]:w-auto ${illustrationClassName ?? ''}`}>
           {illustration}
         </div>
       )}

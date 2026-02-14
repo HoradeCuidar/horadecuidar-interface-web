@@ -80,4 +80,29 @@ export const profissionalService = {
 
     return json.content ?? []
   },
+  async buscar(nome: string): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string }>> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.buscar}?nome=${encodeURIComponent(nome)}&page=0&size=100`
+    const token = authService.getToken()
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    }
+    if (token) headers.Authorization = `Bearer ${token}`
+
+    let res: Response
+    try {
+      res = await fetch(url, { method: 'GET', headers })
+    } catch {
+      throw new Error('Não foi possível conectar ao servidor de API.')
+    }
+
+    if (!res.ok) {
+      if (res.status === 403) throw new Error('Acesso negado. Faça login e tente novamente.')
+      const text = await res.text()
+      throw new Error(text || 'Erro ao buscar profissionais')
+    }
+
+    const json = await res.json()
+
+    return json.content ?? []
+  },
 }
