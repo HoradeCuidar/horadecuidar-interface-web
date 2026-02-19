@@ -1,6 +1,7 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/config/api'
 import { authService } from './auth'
-import { formToPayload } from './profissional.mappers'
+import { formToPayload, apiToProfessional, payloadComAtivo } from './profissional.mappers'
+import type { ProfessionalFront } from './profissional.mappers'
 import { validarCadastroProfissional } from './profissional.validation'
 
 export type { CadastroProfissionalPayload } from './profissional.mappers'
@@ -55,7 +56,7 @@ export const profissionalService = {
 
     return res.json()
   },
-  async listar(): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string }>> {
+  async listar(): Promise<ProfessionalFront[]> {
     const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.visualizarTodos}?page=0&size=100`
     const token = authService.getToken()
     const headers: Record<string, string> = {
@@ -78,6 +79,35 @@ export const profissionalService = {
 
     const json = await res.json()
 
-    return json.content ?? []
+    const lista = json.content ?? []
+    return lista.map(apiToProfessional)
+  },
+
+  async toggleStatusProfissional(id: number, novoStatus: 'active' | 'inactive'): Promise<ProfessionalFront> {
+    const token = authService.getToken()
+    if (!token) {
+      throw new Error('Faça login para alterar o status do profissional.')
+    }
+
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.alterarStatus.replace('{id}', String(id))}`
+
+    const body = payloadComAtivo(novoStatus)
+
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(text || 'Erro ao alterar status do profissional')
+    }
+
+    const updated = await res.json()
+    return apiToProfessional(updated)
   },
 }

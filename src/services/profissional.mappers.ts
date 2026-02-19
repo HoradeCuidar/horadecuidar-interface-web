@@ -59,3 +59,44 @@ export function formToPayload(dados: Record<string, string>): CadastroProfission
     email: dados.email?.trim() ?? '',
   }
 }
+
+export type ProfessionalApi = {
+  id: number;
+  nome?: string;
+  telefone?: string;
+  ativo?: boolean;
+  status?: 'ATIVO' | 'INATIVO' | 'active' | 'inactive';
+};
+
+export type ProfessionalFront = {
+  id: number;
+  name: string;
+  phone: string;
+  status: "active" | "inactive";
+};
+
+export function apiToProfessional(api: ProfessionalApi): ProfessionalFront {
+  const id = api.id;
+  const name = (api as any).nome ?? (api as any).name ?? "";
+  const phone = (api as any).telefone ?? (api as any).phone ?? "";
+
+  let status: ProfessionalFront['status'] = "active";
+
+  if (typeof api.ativo === "boolean") {
+    status = api.ativo ? "active" : "inactive";
+  } else if (typeof api.status === "string") {
+    const s = api.status.toUpperCase();
+    if (s === "INATIVO" || s === "INACTIVE") status = "inactive";
+    else status = "active";
+  }
+
+  return { id, name, phone, status };
+}
+
+export function payloadComAtivo(novoStatus: ProfessionalFront['status']) {
+  return { ativo: novoStatus === "active" };
+}
+
+export function payloadComStatus(novoStatus: ProfessionalFront['status']) {
+  return { status: novoStatus === "active" ? "ATIVO" : "INATIVO" };
+}
