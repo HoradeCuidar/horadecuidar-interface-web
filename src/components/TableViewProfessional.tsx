@@ -18,6 +18,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { IconeOlho, IconeEditar, IconeFechar } from "@/components/icons";
+import { profissionalService } from "@/services/profissional";
 
 export interface Professional {
   id: number;
@@ -101,6 +102,39 @@ export function TableViewProfessional({
                       }
                     `}
                   >
+                    <IconeEditar />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={async () => {
+                      const action = professional.status === "active" ? "inativar" : "reativar";
+                      if (!window.confirm(`Deseja ${action} ${professional.name}?`)) return;
+                      try {
+                        await profissionalService.toggleStatusProfissional(
+                          professional.id,
+                          professional.status === "active" ? "inactive" : "active"
+                        );
+                      } catch (err) {
+                        alert('Erro ao alterar status do profissional');
+                        console.error(err);
+                      }
+                    }}
+                    className={`h-9 w-9 rounded-full ${
+                      professional.status === "active"
+                        ? "text-red-600 hover:bg-red-100"
+                        : "text-green-600 hover:bg-green-100"
+                    }`}
+                    title={professional.status === "active" ? "Inativar" : "Reativar"}
+                  >
+                    {professional.status === "active" ? "Inativar" : "Reativar"}
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
                     {professional.status === "active" ? "Ativo" : "Inativo"}
                   </Badge>
                 </TableCell>
