@@ -8,5 +8,7 @@ export const API_ENDPOINTS = {
     cadastrar: '/api/profissional/cadastrar',
     visualizarTodos: '/api/profissional/visualizarTodos',
     alterarStatus: '/api/profissional/{id}/status',
+    buscar: '/api/profissional/buscar',
+    detalhes: (id: number) => `/api/profissional/visualizar/${id}`,
   },
 }

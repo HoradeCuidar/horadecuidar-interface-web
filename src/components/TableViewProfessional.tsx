@@ -29,12 +29,14 @@ export interface Professional {
 
 interface TableViewProfessionalProps {
   profissionais: Professional[];
+  onVerDetalhes?: (professional: Professional) => void;
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 7;
 
 export function TableViewProfessional({
   profissionais = [],
+  onVerDetalhes,
 }: TableViewProfessionalProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -55,77 +57,50 @@ export function TableViewProfessional({
     setCurrentPage(page);
   };
   return (
-    <div className="w-full rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950">
-      <Table>
-        <TableHeader>
-          <TableRow className="border-none hover:bg-transparent">
-            <TableHead className="text-center font-bold text-black text-base">
-              Nome
-            </TableHead>
-            <TableHead className="text-center font-bold text-black text-base">
-              Telefone
-            </TableHead>
-            <TableHead className="text-center font-bold text-black text-base">
-              Status
-            </TableHead>
-            <TableHead className="text-center font-bold text-black text-base">
-              Ações
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+    <div className="w-full flex flex-col gap-6 overflow-visible pb-0">
+      <div className="w-full rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950 overflow-visible">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-none hover:bg-transparent">
+              <TableHead className="text-center font-bold text-black text-base">
+                Nome
+              </TableHead>
+              <TableHead className="text-center font-bold text-black text-base">
+                Telefone
+              </TableHead>
+              <TableHead className="text-center font-bold text-black text-base">
+                Status
+              </TableHead>
+              <TableHead className="text-center font-bold text-black text-base">
+                Ações
+              </TableHead>
+            </TableRow>
+          </TableHeader>
 
-        <TableBody>
-          {profissionaisPaginados.map((professional) => (
-            <TableRow
-              key={professional.id}
-              className="bg-[#FAFAFA] border-none hover:bg-white shadow-sm transition-all"
-            >
-              <TableCell className="py-4 text-center font-medium text-zinc-700">
-                {professional.name}
-              </TableCell>
+          <TableBody>
+            {profissionaisPaginados.map((professional) => (
+              <TableRow
+                key={professional.id}
+                className="bg-[#FAFAFA] border-none hover:bg-white shadow-sm transition-all"
+              >
+                <TableCell className="py-4 text-center font-medium text-zinc-700">
+                  {professional.name}
+                </TableCell>
 
-              <TableCell className="py-4 text-center text-zinc-600">
-                {professional.phone}
-              </TableCell>
+                <TableCell className="py-4 text-center text-zinc-600">
+                  {professional.phone}
+                </TableCell>
 
-              <TableCell className="py-4 text-center">
-                <Badge
-                  className={`
-                    border-0 px-4 py-1.5 font-light text-[12px] rounded-xl hover:bg-opacity-90
-                    ${
-                      professional.status === "active"
-                        ? "bg-[#3EC048] text-white"
-                        : "bg-[#C53032] text-white"
-                    }
-                  `}
-                >
-                  {professional.status === "active" ? "Ativo" : "Inativo"}
-                </Badge>
-              </TableCell>
-
-              <TableCell className="py-4 text-center">
-                <div className="flex items-center justify-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-200 rounded-full"
-                    title="Remover"
-                  >
-                    <IconeFechar />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-zinc-400 hover:text-blue-600 hover:bg-blue-100 rounded-full"
-                    title="Visualizar"
-                  >
-                    <IconeOlho />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-zinc-400 hover:text-orange-600 hover:bg-orange-100 rounded-full"
-                    title="Editar"
+                <TableCell className="py-4 text-center">
+                  <Badge
+                    className={`
+                      border-0 px-4 py-1.5 font-light text-[12px] rounded-xl hover:bg-opacity-90
+                      ${
+                        professional.status === "active"
+                          ? "bg-[#3EC048] text-white"
+                          : "bg-[#C53032] text-white"
+                      }
+                    `}
                   >
                     <IconeEditar />
                   </Button>
@@ -160,9 +135,47 @@ export function TableViewProfessional({
           ))}
         </TableBody>
       </Table>
+                    {professional.status === "active" ? "Ativo" : "Inativo"}
+                  </Badge>
+                </TableCell>
+
+                <TableCell className="py-4 text-center">
+                  <div className="flex items-center justify-center">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-200 rounded-full"
+                      title="Remover"
+                    >
+                      <IconeFechar />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-zinc-400 hover:text-blue-600 hover:bg-blue-100 rounded-full"
+                      title="Visualizar"
+                      onClick={() => onVerDetalhes?.(professional)}
+                    >
+                      <IconeOlho />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-zinc-400 hover:text-orange-600 hover:bg-orange-100 rounded-full"
+                      title="Editar"
+                    >
+                      <IconeEditar />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       {totalPages > 1 && (
-        <div className="mt-6 flex justify-center">
+        <div className="flex justify-center py-3 mt-2">
           <Pagination>
             <PaginationContent>
               <PaginationItem>

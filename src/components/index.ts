@@ -12,6 +12,7 @@ export {
   InputBusca,
 } from "./ui";
 export { ModalCadastroProfissional } from "./ModalCadastroProfissional";
+export { ModalDetalhesProfissional } from "./ModalDetalhesProfissional";
 export { EmptyState } from "./EmptyState";
 export {
   IconeUsuario,
