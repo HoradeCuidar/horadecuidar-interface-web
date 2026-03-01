@@ -1,15 +1,22 @@
-import { EmptyState, ButtonCadastro } from "@/components";
+import { useState } from "react";
+import { EmptyState, ButtonCadastro, ModalCadastroPaciente } from "@/components";
 import emptyPacienteSvg from "@/assets/empty-paciente.svg";
 
 export function Pacientes() {
+  const [modalCadastroAberto, setModalCadastroAberto] = useState(false);
+
   function handleCadastrarPaciente() {
-    console.log("Cadastrar paciente");
+    setModalCadastroAberto(true);
+  }
+
+  async function handleSubmitPaciente(dados: Record<string, unknown>) {
+    console.log("Dados do paciente (UI apenas):", dados);
   }
 
   return (
     <div className="flex flex-col pt-8 px-8 pb-0 overflow-visible">
       <div className="-mx-8 border-b border-[#E5E7EB] px-8 pb-3 shadow-[0_2px_6px_rgba(0,0,0,0.06)]">
-        <h1 className="font-heading text-2xl font-semibold text-text">
+        <h1 className="font-heading text-xl font-semibold text-text">
           Gerenciamento de Pacientes
         </h1>
       </div>
@@ -34,6 +41,12 @@ export function Pacientes() {
           />
         </EmptyState>
       </div>
+
+      <ModalCadastroPaciente
+        aberto={modalCadastroAberto}
+        onFechar={() => setModalCadastroAberto(false)}
+        onSubmit={handleSubmitPaciente}
+      />
     </div>
   );
 }
