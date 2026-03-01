@@ -7,11 +7,14 @@ export {
   Modal,
   TituloSecao,
   Select,
+  Steps,
   BotaoCancelar,
   BotaoSalvar,
+  BotaoVoltar,
   InputBusca,
 } from "./ui";
 export { ModalCadastroProfissional } from "./ModalCadastroProfissional";
+export { ModalCadastroPaciente } from "./ModalCadastroPaciente";
 export { ModalDetalhesProfissional } from "./ModalDetalhesProfissional";
 export { EmptyState } from "./EmptyState";
 export {
