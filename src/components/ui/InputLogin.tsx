@@ -36,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         <input
           ref={ref}
           id={inputId}
-          className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-text-muted focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
+          className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-sm placeholder:text-text-muted focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
           {...rest}
         />
         {rightSlot && <span className="shrink-0">{rightSlot}</span>}
