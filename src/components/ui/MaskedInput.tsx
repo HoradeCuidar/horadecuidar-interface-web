@@ -67,7 +67,7 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
             placeholder={placeholder}
             disabled={disabled}
             autoComplete={autoComplete}
-            className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-text-muted focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
+            className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-sm placeholder:text-text-muted focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
           />
           {rightSlot && <span className="shrink-0">{rightSlot}</span>}
         </div>

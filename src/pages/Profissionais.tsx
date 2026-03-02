@@ -124,8 +124,8 @@ export function Profissionais() {
   return (
     <div className="flex flex-col pt-8 px-8 pb-0 overflow-visible">
       <div className="-mx-8 border-b border-[#E5E7EB] px-8 pb-3 shadow-[0_2px_6px_rgba(0,0,0,0.06)]">
-        <h1 className="font-heading text-2xl font-semibold text-text">
-          Gerenciamento de Profissionais da Saúde
+        <h1 className="font-heading text-xl font-semibold text-text">
+          Gerenciamento de Profissionais
         </h1>
       </div>
 

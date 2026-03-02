@@ -6,6 +6,8 @@ export { ButtonCadastro } from "./ButtonCadastro";
 export { Modal } from "./Modal";
 export { TituloSecao } from "./TituloSecao";
 export { Select } from "./Select";
+export { Steps } from "./Steps";
+export { BotaoVoltar } from "./BotaoVoltar";
 export { BotaoCancelar } from "./BotaoCancelar";
 export { BotaoSalvar } from "./BotaoSalvar";
 export { InputBusca } from "./InputBusca";
