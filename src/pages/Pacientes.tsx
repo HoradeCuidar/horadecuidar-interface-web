@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { EmptyState, ButtonCadastro, ModalCadastroPaciente } from "@/components";
 import emptyPacienteSvg from "@/assets/empty-paciente.svg";
+import { pacienteService } from "@/services/paciente";
 
 export function Pacientes() {
   const [modalCadastroAberto, setModalCadastroAberto] = useState(false);
@@ -10,7 +12,8 @@ export function Pacientes() {
   }
 
   async function handleSubmitPaciente(dados: Record<string, unknown>) {
-    console.log("Dados do paciente (UI apenas):", dados);
+    await pacienteService.cadastrar(dados);
+    toast.success("Paciente cadastrado com sucesso.");
   }
 
   return (

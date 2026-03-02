@@ -10,4 +10,7 @@ export const API_ENDPOINTS = {
     buscar: '/api/profissional/buscar',
     detalhes: (id: number) => `/api/profissional/visualizar/${id}`,
   },
+  paciente: {
+    cadastrar: '/api/paciente',
+  },
 }
