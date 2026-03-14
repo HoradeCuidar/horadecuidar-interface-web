@@ -2,7 +2,7 @@ import { forwardRef, type SelectHTMLAttributes } from 'react'
 
 type SelectOption = { value: string; label: string }
 
-type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
+type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> & {
   label: string
   options: SelectOption[]
   error?: string

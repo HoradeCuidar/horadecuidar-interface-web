@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { IconeFechar } from '@/components/icons'
 
 type ModalProps = {
   aberto: boolean
@@ -9,6 +10,7 @@ type ModalProps = {
   footer?: React.ReactNode
   largura?: 'sm' | 'md' | 'lg'
   headerTone?: 'default' | 'blue'
+  showCloseButton?: boolean
 }
 
 function getWidthClass(largura: NonNullable<ModalProps['largura']>) {
@@ -26,6 +28,7 @@ export function Modal({
   footer,
   largura = 'md',
   headerTone = 'default',
+  showCloseButton = false,
 }: ModalProps) {
   useEffect(() => {
     if (!aberto) return
@@ -59,11 +62,23 @@ export function Modal({
         className={`flex max-h-[95vh] w-full ${getWidthClass(largura)} flex-col rounded-lg bg-white shadow-xl`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={`shrink-0 px-8 py-4 ${headerClass}`}>
-          <h2 id="modal-titulo" className="font-heading text-lg font-semibold text-text">
-            {titulo}
-          </h2>
-          {subtitulo && <p className="mt-0.5 text-xs text-text-muted">{subtitulo}</p>}
+        <div className={`shrink-0 flex items-start justify-between gap-2 px-8 py-4 ${headerClass}`}>
+          <div className="min-w-0">
+            <h2 id="modal-titulo" className="font-heading text-lg font-semibold text-text">
+              {titulo}
+            </h2>
+            {subtitulo && <p className="mt-0.5 text-xs text-text-muted">{subtitulo}</p>}
+          </div>
+          {showCloseButton && (
+            <button
+              type="button"
+              onClick={onFechar}
+              className="shrink-0 rounded-full p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              aria-label="Fechar"
+            >
+              <IconeFechar />
+            </button>
+          )}
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-8 py-5">{children}</div>

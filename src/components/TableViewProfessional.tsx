@@ -106,7 +106,7 @@ export function TableViewProfessional({
                 </TableCell>
 
                 <TableCell className="py-4 text-center">
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center gap-1">
                     <Button
                       variant="ghost"
                       size="icon"

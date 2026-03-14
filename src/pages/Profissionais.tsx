@@ -16,6 +16,17 @@ import { profissionalService } from "@/services";
 import emptystateSvg from "@/assets/emptystate.svg";
 import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
 
+type ProfissionalApiItem = { id: number; nome: string; telefone?: string; status?: string }
+
+function mapToProfessional(it: ProfissionalApiItem): Professional {
+  return {
+    id: it.id,
+    name: it.nome,
+    phone: it.telefone ?? "",
+    status: it.status?.toLowerCase().startsWith("a") ? "active" : "inactive",
+  }
+}
+
 export function Profissionais() {
   const [modalAberto, setModalAberto] = useState(false);
   const [detalhesId, setDetalhesId] = useState<number | null>(null);
@@ -29,21 +40,9 @@ export function Profissionais() {
     setLoading(true);
     try {
       const items = await profissionalService.listar();
-      const mapped: Professional[] = items.map((it: any) => ({
-        id: it.id,
-        name: it.nome,
-        phone: it.telefone ?? "",
-        status:
-          it.status && it.status.toLowerCase().startsWith("a")
-            ? "active"
-            : "inactive",
-      }));
-
+      const mapped = items.map(mapToProfessional);
       setProfissionais(mapped);
-
-      if (mapped.length > 0) {
-        setJaTeveProfissionais(true);
-      }
+      if (mapped.length > 0) setJaTeveProfissionais(true);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Erro ao buscar profissionais",
@@ -56,17 +55,7 @@ export function Profissionais() {
   async function doBusca(termo: string) {
     try {
       const items = await profissionalService.buscar(termo);
-      const mapped: Professional[] = items.map((it: any) => ({
-        id: it.id,
-        name: it.nome,
-        phone: it.telefone ?? "",
-        status:
-          it.status && it.status.toLowerCase().startsWith("a")
-            ? "active"
-            : "inactive",
-      }));
-
-      setProfissionais(mapped);
+      setProfissionais(items.map(mapToProfessional));
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Erro ao buscar profissionais",

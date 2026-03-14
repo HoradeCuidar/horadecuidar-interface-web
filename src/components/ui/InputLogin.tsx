@@ -1,11 +1,12 @@
 import { forwardRef, type InputHTMLAttributes } from 'react'
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> & {
   label: string
+  value?: string
+  size?: 'default' | 'compact'
   error?: string
   leftIcon?: React.ReactNode
   rightSlot?: React.ReactNode
-  size?: 'default' | 'compact'
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
