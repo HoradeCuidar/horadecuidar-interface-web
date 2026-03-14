@@ -1,18 +1,13 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Modal, TituloSecao, Input, Select, MaskedInput, BotaoCancelar, BotaoSalvar } from '@/components'
+import { opcoesGenero } from '@/constants/opcoesGenero'
 
 type ModalCadastroProfissionalProps = {
   aberto: boolean
   onFechar: () => void
   onSubmit?: (dados: Record<string, string>) => void | Promise<void>
 }
-
-const opcoesGenero = [
-  { value: 'F', label: 'Feminino' },
-  { value: 'M', label: 'Masculino' },
-  { value: 'N', label: 'Não binário' },
-  { value: 'O', label: 'Outro' },
-]
 
 export function ModalCadastroProfissional({
   aberto,
@@ -51,8 +46,9 @@ export function ModalCadastroProfissional({
       })
       handleLimpar()
       onFechar()
-    } catch {
-      // Erro 
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao cadastrar profissional.')
+      throw e
     }
   }
 
@@ -111,7 +107,7 @@ export function ModalCadastroProfissional({
             <Select
               size="compact"
               label="Gênero"
-              options={opcoesGenero}
+              options={[...opcoesGenero]}
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
             />
