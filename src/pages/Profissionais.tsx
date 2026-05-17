@@ -6,15 +6,26 @@ import {
   ButtonCadastro,
   ModalCadastroProfissional,
   ModalDetalhesProfissional,
-  TableViewProfessional,
+  DataTable,
   InputBusca,
 } from "@/components";
 
-import type { Professional } from "@/components/TableViewProfessional";
+export interface Professional {
+  id: number;
+  name: string;
+  phone: string;
+  status: "active" | "inactive";
+}
+
 import { profissionalService } from "@/services";
 
 import emptystateSvg from "@/assets/emptystate.svg";
 import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { IconeOlho, IconeEditar, IconeFechar } from "@/components/icons";
+import type { ColumnDef } from "@/components/DataTable";
 
 export function Profissionais() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -24,6 +35,57 @@ export function Profissionais() {
   const [loading, setLoading] = useState(true);
   const [jaTeveProfissionais, setJaTeveProfissionais] = useState(false);
   const buscaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const columns: ColumnDef<Professional>[] = [
+    { header: "Nome", accessorKey: "name", className: "py-4 text-center font-medium text-zinc-700" },
+    { header: "Telefone", accessorKey: "phone", className: "py-4 text-center text-zinc-600" },
+    {
+      header: "Status",
+      className: "py-4 text-center",
+      render: (item) => (
+        <Badge
+          className={`border-0 px-4 py-1.5 font-light text-[12px] rounded-xl hover:bg-opacity-90 ${
+            item.status === "active" ? "bg-[#3EC048] text-white" : "bg-[#C53032] text-white"
+          }`}
+        >
+          {item.status === "active" ? "Ativo" : "Inativo"}
+        </Badge>
+      ),
+    },
+    {
+      header: "Ações",
+      className: "py-4 text-center",
+      render: (item) => (
+        <div className="flex items-center justify-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-200 rounded-full"
+            title="Remover"
+          >
+            <IconeFechar />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 text-zinc-400 hover:text-blue-600 hover:bg-blue-100 rounded-full"
+            title="Visualizar"
+            onClick={() => setDetalhesId(item.id)}
+          >
+            <IconeOlho />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 text-zinc-400 hover:text-orange-600 hover:bg-orange-100 rounded-full"
+            title="Editar"
+          >
+            <IconeEditar />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   async function loadProfissionais() {
     setLoading(true);
@@ -152,9 +214,9 @@ export function Profissionais() {
 
       
             {profissionais.length > 0 ? (
-              <TableViewProfessional
-                profissionais={profissionais}
-                onVerDetalhes={(p) => setDetalhesId(p.id)}
+              <DataTable
+                data={profissionais}
+                columns={columns}
               />
             ) : termoBusca.trim() !== "" ? (
               <EmptyState

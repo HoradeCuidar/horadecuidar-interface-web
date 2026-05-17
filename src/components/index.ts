@@ -28,4 +28,4 @@ export {
 } from "./icons";
 export { Sidebar } from "./Sidebar";
 export { LogoutButton } from "./LogoutButton";
-export { TableViewProfessional } from "./TableViewProfessional";
+export { DataTable } from "./DataTable";
