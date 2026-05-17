@@ -16,6 +16,7 @@ export {
 export { ModalCadastroProfissional } from "./ModalCadastroProfissional";
 export { ModalCadastroPaciente } from "./ModalCadastroPaciente";
 export { ModalDetalhesProfissional } from "./ModalDetalhesProfissional";
+export { ModalConfirmacaoStatus } from "./ModalConfirmacaoStatus";
 export { EmptyState } from "./EmptyState";
 export {
   IconeUsuario,
@@ -25,6 +26,7 @@ export {
   IconeSair,
   IconeCasa,
   IconeProfissional,
+  IconeCheck,
 } from "./icons";
 export { Sidebar } from "./Sidebar";
 export { LogoutButton } from "./LogoutButton";

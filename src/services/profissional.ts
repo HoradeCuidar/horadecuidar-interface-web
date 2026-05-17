@@ -133,4 +133,32 @@ export const profissionalService = {
       dataNascimento: data.dataDeNascimento ?? data.dataNascimento,
     }
   },
+
+  async ativar(id: number): Promise<void> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.ativar(id)}`
+    const token = authService.getToken()
+    const headers: Record<string, string> = {}
+    if (token) headers.Authorization = `Bearer ${token}`
+
+    const res = await fetch(url, { method: 'PUT', headers })
+    if (!res.ok) {
+      if (res.status === 403) throw new Error('Acesso negado. Faça login e tente novamente.')
+      const text = await res.text()
+      throw new Error(parseApiError(text, 'Erro ao ativar profissional.'))
+    }
+  },
+
+  async inativar(id: number): Promise<void> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.inativar(id)}`
+    const token = authService.getToken()
+    const headers: Record<string, string> = {}
+    if (token) headers.Authorization = `Bearer ${token}`
+
+    const res = await fetch(url, { method: 'PUT', headers })
+    if (!res.ok) {
+      if (res.status === 403) throw new Error('Acesso negado. Faça login e tente novamente.')
+      const text = await res.text()
+      throw new Error(parseApiError(text, 'Erro ao inativar profissional.'))
+    }
+  },
 }

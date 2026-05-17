@@ -8,11 +8,12 @@ import {
   ModalDetalhesProfissional,
   DataTable,
   InputBusca,
+  ModalConfirmacaoStatus,
 } from "@/components";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IconeOlho, IconeEditar, IconeFechar } from "@/components/icons";
+import { IconeOlho, IconeEditar, IconeFechar, IconeCheck } from "@/components/icons";
 import type { ColumnDef } from "@/components/DataTable";
 
 export interface Professional {
@@ -47,6 +48,10 @@ export function Profissionais() {
   const [jaTeveProfissionais, setJaTeveProfissionais] = useState(false);
   const buscaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const [confirmacaoStatusAberto, setConfirmacaoStatusAberto] = useState(false);
+  const [profissionalAcaoId, setProfissionalAcaoId] = useState<number | null>(null);
+  const [novoStatusAcao, setNovoStatusAcao] = useState<'active' | 'inactive' | null>(null);
+
   const columns: ColumnDef<Professional>[] = [
     { header: "Nome", accessorKey: "name", className: "py-4 text-center font-medium text-zinc-700" },
     { header: "Telefone", accessorKey: "phone", className: "py-4 text-center text-zinc-600" },
@@ -68,14 +73,35 @@ export function Profissionais() {
       className: "py-4 text-center",
       render: (item) => (
         <div className="flex items-center justify-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-200 rounded-full"
-            title="Remover"
-          >
-            <IconeFechar />
-          </Button>
+          {item.status === "active" ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-zinc-400 hover:text-red-600 hover:bg-red-100 rounded-full"
+              title="Inativar"
+              onClick={() => {
+                setProfissionalAcaoId(item.id)
+                setNovoStatusAcao('inactive')
+                setConfirmacaoStatusAberto(true)
+              }}
+            >
+              <IconeFechar />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-zinc-400 hover:text-green-600 hover:bg-green-100 rounded-full"
+              title="Ativar"
+              onClick={() => {
+                setProfissionalAcaoId(item.id)
+                setNovoStatusAcao('active')
+                setConfirmacaoStatusAberto(true)
+              }}
+            >
+              <IconeCheck />
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -249,6 +275,14 @@ export function Profissionais() {
         aberto={detalhesId !== null}
         onFechar={() => setDetalhesId(null)}
         profissionalId={detalhesId}
+      />
+
+      <ModalConfirmacaoStatus
+        aberto={confirmacaoStatusAberto}
+        onFechar={() => setConfirmacaoStatusAberto(false)}
+        onSucesso={() => loadProfissionais()}
+        profissionalId={profissionalAcaoId}
+        novoStatus={novoStatusAcao}
       />
     </div>
   );
