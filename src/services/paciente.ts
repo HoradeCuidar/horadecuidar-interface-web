@@ -86,4 +86,46 @@ export const pacienteService = {
 
     return res.json()
   },
+
+  async listar(): Promise<any[]> {
+    const token = authService.getToken()
+    if (!token) throw new Error('Faça login para listar pacientes.')
+
+    const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.listar}?pagina=0&limite=100`
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!res.ok) {
+      throw new Error('Erro ao buscar pacientes.')
+    }
+
+    const data = await res.json()
+    // The backend returns a Page<PacienteResponseDto>, which has a "content" array
+    return data.content || []
+  },
+
+  async buscar(nome: string): Promise<any[]> {
+    const token = authService.getToken()
+    if (!token) throw new Error('Faça login para buscar pacientes.')
+
+    const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.buscar}?nome=${encodeURIComponent(nome)}&pagina=0&limite=100`
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!res.ok) {
+      throw new Error('Erro ao buscar pacientes por nome.')
+    }
+
+    const data = await res.json()
+    // The backend returns a Page<PacienteResponseDto>, which has a "content" array
+    return data.content || []
+  },
 }
