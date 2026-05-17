@@ -9,6 +9,8 @@ export const API_ENDPOINTS = {
     visualizarTodos: '/api/profissional/visualizarTodos',
     buscar: '/api/profissional/buscar',
     detalhes: (id: number) => `/api/profissional/visualizar/${id}`,
+    ativar: (id: number) => `/api/profissional/ativar/${id}`,
+    inativar: (id: number) => `/api/profissional/inativar/${id}`,
   },
   paciente: {
     cadastrar: '/api/paciente',

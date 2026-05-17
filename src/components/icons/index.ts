@@ -17,3 +17,4 @@ export { IconeCalendario } from "./IconeCalendario";
 export { IconeEdificio } from "./IconeEdificio";
 export { IconeMapPin } from "./IconeMapPin";
 export { IconeMapa } from "./IconeMapa";
+export { IconeCheck } from "./IconeCheck";
