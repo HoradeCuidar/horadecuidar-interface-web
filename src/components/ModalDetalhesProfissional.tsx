@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal } from "@/components";
+import { Modal, Skeleton } from "@/components";
 import { Avatar } from "@/components/ui/Avatar";
 import { profissionalService } from "@/services";
 import {
@@ -91,10 +91,30 @@ export function ModalDetalhesProfissional({
       titulo="Detalhes do Profissional"
       largura="md"
       showCloseButton
+      headerTone="blue"
     >
       {loading && (
-        <div className="flex items-center justify-center py-12 text-zinc-500">
-          Carregando...
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
+          <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 sm:w-52">
+            <Skeleton className="size-20 rounded-full" />
+            <Skeleton className="h-4 w-32 mt-2" />
+            <Skeleton className="h-3.5 w-24" />
+          </div>
+
+          <div className="min-w-0 flex-1 max-w-2xl space-y-3">
+            <div className="w-full rounded-lg bg-[#E6EEFF]/30 p-3 space-y-2.5">
+              <Skeleton className="h-4 w-28 rounded" />
+              <Skeleton className="h-3.5 w-48 rounded" />
+              <Skeleton className="h-3.5 w-36 rounded" />
+              <Skeleton className="h-3.5 w-40 rounded" />
+            </div>
+
+            <div className="w-full rounded-lg bg-[#E6EEFF]/30 p-3 space-y-2.5">
+              <Skeleton className="h-4 w-20 rounded" />
+              <Skeleton className="h-3.5 w-full rounded" />
+              <Skeleton className="h-3.5 w-24 rounded" />
+            </div>
+          </div>
         </div>
       )}
       {erro && (

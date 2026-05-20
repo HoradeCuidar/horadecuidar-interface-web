@@ -24,3 +24,25 @@ export function validarCadastroProfissional(dados: Record<string, string>): stri
   }
   return null
 }
+
+export function validarEdicaoProfissional(dados: Record<string, string>): string | null {
+  const tel = onlyDigits(dados.telefone ?? '')
+  if (tel.length < 10 || tel.length > 11) {
+    return 'Telefone deve conter 10 ou 11 dígitos.'
+  }
+  const dataStr = dateToApi(dados.dataNascimento ?? '')
+  if (!dataStr) {
+    return 'Data de nascimento inválida. Use dd/mm/yyyy.'
+  }
+  const estadoStr = (dados.estado?.trim() ?? '').slice(0, 2).toUpperCase()
+  if (estadoStr.length !== 2) {
+    return 'Estado deve conter 2 letras (ex.: CE).'
+  }
+  if (!/^[a-zA-Z0-9._-]+$/.test(dados.username?.trim() ?? '')) {
+    return 'Username não pode conter espaços; use apenas letras, números, ., _ ou -.'
+  }
+  if (!dados.genero?.trim()) {
+    return 'Selecione o gênero.'
+  }
+  return null
+}
