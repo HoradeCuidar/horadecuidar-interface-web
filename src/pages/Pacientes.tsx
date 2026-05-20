@@ -5,7 +5,8 @@ import {
   ButtonCadastro, 
   ModalCadastroPaciente,
   DataTable,
-  InputBusca
+  InputBusca,
+  Skeleton
 } from "@/components";
 import emptyPacienteSvg from "@/assets/empty-paciente.svg";
 import { pacienteService } from "@/services/paciente";
@@ -178,15 +179,54 @@ export function Pacientes() {
 
   return (
     <div className="flex flex-col pt-8 px-8 pb-0 overflow-visible">
-      <div className="-mx-8 border-b border-[#E5E7EB] px-8 pb-3 shadow-[0_2px_6px_rgba(0,0,0,0.06)]">
-        <h1 className="font-heading text-xl font-semibold text-text">
-          Gerenciamento de Pacientes
+      <div className="flex flex-col gap-1">
+        <h1 className="font-heading text-2xl font-bold text-zinc-800 dark:text-white">
+          Pacientes
         </h1>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 font-normal">
+          Acompanhe os pacientes cadastrados, seus planos de tratamento e monitoramentos ativos
+        </p>
       </div>
 
       <div className="flex flex-col mt-6 overflow-visible">
         {loading ? (
-          <div className="p-8">Carregando pacientes...</div>
+          <div className="flex flex-col gap-4">
+            <div className="flex w-full items-center gap-4">
+              <div className="flex-1">
+                <Skeleton className="h-10 w-full rounded-xl" />
+              </div>
+              <Skeleton className="h-10 w-40 rounded-xl" />
+            </div>
+
+            <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="grid grid-cols-4 border-b border-zinc-200 bg-zinc-50 p-4 text-center dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="text-xs font-semibold text-zinc-500 uppercase">Nome</div>
+                <div className="text-xs font-semibold text-zinc-500 uppercase">Telefone</div>
+                <div className="text-xs font-semibold text-zinc-500 uppercase">Status</div>
+                <div className="text-xs font-semibold text-zinc-500 uppercase">Ações</div>
+              </div>
+              <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="grid grid-cols-4 items-center p-4">
+                    <div className="flex justify-center">
+                      <Skeleton className="h-4 w-40" />
+                    </div>
+                    <div className="flex justify-center">
+                      <Skeleton className="h-4 w-28" />
+                    </div>
+                    <div className="flex justify-center">
+                      <Skeleton className="h-6 w-20 rounded-full" />
+                    </div>
+                    <div className="flex justify-center gap-2">
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="flex flex-col gap-4">
             {jaTevePacientes && (
