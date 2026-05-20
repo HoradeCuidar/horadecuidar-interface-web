@@ -1,7 +1,7 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/config/api'
 import { authService } from './auth'
 import { formToPayload } from './profissional.mappers'
-import { validarCadastroProfissional } from './profissional.validation'
+import { validarCadastroProfissional, validarEdicaoProfissional } from './profissional.validation'
 import { parseApiError } from './apiErrors'
 
 export type { CadastroProfissionalPayload } from './profissional.mappers'
@@ -160,5 +160,37 @@ export const profissionalService = {
       const text = await res.text()
       throw new Error(parseApiError(text, 'Erro ao inativar profissional.'))
     }
+  },
+
+  async editar(id: number, dados: Record<string, string>): Promise<unknown> {
+    const token = authService.getToken()
+    if (!token) {
+      throw new Error('Faça login para editar um profissional.')
+    }
+
+    const erroValidacao = validarEdicaoProfissional(dados)
+    if (erroValidacao) throw new Error(erroValidacao)
+
+    const payload = formToPayload(dados)
+    const updatePayload = { ...payload }
+    delete (updatePayload as any).senha
+
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.editar(id)}`
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatePayload),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(parseApiError(text, 'Erro ao editar profissional.'))
+    }
+
+    return res.json()
   },
 }
