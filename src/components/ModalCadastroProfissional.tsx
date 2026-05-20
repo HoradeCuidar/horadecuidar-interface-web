@@ -75,6 +75,8 @@ export function ModalCadastroProfissional({
         onFechar()
       }}
       titulo="Cadastrar Profissional da Saúde"
+      headerTone="blue"
+      showCloseButton={true}
       footer={
         <>
           <BotaoCancelar

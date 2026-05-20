@@ -54,12 +54,14 @@ export function ModalConfirmacaoStatus({
       onFechar={onFechar}
       titulo={titulo}
       largura="sm"
+      headerTone="blue"
+      showCloseButton={true}
       footer={
         <>
           <BotaoCancelar onClick={onFechar} disabled={loading}>
             Cancelar
           </BotaoCancelar>
-          <BotaoSalvar onClick={handleConfirmar} loading={loading}>
+          <BotaoSalvar onClick={handleConfirmar} disabled={loading}>
             {labelBotaoConfirmar}
           </BotaoSalvar>
         </>
