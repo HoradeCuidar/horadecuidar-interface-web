@@ -3,6 +3,8 @@ export const API_BASE_URL = ''
 export const API_ENDPOINTS = {
   auth: {
     login: '/api/auth/logar',
+    recuperacaoSenha: '/api/auth/recuperacao-senha',
+    resetarSenha: '/api/auth/resetar-senha',
   },
   profissional: {
     cadastrar: '/api/profissional/cadastrar',

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -91,9 +91,9 @@ export function Login() {
               {...register('password')}
             />
             <div className="mt-1.5 flex justify-end">
-              <a href="#" className="text-sm font-medium text-brand-500 hover:text-brand-600">
+              <Link to="/recuperar-senha" className="text-sm font-medium text-brand-500 hover:text-brand-600">
                 esqueceu sua senha?
-              </a>
+              </Link>
             </div>
           </div>
           <Button type="submit" disabled={isSubmitting} variant="primary">
