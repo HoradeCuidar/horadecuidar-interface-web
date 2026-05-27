@@ -66,4 +66,46 @@ export const authService = {
     }
   },
 
+  async solicitarRecuperacao(email: string): Promise<void> {
+    let res: Response
+    try {
+      res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.auth.recuperacaoSenha}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+    } catch {
+      throw new Error('Não foi possível conectar à API. Verifique se o servidor está rodando.')
+    }
+
+    if (!res.ok) {
+      throw new Error('Erro ao enviar solicitação de recuperação de senha.')
+    }
+  },
+
+  async resetarSenha(token: string, novaSenha: string, confirmacao: string): Promise<void> {
+    let res: Response
+    try {
+      res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.auth.resetarSenha}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, novaSenha, confirmacao }),
+      })
+    } catch {
+      throw new Error('Não foi possível conectar à API. Verifique se o servidor está rodando.')
+    }
+
+    if (!res.ok) {
+      let errorMsg = 'Erro ao redefinir a senha.'
+      try {
+        const errorData = await res.json()
+        if (errorData && errorData.message) {
+          errorMsg = errorData.message
+        }
+      } catch {
+      }
+      throw new Error(errorMsg)
+    }
+  },
 }
+

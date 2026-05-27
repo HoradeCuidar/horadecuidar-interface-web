@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuthLayout, MainLayout } from '@/layouts'
-import { Home, Login, Profissionais, Pacientes, MeuPerfil } from '@/pages'
+import { Home, Login, Profissionais, Pacientes, MeuPerfil, RecuperarSenha, ResetPassword } from '@/pages'
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/login" replace /> },
@@ -9,6 +9,20 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { index: true, element: <Login /> },
+    ],
+  },
+  {
+    path: '/recuperar-senha',
+    element: <AuthLayout />,
+    children: [
+      { index: true, element: <RecuperarSenha /> },
+    ],
+  },
+  {
+    path: '/reset-password',
+    element: <AuthLayout />,
+    children: [
+      { index: true, element: <ResetPassword /> },
     ],
   },
   {
