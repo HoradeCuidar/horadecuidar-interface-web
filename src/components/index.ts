@@ -33,3 +33,4 @@ export {
 export { Sidebar } from "./Sidebar";
 export { LogoutButton } from "./LogoutButton";
 export { DataTable } from "./DataTable";
+export { ModalConfirmacaoExcluirDoenca } from "./ModalConfirmacaoExcluirDoenca";

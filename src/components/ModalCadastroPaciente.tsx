@@ -6,6 +6,7 @@ import {
   BotaoCancelar,
   BotaoSalvar,
   BotaoVoltar,
+  ModalConfirmacaoExcluirDoenca,
 } from '@/components'
 import { doencaService } from '@/services/doenca'
 import { toast } from 'sonner'
@@ -44,6 +45,8 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
   const [observacoes, setObservacoes] = useState('')
   const [modalCadastrarDoencaAberto, setModalCadastrarDoencaAberto] = useState(false)
   const [novaDoencaNome, setNovaDoencaNome] = useState('')
+  const [modalExcluirDoencaAberto, setModalExcluirDoencaAberto] = useState(false)
+  const [doencaExcluindoId, setDoencaExcluindoId] = useState('')
   const [username, setUsername] = useState('')
   const [senha, setSenha] = useState('')
 
@@ -77,6 +80,8 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
     setObservacoes('')
     setModalCadastrarDoencaAberto(false)
     setNovaDoencaNome('')
+    setModalExcluirDoencaAberto(false)
+    setDoencaExcluindoId('')
     setUsername('')
     setSenha('')
   }
@@ -104,6 +109,22 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
       toast.success('Doença cadastrada.')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Erro ao cadastrar doença.')
+    }
+  }
+
+  async function handleExcluirDoenca() {
+    if (!doencaExcluindoId) return
+    try {
+      await doencaService.deletar(Number(doencaExcluindoId))
+      const lista = await doencaService.listar()
+      setDoencasLista(lista.map((d) => ({ value: String(d.id), label: d.nome })))
+      if (doencaId === doencaExcluindoId) {
+        setDoencaId('') // Reset selected if it was deleted
+      }
+      toast.success('Doença excluída com sucesso.')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao excluir doença.')
+      throw e
     }
   }
 
@@ -203,6 +224,10 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
                 doencaId={doencaId}
                 setDoencaId={setDoencaId}
                 onAbrirModalCadastrarDoenca={() => setModalCadastrarDoencaAberto(true)}
+                onDeleteDoenca={(id) => {
+                  setDoencaExcluindoId(id)
+                  setModalExcluirDoencaAberto(true)
+                }}
                 observacoes={observacoes}
                 setObservacoes={setObservacoes}
               />
@@ -261,6 +286,15 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
           />
         </div>
       </Modal>
+
+      <ModalConfirmacaoExcluirDoenca
+        aberto={modalExcluirDoencaAberto}
+        onFechar={() => {
+          setModalExcluirDoencaAberto(false)
+          setDoencaExcluindoId('')
+        }}
+        onConfirmar={handleExcluirDoenca}
+      />
     </>
   )
 }
