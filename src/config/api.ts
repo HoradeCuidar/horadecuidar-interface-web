@@ -23,5 +23,6 @@ export const API_ENDPOINTS = {
   doenca: {
     listar: '/api/doenca',
     cadastrar: '/api/doenca',
+    deletar: (id: number) => `/api/doenca/${id}`,
   },
 }
