@@ -8,9 +8,10 @@ type SelectDoencaProps = {
   onSelect: (value: string) => void
   onAddClick: () => void
   onDeleteClick?: (value: string) => void
+  onEditClick?: (value: string, label: string) => void
 }
 
-export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteClick }: SelectDoencaProps) {
+export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteClick, onEditClick }: SelectDoencaProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const ref = useRef<HTMLDivElement>(null)
@@ -106,6 +107,20 @@ export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteCli
                     className="flex-1 py-2 text-left text-sm text-text focus:outline-none"
                   >
                     {d.label}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onEditClick?.(d.value, d.label)
+                      setOpen(false)
+                    }}
+                    className="p-1.5 text-zinc-400 hover:text-brand-500 rounded-full hover:bg-brand-50 focus:outline-none transition duration-150"
+                    title="Editar doença"
+                  >
+                    <svg style={{ width: '18px', height: '18px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
                   </button>
                   <button
                     type="button"
