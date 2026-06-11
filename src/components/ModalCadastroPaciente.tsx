@@ -47,6 +47,10 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
   const [novaDoencaNome, setNovaDoencaNome] = useState('')
   const [modalExcluirDoencaAberto, setModalExcluirDoencaAberto] = useState(false)
   const [doencaExcluindoId, setDoencaExcluindoId] = useState('')
+  const [modalEditarDoencaAberto, setModalEditarDoencaAberto] = useState(false)
+  const [doencaEditandoId, setDoencaEditandoId] = useState('')
+  const [doencaEditandoNome, setDoencaEditandoNome] = useState('')
+  const [doencaEditandoNomeOriginal, setDoencaEditandoNomeOriginal] = useState('')
   const [username, setUsername] = useState('')
   const [senha, setSenha] = useState('')
 
@@ -82,6 +86,10 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
     setNovaDoencaNome('')
     setModalExcluirDoencaAberto(false)
     setDoencaExcluindoId('')
+    setModalEditarDoencaAberto(false)
+    setDoencaEditandoId('')
+    setDoencaEditandoNome('')
+    setDoencaEditandoNomeOriginal('')
     setUsername('')
     setSenha('')
   }
@@ -125,6 +133,32 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Erro ao excluir doença.')
       throw e
+    }
+  }
+
+  async function handleEditarDoenca() {
+    const nomeTrim = doencaEditandoNome.trim()
+    if (!nomeTrim || !doencaEditandoId) return
+
+    if (nomeTrim === doencaEditandoNomeOriginal) {
+      setModalEditarDoencaAberto(false)
+      setDoencaEditandoId('')
+      setDoencaEditandoNome('')
+      setDoencaEditandoNomeOriginal('')
+      return
+    }
+
+    try {
+      await doencaService.editar(Number(doencaEditandoId), nomeTrim)
+      const lista = await doencaService.listar()
+      setDoencasLista(lista.map((d) => ({ value: String(d.id), label: d.nome })))
+      setModalEditarDoencaAberto(false)
+      setDoencaEditandoId('')
+      setDoencaEditandoNome('')
+      setDoencaEditandoNomeOriginal('')
+      toast.success('Doença editada com sucesso.')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao editar doença.')
     }
   }
 
@@ -228,6 +262,12 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
                   setDoencaExcluindoId(id)
                   setModalExcluirDoencaAberto(true)
                 }}
+                onEditDoenca={(id, nome) => {
+                  setDoencaEditandoId(id)
+                  setDoencaEditandoNome(nome)
+                  setDoencaEditandoNomeOriginal(nome)
+                  setModalEditarDoencaAberto(true)
+                }}
                 observacoes={observacoes}
                 setObservacoes={setObservacoes}
               />
@@ -295,6 +335,53 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
         }}
         onConfirmar={handleExcluirDoenca}
       />
+
+      <Modal
+        aberto={modalEditarDoencaAberto}
+        onFechar={() => {
+          setModalEditarDoencaAberto(false)
+          setDoencaEditandoId('')
+          setDoencaEditandoNome('')
+          setDoencaEditandoNomeOriginal('')
+        }}
+        titulo="Editar Doença"
+        largura="sm"
+        footer={
+          <>
+            <BotaoCancelar
+              onClick={() => {
+                setModalEditarDoencaAberto(false)
+                setDoencaEditandoId('')
+                setDoencaEditandoNome('')
+                setDoencaEditandoNomeOriginal('')
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleEditarDoenca}
+              className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600"
+            >
+              Confirmar
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-2">
+          <Input
+            size="compact"
+            label="Doença"
+            placeholder="Insira o nome da doença"
+            value={doencaEditandoNome}
+            onChange={(e) => setDoencaEditandoNome(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                handleEditarDoenca()
+              }
+            }}
+          />
+        </div>
+      </Modal>
     </>
   )
 }

@@ -7,6 +7,7 @@ type PassoDoencasProps = {
   setDoencaId: (v: string) => void
   onAbrirModalCadastrarDoenca: () => void
   onDeleteDoenca?: (id: string) => void
+  onEditDoenca?: (id: string, nome: string) => void
   observacoes: string
   setObservacoes: (v: string) => void
 }
@@ -17,6 +18,7 @@ export function PassoDoencas({
   setDoencaId,
   onAbrirModalCadastrarDoenca,
   onDeleteDoenca,
+  onEditDoenca,
   observacoes,
   setObservacoes,
 }: PassoDoencasProps) {
@@ -29,6 +31,7 @@ export function PassoDoencas({
           onSelect={setDoencaId}
           onAddClick={onAbrirModalCadastrarDoenca}
           onDeleteClick={onDeleteDoenca}
+          onEditClick={onEditDoenca}
         />
         <Input
           size="compact"
