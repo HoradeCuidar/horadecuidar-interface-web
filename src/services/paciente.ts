@@ -69,4 +69,23 @@ export const pacienteService = {
     const data = await res.json()
     return data.content || []
   },
+
+  async alterarStatus(id: number): Promise<void> {
+    const token = authService.getToken()
+    if (!token) throw new Error('Faça login para alterar o status do paciente.')
+
+    const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.alterarStatus(id)}`
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!res.ok) {
+      if (res.status === 403) throw new Error('Acesso negado. Faça login e tente novamente.')
+      const text = await res.text()
+      throw new Error(parseApiError(text, 'Erro ao alterar o status do paciente.'))
+    }
+  },
 }
