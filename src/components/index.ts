@@ -19,6 +19,7 @@ export { ModalEditarProfissional } from "./ModalEditarProfissional";
 export { ModalCadastroPaciente } from "./ModalCadastroPaciente";
 export { ModalDetalhesProfissional } from "./ModalDetalhesProfissional";
 export { ModalConfirmacaoStatus } from "./ModalConfirmacaoStatus";
+export { ModalConfirmacaoStatusPaciente } from "./ModalConfirmacaoStatusPaciente";
 export { EmptyState } from "./EmptyState";
 export {
   IconeUsuario,
