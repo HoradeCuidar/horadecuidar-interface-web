@@ -63,4 +63,28 @@ export const doencaService = {
       }
     }
   },
+
+  async editar(id: number, nome: string): Promise<void> {
+    const token = authService.getToken()
+    if (!token) throw new Error('Faça login para editar uma doença.')
+    const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.doenca.editar(id)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ nome: nome.trim() }),
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      try {
+        const json = JSON.parse(text)
+        const msg = json.message ?? json.error ?? text
+        throw new Error(typeof msg === 'string' ? msg : 'Erro ao editar doença.')
+      } catch (e) {
+        if (e instanceof Error) throw e
+        throw new Error('Erro ao editar doença.')
+      }
+    }
+  },
 }
