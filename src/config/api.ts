@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
     cadastrar: '/api/paciente',
     listar: '/api/paciente',
     buscar: '/api/paciente/nome',
+    detalhes: (id: number) => `/api/paciente/${id}`,
+    editar: (id: number) => `/api/paciente/${id}`,
     alterarStatus: (id: number) => `/api/paciente/status/${id}`,
   },
   doenca: {

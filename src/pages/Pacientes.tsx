@@ -4,6 +4,7 @@ import {
   EmptyState, 
   ButtonCadastro, 
   ModalCadastroPaciente,
+  ModalEditarPaciente,
   ModalConfirmacaoStatusPaciente,
   DataTable,
   InputBusca,
@@ -36,6 +37,13 @@ export function Pacientes() {
   const [confirmacaoStatusAberto, setConfirmacaoStatusAberto] = useState(false);
   const [pacienteAcaoId, setPacienteAcaoId] = useState<number | null>(null);
   const [novoStatusAcao, setNovoStatusAcao] = useState<'active' | 'inactive' | null>(null);
+  const [modalEditarAberto, setModalEditarAberto] = useState(false);
+  const [pacienteEditarId, setPacienteEditarId] = useState<number | null>(null);
+
+  function handleEditar(id: number) {
+    setPacienteEditarId(id);
+    setModalEditarAberto(true);
+  }
 
   const columns: ColumnDef<Paciente>[] = [
     { header: "Nome", accessorKey: "nome", className: "py-4 text-center font-medium text-zinc-700" },
@@ -104,6 +112,7 @@ export function Pacientes() {
             size="icon"
             className="h-9 w-9 text-zinc-400 hover:text-orange-600 hover:bg-orange-100 rounded-full"
             title="Editar"
+            onClick={() => handleEditar(item.id)}
           >
             <IconeEditar />
           </Button>
@@ -320,6 +329,16 @@ export function Pacientes() {
         onSucesso={() => loadPacientes()}
         pacienteId={pacienteAcaoId}
         novoStatus={novoStatusAcao}
+      />
+
+      <ModalEditarPaciente
+        aberto={modalEditarAberto}
+        onFechar={() => {
+          setModalEditarAberto(false);
+          setPacienteEditarId(null);
+        }}
+        pacienteId={pacienteEditarId}
+        onSucesso={() => loadPacientes()}
       />
     </div>
   );
