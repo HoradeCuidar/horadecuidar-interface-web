@@ -1,1 +1,1 @@
-export {}
+export { useEditarPaciente } from './useEditarPaciente'
