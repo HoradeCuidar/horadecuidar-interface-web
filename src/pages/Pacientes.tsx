@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { 
   EmptyState, 
@@ -27,6 +28,7 @@ export interface Paciente {
 }
 
 export function Pacientes() {
+  const navigate = useNavigate();
   const [modalCadastroAberto, setModalCadastroAberto] = useState(false);
   const [termoBusca, setTermoBusca] = useState("");
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
@@ -100,10 +102,7 @@ export function Pacientes() {
             size="icon"
             className="h-9 w-9 text-zinc-400 hover:text-blue-600 hover:bg-blue-100 rounded-full"
             title="Visualizar"
-            onClick={() => {
-              // placeholder para onVerDetalhes
-              console.log("Ver detalhes do paciente", item.id);
-            }}
+            onClick={() => navigate(`/pacientes/${item.id}`)}
           >
             <IconeOlho />
           </Button>
