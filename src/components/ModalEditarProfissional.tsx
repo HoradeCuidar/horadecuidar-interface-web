@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { Modal, Input, Select, MaskedInput, BotaoCancelar, BotaoVoltar, BotaoSalvar, Skeleton } from '@/components'
+import {
+  Modal,
+  Steps,
+  Input,
+  Select,
+  MaskedInput,
+  BotaoCancelar,
+  BotaoVoltar,
+  BotaoSalvar,
+  Skeleton,
+} from '@/components'
 import { opcoesGenero } from '@/constants/opcoesGenero'
 import { profissionalService } from '@/services'
 
@@ -11,7 +21,13 @@ type ModalEditarProfissionalProps = {
   onSucesso: () => void
 }
 
-type TabType = 'dados' | 'endereco' | 'acesso'
+const PASSOS_EDICAO = [
+  { id: 'dados', label: 'Dados' },
+  { id: 'endereco', label: 'Endereço' },
+  { id: 'acesso', label: 'Acesso' },
+] as const
+
+type PassoEdicaoId = (typeof PASSOS_EDICAO)[number]['id']
 
 function apiDateToForm(apiDate: string): string {
   if (!apiDate) return ''
@@ -37,8 +53,10 @@ export function ModalEditarProfissional({
   profissionalId,
   onSucesso,
 }: ModalEditarProfissionalProps) {
-  const [stepId, setStepId] = useState<TabType>('dados')
+  const [stepId, setStepId] = useState<PassoEdicaoId>('dados')
   const [nomeOriginal, setNomeOriginal] = useState('')
+  const currentIndex = PASSOS_EDICAO.findIndex((p) => p.id === stepId)
+  const isLastStep = currentIndex === PASSOS_EDICAO.length - 1
 
   const [nome, setNome] = useState('')
   const [genero, setGenero] = useState('')
@@ -121,25 +139,19 @@ export function ModalEditarProfissional({
     setStepId('dados')
   }
 
-  function handleTabClick(tab: TabType) {
-    if (profissionalId) {
-      setStepId(tab)
-    }
-  }
-
   function irParaProximoPasso() {
-    if (stepId === 'dados') setStepId('endereco')
-    else if (stepId === 'endereco') setStepId('acesso')
+    const next = PASSOS_EDICAO[currentIndex + 1]
+    if (next) setStepId(next.id)
   }
 
   function irParaPassoAnterior() {
-    if (stepId === 'acesso') setStepId('endereco')
-    else if (stepId === 'endereco') setStepId('dados')
+    const prev = PASSOS_EDICAO[currentIndex - 1]
+    if (prev) setStepId(prev.id)
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (stepId !== 'acesso') {
+    if (!isLastStep) {
       irParaProximoPasso()
       return
     }
@@ -194,12 +206,6 @@ export function ModalEditarProfissional({
     }
   }
 
-  const getStepNumber = () => {
-    if (stepId === 'dados') return 1
-    if (stepId === 'endereco') return 2
-    return 3
-  }
-
   return (
     <Modal
       aberto={aberto}
@@ -220,37 +226,22 @@ export function ModalEditarProfissional({
               onFechar()
             }}
           />
-          {stepId !== 'dados' && (
-            <BotaoVoltar onClick={irParaPassoAnterior}>
-              Voltar
-            </BotaoVoltar>
-          )}
-          <BotaoSalvar form="form-edicao-profissional" disabled={salvando}>
-            {stepId === 'acesso' ? 'Salvar Alterações' : 'Continuar'}
+          <BotaoVoltar onClick={irParaPassoAnterior} disabled={currentIndex === 0 || loading}>
+            Voltar
+          </BotaoVoltar>
+          <BotaoSalvar form="form-edicao-profissional" disabled={salvando || loading}>
+            {isLastStep ? (salvando ? 'Salvando...' : 'Salvar Alterações') : 'Próximo'}
           </BotaoSalvar>
         </>
       }
     >
       {loading ? (
         <div className="space-y-6">
-          <div className="flex bg-[#E6EEFF] p-1 rounded-full w-max border border-[#CCDDFF] dark:bg-zinc-950 gap-2">
+          <div className="flex gap-2">
             <Skeleton className="h-7 w-20 rounded-full" />
-            <Skeleton className="h-7 w-20 rounded-full" />
+            <Skeleton className="h-7 w-24 rounded-full" />
             <Skeleton className="h-7 w-20 rounded-full" />
           </div>
-
-          <div className="flex items-center gap-4 py-2 border-b border-surface-100 pb-4">
-            <div className="flex items-center gap-2">
-              <Skeleton className="size-5 rounded-full" />
-              <Skeleton className="h-3 w-24" />
-            </div>
-            <div className="flex gap-2 flex-1 max-w-[200px]">
-              <Skeleton className="h-1.5 rounded-full flex-1" />
-              <Skeleton className="h-1.5 rounded-full flex-1" />
-              <Skeleton className="h-1.5 rounded-full flex-1" />
-            </div>
-          </div>
-
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Skeleton className="h-3.5 w-14 mb-2" />
@@ -275,43 +266,10 @@ export function ModalEditarProfissional({
           </div>
         </div>
       ) : (
-        <form id="form-edicao-profissional" onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex bg-[#E6EEFF] p-1 rounded-full w-max border border-[#CCDDFF] dark:bg-zinc-950">
-            {(['dados', 'endereco', 'acesso'] as TabType[]).map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => handleTabClick(tab)}
-                className={`px-6 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 cursor-pointer ${stepId === tab
-                    ? 'bg-white text-brand-700 shadow-sm border border-brand-200 dark:bg-zinc-900 dark:text-white dark:border-zinc-800'
-                    : 'text-brand-600 hover:text-brand-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                  }`}
-              >
-                {tab === 'dados' ? 'Dados' : tab === 'endereco' ? 'Endereço' : 'Acesso'}
-              </button>
-            ))}
-          </div>
+        <form id="form-edicao-profissional" onSubmit={handleSubmit} className="space-y-4">
+          <Steps steps={[...PASSOS_EDICAO]} currentStepId={stepId} />
 
-          <div className="flex items-center gap-4 py-2 border-b border-surface-100 pb-4">
-            <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-brand-500 text-white text-[10px] font-bold">
-                {getStepNumber()}
-              </span>
-              <span className="text-xs font-semibold text-text">
-                Passo {getStepNumber()} de 3
-              </span>
-            </div>
-            <div className="flex gap-2 flex-1 max-w-[200px]">
-              <div className={`h-1.5 rounded-full flex-1 transition-all duration-300 ${getStepNumber() >= 1 ? 'bg-brand-500' : 'bg-surface-200'
-                }`} />
-              <div className={`h-1.5 rounded-full flex-1 transition-all duration-300 ${getStepNumber() >= 2 ? 'bg-brand-500' : 'bg-surface-200'
-                }`} />
-              <div className={`h-1.5 rounded-full flex-1 transition-all duration-300 ${getStepNumber() >= 3 ? 'bg-brand-500' : 'bg-surface-200'
-                }`} />
-            </div>
-          </div>
-
-          <div className="mt-4 transition-all duration-300">
+          <div className="mt-8">
             {stepId === 'dados' && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <Input
