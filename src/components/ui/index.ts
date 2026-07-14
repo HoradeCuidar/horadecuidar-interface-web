@@ -7,6 +7,7 @@ export { Modal } from "./Modal";
 export { TituloSecao } from "./TituloSecao";
 export { Select } from "./Select";
 export { Steps } from "./Steps";
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs";
 export { BotaoVoltar } from "./BotaoVoltar";
 export { BotaoCancelar } from "./BotaoCancelar";
 export { BotaoSalvar } from "./BotaoSalvar";
