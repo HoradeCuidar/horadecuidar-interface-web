@@ -1,123 +1,114 @@
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
+import {
+  FiGrid,
+  FiUsers,
+  FiUser,
+  FiBriefcase,
+} from 'react-icons/fi'
 import { authService } from '@/services'
-import { Avatar } from '@/components/ui/Avatar'
 import { LogoutButton } from '@/components/LogoutButton'
-import { IconeCasa, IconeProfissional, IconePacientes, IconePerfil } from '@/components/icons'
+import logo from '@/assets/logo.svg'
 import type { Role } from '@/types/auth'
 
-const MIN_WIDTH = 200
-const MAX_WIDTH = 400
-const DEFAULT_WIDTH = 240
+type NavItem = {
+  to: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+}
 
-type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }> }
+const ROLE_LABEL: Record<Role, string> = {
+  ADMIN: 'Administrador',
+  PROFISSIONAL_DA_SAUDE: 'Profissional da Saúde',
+  PACIENTE: 'Participante',
+}
 
 const navPorRole: Record<Role, NavItem[]> = {
   ADMIN: [
-    { to: '/home', label: 'Dashboard', icon: IconeCasa },
-    { to: '/profissionais', label: 'Profissional da Saúde', icon: IconeProfissional },
+    { to: '/home', label: 'Dashboard', icon: FiGrid },
+    { to: '/profissionais', label: 'Profissionais', icon: FiBriefcase },
   ],
   PROFISSIONAL_DA_SAUDE: [
-    { to: '/home', label: 'Dashboard', icon: IconeCasa },
-    { to: '/pacientes', label: 'Pacientes', icon: IconePacientes },
-    { to: '/meu-perfil', label: 'Meu perfil', icon: IconePerfil },
+    { to: '/home', label: 'Dashboard', icon: FiGrid },
+    { to: '/pacientes', label: 'Pacientes', icon: FiUsers },
+    { to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PACIENTE: [
-    { to: '/home', label: 'Dashboard', icon: IconeCasa },
-    { to: '/meu-perfil', label: 'Meu perfil', icon: IconePerfil },
+    { to: '/home', label: 'Dashboard', icon: FiGrid },
+    { to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
 }
 
-export function Sidebar() {
+function iniciais(nome: string): string {
+  const parts = nome.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+type SidebarProps = {
+  onNavigate?: () => void
+}
+
+export function Sidebar({ onNavigate }: SidebarProps) {
   const user = authService.getUser()
   const navItems = useMemo(
     () => (user?.role ? navPorRole[user.role] : navPorRole.ADMIN),
     [user?.role]
   )
-  const [width, setWidth] = useState(DEFAULT_WIDTH)
-  const [isDragging, setIsDragging] = useState(false)
-  const sidebarRef = useRef<HTMLElement>(null)
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }, [])
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isDragging || !sidebarRef.current) return
-      const rect = sidebarRef.current.getBoundingClientRect()
-      const newWidth = e.clientX - rect.left
-      setWidth(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, newWidth)))
-    },
-    [isDragging]
-  )
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false)
-  }, [])
-
-  useEffect(() => {
-    if (!isDragging) return
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-    document.body.style.cursor = 'col-resize'
-    document.body.style.userSelect = 'none'
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-      document.body.style.cursor = ''
-      document.body.style.userSelect = ''
-    }
-  }, [isDragging, handleMouseMove, handleMouseUp])
+  const displayName = user?.username ?? 'Usuário'
+  const roleLabel = user?.role ? ROLE_LABEL[user.role] : 'Usuário'
 
   return (
-    <aside
-      ref={sidebarRef}
-      style={{ width: `${width}px` }}
-      className="relative flex shrink-0 flex-col border-r border-[#D1D5DB] bg-surface-50 shadow-[4px_0_12px_rgba(0,0,0,0.06)]"
-    >
-      <div className="flex items-start gap-3 p-6">
-        <Avatar name={user?.username ?? 'Usuário'} />
-        <div className="min-w-0 flex-1">
-          <p className="truncate font-medium text-text">
-            {user?.username ?? 'Usuário'}
+    <aside className="flex h-full w-full flex-col border-r border-[#E5E7EB] bg-white">
+      <div className="flex items-center gap-3 border-b border-[#E5E7EB] px-5 py-5 sm:px-6">
+        <img src={logo} alt="" className="size-8 shrink-0 sm:size-9" />
+        <div className="min-w-0 leading-tight">
+          <p className="text-[10px] font-medium uppercase tracking-wide text-[#5D99F4] sm:text-[11px]">
+            Hora de
           </p>
-          <p className="truncate text-sm text-text-muted">
-            Logado
+          <p className="text-sm font-bold uppercase tracking-wide text-[#1A2D37] sm:text-base">
+            Cuidar
           </p>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-0.5 px-3 py-4">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5 sm:px-4">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
+            onClick={onNavigate}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] transition ${
+              `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition sm:text-[15px] ${
                 isActive
-                  ? 'bg-brand-100 font-medium text-brand-600 [&_svg]:text-brand-600'
-                  : 'text-text hover:bg-surface-100 [&_svg]:text-text'
+                  ? 'bg-[#EBF2FF] font-semibold text-[#5D99F4]'
+                  : 'font-medium text-[#8E9AAF] hover:bg-zinc-50 hover:text-[#5A6578]'
               }`
             }
           >
-            <Icon />
-            <span>{label}</span>
+            <Icon className="size-5 shrink-0" aria-hidden />
+            <span className="truncate">{label}</span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="border-t border-surface-100 p-4">
-        <LogoutButton />
-      </div>
+      <div className="mt-auto flex flex-col gap-3 px-3 pb-4 pt-2 sm:px-4 sm:pb-5">
+        <LogoutButton onAfterLogout={onNavigate} />
 
-      <button
-        type="button"
-        onMouseDown={handleMouseDown}
-        className="absolute right-0 top-0 z-10 h-full w-1.5 cursor-col-resize border-0 bg-transparent hover:bg-brand-300/30 active:bg-brand-400/40"
-        aria-label="Redimensionar sidebar"
-      />
+        <div className="flex items-center gap-3 rounded-xl bg-[#F4F6F8] px-3 py-3">
+          <div
+            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#5D99F4] text-sm font-bold text-white"
+            aria-hidden
+          >
+            {iniciais(displayName)}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-[#1A2D37]">{displayName}</p>
+            <p className="truncate text-xs text-[#8E9AAF]">{roleLabel}</p>
+          </div>
+        </div>
+      </div>
     </aside>
   )
 }
