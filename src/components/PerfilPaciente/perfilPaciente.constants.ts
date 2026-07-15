@@ -13,6 +13,3 @@ export const CORES_BADGE_DOENCA = [
   'bg-emerald-100 text-emerald-700 border-emerald-200',
   'bg-purple-100 text-purple-700 border-purple-200',
 ] as const
-
-export const CLASSE_BOTAO_VOLTAR_PERFIL =
-  'w-fit h-8 px-4 text-xs font-semibold bg-brand-50 border-brand-600 text-brand-700 shadow-sm hover:bg-brand-100'
