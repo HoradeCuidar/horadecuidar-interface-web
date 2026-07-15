@@ -24,6 +24,8 @@ type PerfilPacienteAbasProps = {
 
   onNovaPrescricao: () => void
 
+  onEditarPrescricao: (prescricaoId: string) => void
+
 }
 
 
@@ -76,6 +78,8 @@ export function PerfilPacienteAbas({
 
   onNovaPrescricao,
 
+  onEditarPrescricao,
+
 }: PerfilPacienteAbasProps) {
 
   return (
@@ -126,7 +130,11 @@ export function PerfilPacienteAbas({
 
       <TabsContent value="medicamentos">
 
-        <AbaMedicamentos pacienteId={paciente.id} onNovaPrescricao={onNovaPrescricao} />
+        <AbaMedicamentos
+          pacienteId={paciente.id}
+          onNovaPrescricao={onNovaPrescricao}
+          onEditarPrescricao={onEditarPrescricao}
+        />
 
       </TabsContent>
 

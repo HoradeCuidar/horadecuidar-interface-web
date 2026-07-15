@@ -7,5 +7,7 @@ export {
   formToPrescricaoRequest,
   responseToListagem,
   responsesToListagem,
+  responseToForm,
+  validarPrescricaoForm,
 } from './prescricaoMedicamento.mappers'
 
