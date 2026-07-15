@@ -29,4 +29,18 @@ export const API_ENDPOINTS = {
     deletar: (id: number) => `/api/doenca/${id}`,
     editar: (id: number) => `/api/doenca/${id}`,
   },
+  medicamento: {
+    buscarOuCriar: '/api/medicamento',
+    buscar: '/api/medicamento/buscar',
+  },
+  prescricaoMedicamento: {
+    base: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/prescricoes/medicamentos`,
+    porId: (pacienteId: number, prescricaoId: string) =>
+      `/api/pacientes/${pacienteId}/prescricoes/medicamentos/${prescricaoId}`,
+    historico: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/prescricoes/medicamentos/historico`,
+    relatorio: (pacienteId: number, prescricaoId: string) =>
+      `/api/pacientes/${pacienteId}/prescricoes/medicamentos/${prescricaoId}/relatorio`,
+  },
 }

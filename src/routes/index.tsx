@@ -1,6 +1,16 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuthLayout, MainLayout } from '@/layouts'
-import { Home, Login, Profissionais, Pacientes, PerfilPaciente, MeuPerfil, RecuperarSenha, ResetPassword } from '@/pages'
+import {
+  Home,
+  Login,
+  Profissionais,
+  Pacientes,
+  PerfilPaciente,
+  CadastroPrescricaoMedicamentos,
+  MeuPerfil,
+  RecuperarSenha,
+  ResetPassword,
+} from '@/pages'
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/login" replace /> },
@@ -33,6 +43,7 @@ const router = createBrowserRouter([
       { path: 'profissionais', element: <Profissionais /> },
       { path: 'pacientes', element: <Pacientes /> },
       { path: 'pacientes/:id', element: <PerfilPaciente /> },
+      { path: 'pacientes/:id/prescricoes/nova', element: <CadastroPrescricaoMedicamentos /> },
       { path: 'meu-perfil', element: <MeuPerfil /> },
     ],
   },
