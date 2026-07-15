@@ -46,6 +46,9 @@ export function PerfilPaciente() {
         abaAtiva={aba}
         onAbaChange={setAba}
         onNovaPrescricao={() => navigate(`/pacientes/${id}/prescricoes/nova`)}
+        onEditarPrescricao={(prescricaoId) =>
+          navigate(`/pacientes/${id}/prescricoes/${prescricaoId}/editar`)
+        }
       />
     </div>
   )

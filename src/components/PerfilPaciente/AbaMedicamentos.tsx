@@ -10,9 +10,14 @@ import { prescricaoMedicamentoService } from '@/services'
 type AbaMedicamentosProps = {
   pacienteId: number
   onNovaPrescricao: () => void
+  onEditarPrescricao: (prescricaoId: string) => void
 }
 
-export function AbaMedicamentos({ pacienteId, onNovaPrescricao }: AbaMedicamentosProps) {
+export function AbaMedicamentos({
+  pacienteId,
+  onNovaPrescricao,
+  onEditarPrescricao,
+}: AbaMedicamentosProps) {
   const [lista, setLista] = useState<PrescricaoListagem[]>([])
   const [loading, setLoading] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
@@ -102,7 +107,7 @@ export function AbaMedicamentos({ pacienteId, onNovaPrescricao }: AbaMedicamento
             prescricao={item}
             expandida={Boolean(expandidas[item.id])}
             onToggle={() => toggle(item.id)}
-            onEditar={() => toast.message('Edição de prescrição em breve.')}
+            onEditar={() => onEditarPrescricao(item.id)}
           />
         ))}
       </div>
