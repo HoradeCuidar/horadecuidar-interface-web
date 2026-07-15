@@ -10,12 +10,17 @@ import {
   type PrescricaoFormData,
 } from '@/components/PrescricaoMedicamentos'
 import { prescricaoMedicamentoService } from '@/services'
-import { validarPrescricaoForm } from '@/services/prescricaoMedicamento.mappers'
+import {
+  responseToForm,
+  validarPrescricaoForm,
+} from '@/services/prescricaoMedicamento.mappers'
 
-export function CadastroPrescricaoMedicamentos() {
-  const { id } = useParams<{ id: string }>()
+export function EditarPrescricaoMedicamentos() {
+  const { id, prescricaoId } = useParams<{ id: string; prescricaoId: string }>()
   const navigate = useNavigate()
-  const { paciente, loading, erro } = usePerfilPaciente(id)
+  const { paciente, loading: loadingPaciente, erro: erroPaciente } = usePerfilPaciente(id)
+  const [carregando, setCarregando] = useState(true)
+  const [erroCarregar, setErroCarregar] = useState<string | null>(null)
   const [salvando, setSalvando] = useState(false)
   const [form, setForm] = useState<PrescricaoFormData>({
     nomeParticipante: '',
@@ -25,15 +30,41 @@ export function CadastroPrescricaoMedicamentos() {
     medicamentos: [criarMedicamentoVazio()],
   })
 
-  useEffect(() => {
-    if (paciente?.nome) {
-      setForm((prev) => ({ ...prev, nomeParticipante: paciente.nome }))
-    }
-  }, [paciente?.nome])
-
   function voltarParaPerfil() {
     navigate(`/pacientes/${id}`, { state: { aba: 'medicamentos' } })
   }
+
+  useEffect(() => {
+    if (!id || !prescricaoId || loadingPaciente) return
+    if (erroPaciente || !paciente) {
+      setCarregando(false)
+      return
+    }
+
+    let ativo = true
+    setCarregando(true)
+    setErroCarregar(null)
+
+    prescricaoMedicamentoService
+      .buscarPorId(Number(id), prescricaoId)
+      .then((dto) => {
+        if (!ativo) return
+        setForm(responseToForm(dto, paciente.nome))
+      })
+      .catch((err) => {
+        if (!ativo) return
+        setErroCarregar(
+          err instanceof Error ? err.message : 'Erro ao carregar prescricao.'
+        )
+      })
+      .finally(() => {
+        if (ativo) setCarregando(false)
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [id, prescricaoId, paciente, loadingPaciente, erroPaciente])
 
   function handleChangeCampo<K extends keyof Omit<PrescricaoFormData, 'medicamentos'>>(
     campo: K,
@@ -76,25 +107,24 @@ export function CadastroPrescricaoMedicamentos() {
       toast.error(erroValidacao)
       return
     }
-
-    if (!id) {
-      toast.error('Paciente inválido.')
+    if (!id || !prescricaoId) {
+      toast.error('Dados invalidos.')
       return
     }
 
     setSalvando(true)
     try {
-      await prescricaoMedicamentoService.criar(Number(id), form)
-      toast.success('Prescrição salva com sucesso.')
+      await prescricaoMedicamentoService.atualizar(Number(id), prescricaoId, form)
+      toast.success('Prescrição atualizada com sucesso.')
       voltarParaPerfil()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao salvar a prescrição.')
+      toast.error(err instanceof Error ? err.message : 'Erro ao atualizar a prescrição.')
     } finally {
       setSalvando(false)
     }
   }
 
-  if (loading) {
+  if (loadingPaciente || carregando) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <p className="text-sm text-text-muted">Carregando...</p>
@@ -102,11 +132,20 @@ export function CadastroPrescricaoMedicamentos() {
     )
   }
 
-  if (erro || !paciente) {
+  if (erroPaciente || !paciente) {
     return (
       <div className="flex flex-col gap-4 px-8 pt-8">
         <BotaoVoltar onClick={() => navigate('/pacientes')}>Voltar</BotaoVoltar>
-        <p className="text-sm text-red-600">{erro ?? 'Paciente não encontrado.'}</p>
+        <p className="text-sm text-red-600">{erroPaciente ?? 'Paciente nao encontrado.'}</p>
+      </div>
+    )
+  }
+
+  if (erroCarregar) {
+    return (
+      <div className="flex flex-col gap-4 px-8 pt-8">
+        <BotaoVoltar onClick={voltarParaPerfil}>Voltar</BotaoVoltar>
+        <p className="text-sm text-red-600">{erroCarregar}</p>
       </div>
     )
   }
@@ -128,6 +167,9 @@ export function CadastroPrescricaoMedicamentos() {
             onSubmit={handleSubmit}
             onCancelar={voltarParaPerfil}
             salvando={salvando}
+            titulo="Editar Prescrição de Medicamentos"
+            subtitulo="Atualize os dados abaixo"
+            labelSalvar="Salvar alterações"
           />
         </div>
       </div>

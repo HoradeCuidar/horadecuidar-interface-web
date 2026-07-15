@@ -15,6 +15,9 @@ type FormularioPrescricaoProps = {
   onSubmit: (e: React.FormEvent) => void
   onCancelar: () => void
   salvando?: boolean
+  titulo?: string
+  subtitulo?: string
+  labelSalvar?: string
 }
 
 export function FormularioPrescricao({
@@ -26,6 +29,9 @@ export function FormularioPrescricao({
   onSubmit,
   onCancelar,
   salvando = false,
+  titulo = 'Prescrição de Medicamentos e Suplementação',
+  subtitulo = 'Preencha os dados abaixo',
+  labelSalvar = 'Salvar Prescrição',
 }: FormularioPrescricaoProps) {
   return (
     <form
@@ -34,9 +40,9 @@ export function FormularioPrescricao({
     >
       <div className="mb-5 sm:mb-6">
         <h2 className="font-heading text-lg font-bold text-brand-600 sm:text-xl md:text-2xl">
-          Prescrição de Medicamentos e Suplementação
+          {titulo}
         </h2>
-        <p className="mt-1 text-xs text-text-muted sm:text-sm">Preencha os dados abaixo</p>
+        <p className="mt-1 text-xs text-text-muted sm:text-sm">{subtitulo}</p>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -116,7 +122,7 @@ export function FormularioPrescricao({
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row-reverse sm:items-center">
         <Button type="submit" disabled={salvando} className="sm:min-w-[12rem]">
-          {salvando ? 'Salvando...' : 'Salvar Prescrição'}
+          {salvando ? 'Salvando...' : labelSalvar}
         </Button>
         <button
           type="button"
