@@ -135,3 +135,77 @@ export function responsesToListagem(
 ): PrescricaoListagem[] {
   return lista.map(responseToListagem)
 }
+
+function enumValue(valor: unknown): string {
+  if (valor == null) return ''
+  if (typeof valor === 'string') return valor
+  if (typeof valor === 'object' && 'name' in valor) {
+    return String((valor as { name: string }).name)
+  }
+  return String(valor)
+}
+
+export function responseToForm(
+  dto: PrescricaoMedicamentoResponse,
+  nomeParticipante: string
+): PrescricaoFormData {
+  const medicacoes = dto.medicacoes ?? []
+  return {
+    nomeParticipante,
+    dataInicio: toIsoDate(dto.dataInicio),
+    dataTermino: toIsoDate(dto.dataFim),
+    observacaoGeral: dto.observacao ?? '',
+    medicamentos:
+      medicacoes.length > 0
+        ? medicacoes.map((item) => ({
+            id: crypto.randomUUID(),
+            nome: item.nomeMedicamento ?? '',
+            dosagem: item.dosagemValor != null ? String(item.dosagemValor) : '',
+            unidadeDosagem: enumValue(item.dosagemUnidade),
+            viaAdministracao: enumValue(item.viaAdministracao),
+            frequenciaVezes: String(item.quantidadeDoses ?? 1),
+            frequenciaIntervalo: String(item.intervaloValor ?? 1),
+            frequenciaUnidade: enumValue(item.intervaloTipo),
+            observacao: item.observacao ?? '',
+          }))
+        : [
+            {
+              id: crypto.randomUUID(),
+              nome: '',
+              dosagem: '',
+              unidadeDosagem: '',
+              viaAdministracao: '',
+              frequenciaVezes: '1',
+              frequenciaIntervalo: '1',
+              frequenciaUnidade: '',
+              observacao: '',
+            },
+          ],
+  }
+}
+
+export function validarPrescricaoForm(form: PrescricaoFormData): string | null {
+  if (!form.dataInicio) return 'Informe a data de início.'
+  if (!form.dataTermino) return 'Informe a data de término.'
+  if (form.dataTermino < form.dataInicio) {
+    return 'A data de término deve ser posterior à data de início.'
+  }
+  for (const [i, med] of form.medicamentos.entries()) {
+    if (!med.nome.trim()) {
+      return `Informe o nome do medicamento ${i + 1}.`
+    }
+    if (!med.dosagem.trim() || Number.isNaN(Number(med.dosagem.replace(',', '.')))) {
+      return `Informe a dosagem do medicamento ${i + 1}.`
+    }
+    if (!med.unidadeDosagem) {
+      return `Selecione a unidade de dosagem do medicamento ${i + 1}.`
+    }
+    if (!med.viaAdministracao) {
+      return `Selecione a via de administração do medicamento ${i + 1}.`
+    }
+    if (!med.frequenciaUnidade) {
+      return `Selecione a unidade de frequência do medicamento ${i + 1}.`
+    }
+  }
+  return null
+}
