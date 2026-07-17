@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   FiGrid,
@@ -8,8 +8,10 @@ import {
 } from 'react-icons/fi'
 import { authService } from '@/services'
 import { LogoutButton } from '@/components/LogoutButton'
+import { Avatar } from '@/components'
 import logo from '@/assets/logo.svg'
 import type { Role } from '@/types/auth'
+import { USER_UPDATED_EVENT } from '@/types/auth'
 
 type NavItem = {
   to: string
@@ -27,6 +29,7 @@ const navPorRole: Record<Role, NavItem[]> = {
   ADMIN: [
     { to: '/home', label: 'Dashboard', icon: FiGrid },
     { to: '/profissionais', label: 'Profissionais', icon: FiBriefcase },
+    { to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PROFISSIONAL_DA_SAUDE: [
     { to: '/home', label: 'Dashboard', icon: FiGrid },
@@ -39,25 +42,28 @@ const navPorRole: Record<Role, NavItem[]> = {
   ],
 }
 
-function iniciais(nome: string): string {
-  const parts = nome.trim().split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return '?'
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-}
-
 type SidebarProps = {
   onNavigate?: () => void
 }
 
 export function Sidebar({ onNavigate }: SidebarProps) {
-  const user = authService.getUser()
+  const [user, setUser] = useState(() => authService.getUser())
+
+  useEffect(() => {
+    function syncUser() {
+      setUser(authService.getUser())
+    }
+    window.addEventListener(USER_UPDATED_EVENT, syncUser)
+    return () => window.removeEventListener(USER_UPDATED_EVENT, syncUser)
+  }, [])
+
   const navItems = useMemo(
     () => (user?.role ? navPorRole[user.role] : navPorRole.ADMIN),
     [user?.role]
   )
-  const displayName = user?.username ?? 'Usuário'
+  const displayName = user?.nome?.trim() || user?.username || 'Usuário'
   const roleLabel = user?.role ? ROLE_LABEL[user.role] : 'Usuário'
+  const fotoUrl = user?.fotoDePerfil ?? null
 
   return (
     <aside className="flex h-full w-full flex-col border-r border-[#E5E7EB] bg-white">
@@ -96,18 +102,27 @@ export function Sidebar({ onNavigate }: SidebarProps) {
       <div className="mt-auto flex flex-col gap-3 px-3 pb-4 pt-2 sm:px-4 sm:pb-5">
         <LogoutButton onAfterLogout={onNavigate} />
 
-        <div className="flex items-center gap-3 rounded-xl bg-[#F4F6F8] px-3 py-3">
-          <div
-            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#5D99F4] text-sm font-bold text-white"
-            aria-hidden
-          >
-            {iniciais(displayName)}
-          </div>
+        <NavLink
+          to="/meu-perfil"
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            `flex items-center gap-3 rounded-xl px-3 py-3 transition ${
+              isActive
+                ? 'bg-[#EBF2FF] ring-1 ring-[#5D99F4]/30'
+                : 'bg-[#F4F6F8] hover:bg-zinc-100'
+            }`
+          }
+        >
+          <Avatar
+            name={displayName}
+            src={fotoUrl}
+            className="size-10 text-sm"
+          />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-[#1A2D37]">{displayName}</p>
             <p className="truncate text-xs text-[#8E9AAF]">{roleLabel}</p>
           </div>
-        </div>
+        </NavLink>
       </div>
     </aside>
   )
