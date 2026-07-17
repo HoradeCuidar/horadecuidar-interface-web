@@ -1,11 +1,15 @@
 ﻿import { useCallback, useEffect, useState } from 'react'
-import { FiArrowRight } from 'react-icons/fi'
-import { toast } from 'sonner'
+import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import { EmptyState, ButtonCadastro } from '@/components'
 import emptyMedicamentosSvg from '@/assets/empty-medicamentos.svg'
 import { CardPrescricao } from '@/components/PrescricaoMedicamentos/CardPrescricao'
 import type { PrescricaoListagem } from '@/components/PrescricaoMedicamentos/prescricaoListagem.types'
 import { prescricaoMedicamentoService } from '@/services'
+
+type VisaoMedicamentos = 'ativas' | 'historico'
+
+const CLASSE_BOTAO_VISAO =
+  'inline-flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-3.5 py-2 text-sm font-medium text-[#5D99F4] transition hover:bg-brand-100 hover:text-brand-600'
 
 type AbaMedicamentosProps = {
   pacienteId: number
@@ -18,6 +22,7 @@ export function AbaMedicamentos({
   onNovaPrescricao,
   onEditarPrescricao,
 }: AbaMedicamentosProps) {
+  const [visao, setVisao] = useState<VisaoMedicamentos>('ativas')
   const [lista, setLista] = useState<PrescricaoListagem[]>([])
   const [loading, setLoading] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
@@ -27,22 +32,31 @@ export function AbaMedicamentos({
     setLoading(true)
     setErro(null)
     try {
-      const dados = await prescricaoMedicamentoService.listarAtivas(pacienteId)
+      const dados =
+        visao === 'ativas'
+          ? await prescricaoMedicamentoService.listarAtivas(pacienteId)
+          : await prescricaoMedicamentoService.listarHistorico(pacienteId)
       setLista(dados)
-      setExpandidas((prev) => {
+      setExpandidas(() => {
         const proximo: Record<string, boolean> = {}
         for (const p of dados) {
-          proximo[p.id] = prev[p.id] ?? p.status === 'ativa'
+          proximo[p.id] = p.status === 'ativa'
         }
         return proximo
       })
     } catch (err) {
-      setErro(err instanceof Error ? err.message : 'Erro ao carregar prescrições.')
+      setErro(
+        err instanceof Error
+          ? err.message
+          : visao === 'ativas'
+            ? 'Erro ao carregar prescrições.'
+            : 'Erro ao carregar histórico.'
+      )
       setLista([])
     } finally {
       setLoading(false)
     }
-  }, [pacienteId])
+  }, [pacienteId, visao])
 
   useEffect(() => {
     void carregar()
@@ -55,7 +69,9 @@ export function AbaMedicamentos({
   if (loading) {
     return (
       <div className="flex min-h-[12rem] items-center justify-center rounded-2xl border border-zinc-200 bg-white">
-        <p className="text-sm text-text-muted">Carregando prescrições...</p>
+        <p className="text-sm text-text-muted">
+          {visao === 'ativas' ? 'Carregando prescrições...' : 'Carregando histórico...'}
+        </p>
       </div>
     )
   }
@@ -77,27 +93,80 @@ export function AbaMedicamentos({
 
   if (lista.length === 0) {
     return (
-      <EmptyState
-        illustration={
-          <img
-            src={emptyMedicamentosSvg}
-            alt=""
-            className="mx-auto max-h-[14rem] w-auto sm:max-h-[20rem]"
-          />
-        }
-        title="Nenhuma prescrição de medicamento encontrada!"
-        description="Adicione uma nova prescrição para acompanhar o tratamento do paciente."
-        className="min-h-0 rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-sm"
-      >
-        <ButtonCadastro label="Nova prescrição" onClick={onNovaPrescricao} />
-      </EmptyState>
+      <div className="flex flex-col gap-4">
+        {visao === 'historico' && (
+          <div className="flex justify-start">
+            <button
+              type="button"
+              onClick={() => setVisao('ativas')}
+              className={CLASSE_BOTAO_VISAO}
+            >
+              <FiArrowLeft className="size-4" aria-hidden />
+              Voltar às prescrições ativas
+            </button>
+          </div>
+        )}
+
+        <EmptyState
+          illustration={
+            <img
+              src={emptyMedicamentosSvg}
+              alt=""
+              className="mx-auto max-h-[14rem] w-auto sm:max-h-[20rem]"
+            />
+          }
+          title={
+            visao === 'ativas'
+              ? 'Nenhuma prescrição de medicamento encontrada!'
+              : 'Nenhuma prescrição no histórico!'
+          }
+          description={
+            visao === 'ativas'
+              ? 'Adicione uma nova prescrição para acompanhar o tratamento do paciente.'
+              : 'Prescrições encerradas ou vencidas aparecerão aqui.'
+          }
+          className="min-h-0 rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-sm"
+        >
+          {visao === 'ativas' ? (
+            <ButtonCadastro label="Nova prescrição" onClick={onNovaPrescricao} />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setVisao('ativas')}
+              className={CLASSE_BOTAO_VISAO}
+            >
+              <FiArrowLeft className="size-4" aria-hidden />
+              Voltar às prescrições ativas
+            </button>
+          )}
+        </EmptyState>
+      </div>
     )
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <ButtonCadastro label="Nova prescrição" onClick={onNovaPrescricao} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {visao === 'historico' ? (
+          <button
+            type="button"
+            onClick={() => setVisao('ativas')}
+            className={CLASSE_BOTAO_VISAO}
+          >
+            <FiArrowLeft className="size-4" aria-hidden />
+            Voltar às prescrições ativas
+          </button>
+        ) : (
+          <p className="text-sm font-medium text-zinc-600">Prescrições ativas</p>
+        )}
+
+        {visao === 'ativas' && (
+          <ButtonCadastro label="Nova prescrição" onClick={onNovaPrescricao} />
+        )}
+
+        {visao === 'historico' && (
+          <p className="text-sm font-medium text-zinc-600">Histórico de prescrições</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-3">
@@ -107,21 +176,25 @@ export function AbaMedicamentos({
             prescricao={item}
             expandida={Boolean(expandidas[item.id])}
             onToggle={() => toggle(item.id)}
-            onEditar={() => onEditarPrescricao(item.id)}
+            onEditar={
+              visao === 'ativas' ? () => onEditarPrescricao(item.id) : undefined
+            }
           />
         ))}
       </div>
 
-      <div className="flex justify-center pt-2">
-        <button
-          type="button"
-          onClick={() => toast.message('Histórico completo em breve.')}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-500 transition hover:text-brand-600"
-        >
-          Ver histórico completo de prescrições
-          <FiArrowRight className="size-4" aria-hidden />
-        </button>
-      </div>
+      {visao === 'ativas' && (
+        <div className="flex justify-center pt-2">
+          <button
+            type="button"
+            onClick={() => setVisao('historico')}
+            className={CLASSE_BOTAO_VISAO}
+          >
+            Ver histórico completo de prescrições
+            <FiArrowRight className="size-4" aria-hidden />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
