@@ -1,8 +1,14 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/config/api'
 import type { AuthResponse, UserStorage } from '@/types'
+import { USER_UPDATED_EVENT } from '@/types/auth'
 
 const TOKEN_KEY = 'hdc_token'
 const USER_KEY = 'hdc_user'
+
+function persistUser(user: UserStorage): void {
+  localStorage.setItem(USER_KEY, JSON.stringify(user))
+  window.dispatchEvent(new Event(USER_UPDATED_EVENT))
+}
 
 export const authService = {
   async login(username: string, senha: string): Promise<AuthResponse> {
@@ -31,14 +37,11 @@ export const authService = {
     const data: AuthResponse = await res.json()
 
     localStorage.setItem(TOKEN_KEY, data.token)
-    localStorage.setItem(
-      USER_KEY,
-      JSON.stringify({
-        id: data.id,
-        role: data.role,
-        username,
-      })
-    )
+    persistUser({
+      id: data.id,
+      role: data.role,
+      username,
+    })
 
     return data
   },
@@ -46,6 +49,14 @@ export const authService = {
   logout(): void {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(USER_KEY)
+  },
+
+  updateUser(partial: Partial<Pick<UserStorage, 'nome' | 'fotoDePerfil' | 'username'>>): UserStorage | null {
+    const current = this.getUser()
+    if (!current) return null
+    const next: UserStorage = { ...current, ...partial }
+    persistUser(next)
+    return next
   },
 
   getToken(): string | null {

@@ -46,3 +46,28 @@ export function validarEdicaoProfissional(dados: Record<string, string>): string
   }
   return null
 }
+
+export function validarMeuPerfilProfissional(dados: Record<string, string>): string | null {
+  if (!(dados.nome?.trim())) return 'Nome é obrigatório.'
+  if (!(dados.email?.trim())) return 'E-mail é obrigatório.'
+  const tel = onlyDigits(dados.telefone ?? '')
+  if (tel.length < 10 || tel.length > 11) {
+    return 'Telefone deve conter 10 ou 11 dígitos.'
+  }
+  const dataStr = dateToApi(dados.dataNascimento ?? '')
+  if (!dataStr) {
+    return 'Data de nascimento inválida. Use dd/mm/yyyy.'
+  }
+  const estadoStr = (dados.estado?.trim() ?? '').slice(0, 2).toUpperCase()
+  if (estadoStr.length !== 2) {
+    return 'Estado deve conter 2 letras (ex.: CE).'
+  }
+  if (!dados.genero?.trim()) {
+    return 'Selecione o gênero.'
+  }
+  if (!(dados.rua?.trim())) return 'Rua é obrigatória.'
+  if (!(dados.bairro?.trim())) return 'Bairro é obrigatório.'
+  if (!(dados.cidade?.trim())) return 'Cidade é obrigatória.'
+  if (!(dados.numeroCasa?.trim())) return 'Número da casa é obrigatório.'
+  return null
+}

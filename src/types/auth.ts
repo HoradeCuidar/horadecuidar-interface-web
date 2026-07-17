@@ -10,4 +10,8 @@ export interface UserStorage {
   id: number
   role: Role
   username: string
+  nome?: string
+  fotoDePerfil?: string | null
 }
+
+export const USER_UPDATED_EVENT = 'hdc-user-updated'

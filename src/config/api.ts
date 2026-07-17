@@ -11,9 +11,13 @@ export const API_ENDPOINTS = {
     visualizarTodos: '/api/profissional/visualizarTodos',
     buscar: '/api/profissional/buscar',
     detalhes: (id: number) => `/api/profissional/visualizar/${id}`,
+    perfil: '/api/profissional/perfil',
     ativar: (id: number) => `/api/profissional/ativar/${id}`,
     inativar: (id: number) => `/api/profissional/inativar/${id}`,
     editar: (id: number) => `/api/profissional/editar/${id}`,
+  },
+  upload: {
+    fotoPerfil: '/api/upload/foto-perfil',
   },
   paciente: {
     cadastrar: '/api/paciente',
