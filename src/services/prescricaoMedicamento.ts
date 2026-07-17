@@ -51,7 +51,7 @@ export const prescricaoMedicamentoService = {
     const res = await fetch(url, { method: 'GET', headers: authHeaders() })
     const data = await parseJson<PrescricaoMedicamentoResponse[]>(
       res,
-      'Erro ao listar historico de prescricoes.'
+      'Erro ao listar histórico de prescrições.'
     )
     return responsesToListagem(data ?? [])
   },
