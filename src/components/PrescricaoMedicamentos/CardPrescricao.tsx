@@ -1,4 +1,4 @@
-import { FiArrowRight, FiChevronDown, FiEdit2 } from 'react-icons/fi'
+import { FiArrowRight, FiChevronDown, FiEdit2, FiXCircle } from 'react-icons/fi'
 import { BiCapsule } from 'react-icons/bi'
 import {
   detalhesMedicamento,
@@ -11,6 +11,7 @@ type CardPrescricaoProps = {
   expandida: boolean
   onToggle: () => void
   onEditar?: () => void
+  onEncerrar?: () => void
 }
 
 export function CardPrescricao({
@@ -18,6 +19,7 @@ export function CardPrescricao({
   expandida,
   onToggle,
   onEditar,
+  onEncerrar,
 }: CardPrescricaoProps) {
   const isAtiva = prescricao.status === 'ativa'
   const periodo = formatarPeriodoPrescricao(prescricao.dataInicio, prescricao.dataTermino)
@@ -49,6 +51,17 @@ export function CardPrescricao({
               aria-label="Editar prescrição"
             >
               <FiEdit2 className="size-4" aria-hidden />
+            </button>
+          )}
+          {isAtiva && onEncerrar && (
+            <button
+              type="button"
+              onClick={onEncerrar}
+              className="rounded-full p-1.5 text-red-600 transition hover:bg-red-50 hover:text-red-700"
+              title="Encerrar prescrição"
+              aria-label="Encerrar prescrição"
+            >
+              <FiXCircle className="size-4" aria-hidden />
             </button>
           )}
           <button
