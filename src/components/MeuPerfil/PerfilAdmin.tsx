@@ -29,9 +29,6 @@ export function PerfilAdmin({
       />
 
       <div className="mt-4 border-t border-zinc-100 pt-3">
-        <p className="mb-2 text-sm text-text-muted">
-          A edição de dados cadastrais do administrador ainda não está disponível na API.
-        </p>
         <dl className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
           <CampoDado label="Username" valor={valorOuTraco(username)} />
           <CampoDado label="Perfil" valor={ROLE_LABEL[role]} />
