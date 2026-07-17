@@ -1,7 +1,11 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/config/api'
 import { authService } from './auth'
-import { formToPayload } from './profissional.mappers'
-import { validarCadastroProfissional, validarEdicaoProfissional } from './profissional.validation'
+import { formToMeuPerfilPayload, formToPayload } from './profissional.mappers'
+import {
+  validarCadastroProfissional,
+  validarEdicaoProfissional,
+  validarMeuPerfilProfissional,
+} from './profissional.validation'
 import { parseApiError } from './apiErrors'
 
 export type { CadastroProfissionalPayload } from './profissional.mappers'
@@ -91,6 +95,7 @@ export const profissionalService = {
   ): Promise<{
     id: number
     nome: string
+    username?: string
     email?: string
     telefone?: string
     dataNascimento?: string
@@ -101,6 +106,7 @@ export const profissionalService = {
     bairro?: string
     cidade?: string
     estado?: string
+    fotoDePerfil?: string | null
   }> {
     const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.detalhes(id)}`
     const token = authService.getToken()
@@ -131,7 +137,42 @@ export const profissionalService = {
     return {
       ...data,
       dataNascimento: data.dataDeNascimento ?? data.dataNascimento,
+      fotoDePerfil: data.fotoDePerfil ?? null,
     }
+  },
+
+  async atualizarMeuPerfil(dados: Record<string, string>): Promise<{
+    id: number
+    nome: string
+    email?: string
+    fotoDePerfil?: string | null
+  }> {
+    const token = authService.getToken()
+    if (!token) {
+      throw new Error('Faça login para atualizar seu perfil.')
+    }
+
+    const erroValidacao = validarMeuPerfilProfissional(dados)
+    if (erroValidacao) throw new Error(erroValidacao)
+
+    const payload = formToMeuPerfilPayload(dados)
+    const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.perfil}`
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(parseApiError(text, 'Erro ao atualizar perfil.'))
+    }
+
+    return res.json()
   },
 
   async ativar(id: number): Promise<void> {

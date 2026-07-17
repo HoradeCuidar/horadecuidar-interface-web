@@ -59,3 +59,34 @@ export function formToPayload(dados: Record<string, string>): CadastroProfission
     email: dados.email?.trim() ?? '',
   }
 }
+
+export type MeuPerfilProfissionalPayload = {
+  nome: string
+  email: string
+  telefone: string
+  genero: CadastroProfissionalPayload['genero']
+  dataDeNascimento: string
+  rua: string
+  bairro: string
+  estado: string
+  cidade: string
+  numeroDaCasa: string
+}
+
+export function formToMeuPerfilPayload(
+  dados: Record<string, string>
+): MeuPerfilProfissionalPayload {
+  const full = formToPayload(dados)
+  return {
+    nome: full.nome,
+    email: full.email,
+    telefone: full.telefone,
+    genero: full.genero,
+    dataDeNascimento: full.dataDeNascimento,
+    rua: full.rua,
+    bairro: full.bairro,
+    estado: full.estado,
+    cidade: full.cidade,
+    numeroDaCasa: full.numeroDaCasa,
+  }
+}
