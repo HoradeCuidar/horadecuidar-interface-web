@@ -111,7 +111,7 @@ export const prescricaoMedicamentoService = {
     const res = await fetch(url, { method: 'PATCH', headers: authHeaders() })
     return parseJson<PrescricaoMedicamentoResponse>(
       res,
-      'Erro ao alterar status da prescricao.'
+      'Erro ao alterar status da prescrição.'
     )
   },
 
