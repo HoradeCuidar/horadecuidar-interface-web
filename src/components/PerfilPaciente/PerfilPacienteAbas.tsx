@@ -5,6 +5,7 @@ import type { PacienteDetalhes } from '@/services/paciente.mappers'
 import { AbaDadosParticipante } from './AbaDadosParticipante'
 
 import { AbaMedicamentos } from './AbaMedicamentos'
+import { AbaExercicios } from './AbaExercicios'
 
 import { ABAS_PERFIL_PACIENTE } from './perfilPaciente.constants'
 
@@ -25,6 +26,8 @@ type PerfilPacienteAbasProps = {
   onNovaPrescricao: () => void
 
   onEditarPrescricao: (prescricaoId: string) => void
+
+  onNovaPrescricaoExercicio: () => void
 
 }
 
@@ -79,6 +82,8 @@ export function PerfilPacienteAbas({
   onNovaPrescricao,
 
   onEditarPrescricao,
+
+  onNovaPrescricaoExercicio,
 
 }: PerfilPacienteAbasProps) {
 
@@ -153,12 +158,10 @@ export function PerfilPacienteAbas({
 
 
       <TabsContent value="exercicios">
-
-        <PainelAba>
-
-          <ConteudoEmBreve titulo="Prescrições de exercícios" />
-
-        </PainelAba>
+        <AbaExercicios
+          pacienteId={paciente.id}
+          onNovaPrescricao={onNovaPrescricaoExercicio}
+        />
 
       </TabsContent>
 

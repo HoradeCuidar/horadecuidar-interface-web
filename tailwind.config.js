@@ -35,7 +35,7 @@ export default {
     
       fontFamily: {
         sans: [
-          'Poppins',
+          'Inter',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -45,8 +45,9 @@ export default {
           'Arial',
           'sans-serif',
         ],
-        heading: ['Poppins', 'system-ui', 'sans-serif'],
-        body: ['Poppins', 'system-ui', 'sans-serif'],
+        heading: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'ui-monospace', 'monospace'],
       },
     },
   },
