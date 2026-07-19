@@ -47,4 +47,8 @@ export const API_ENDPOINTS = {
     relatorio: (pacienteId: number, prescricaoId: string) =>
       `/api/pacientes/${pacienteId}/prescricoes/medicamentos/${prescricaoId}/relatorio`,
   },
+  prescricaoExercicio: {
+    base: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/prescricoes/exercicios`,
+  },
 }
