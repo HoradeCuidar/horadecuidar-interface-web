@@ -4,7 +4,6 @@ export const ABAS_PERFIL_PACIENTE: AbaPerfilConfig[] = [
   { id: 'dados', label: 'Dados do Participante' },
   { id: 'medicamentos', label: 'Medicamentos' },
   { id: 'alimentacao', label: 'Alimentação' },
-  { id: 'exercicios', label: 'Exercícios' },
 ]
 
 export const CORES_BADGE_DOENCA = [
