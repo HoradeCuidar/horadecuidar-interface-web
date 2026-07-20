@@ -8,10 +8,11 @@ import {
   PerfilPaciente,
   CadastroPrescricaoMedicamentos,
   EditarPrescricaoMedicamentos,
-  CadastroPrescricaoExercicios,
   MeuPerfil,
   RecuperarSenha,
   ResetPassword,
+  Atividades,
+  CadastroAtividade,
 } from '@/pages'
 
 const router = createBrowserRouter([
@@ -47,7 +48,8 @@ const router = createBrowserRouter([
       { path: 'pacientes/:id', element: <PerfilPaciente /> },
       { path: 'pacientes/:id/prescricoes/nova', element: <CadastroPrescricaoMedicamentos /> },
       { path: 'pacientes/:id/prescricoes/:prescricaoId/editar', element: <EditarPrescricaoMedicamentos /> },
-      { path: 'pacientes/:id/prescricoes/exercicios/nova', element: <CadastroPrescricaoExercicios /> },
+      { path: 'atividades', element: <Atividades /> },
+      { path: 'atividades/nova', element: <CadastroAtividade /> },
       { path: 'meu-perfil', element: <MeuPerfil /> },
     ],
   },
