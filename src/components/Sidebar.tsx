@@ -6,6 +6,7 @@ import {
   FiUser,
   FiBriefcase,
 } from 'react-icons/fi'
+import { LuDumbbell } from 'react-icons/lu'
 import { authService } from '@/services'
 import { LogoutButton } from '@/components/LogoutButton'
 import { Avatar } from '@/components'
@@ -29,11 +30,13 @@ const navPorRole: Record<Role, NavItem[]> = {
   ADMIN: [
     { to: '/home', label: 'Dashboard', icon: FiGrid },
     { to: '/profissionais', label: 'Profissionais', icon: FiBriefcase },
+    { to: '/atividades', label: 'Exercícios', icon: LuDumbbell },
     { to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PROFISSIONAL_DA_SAUDE: [
     { to: '/home', label: 'Dashboard', icon: FiGrid },
     { to: '/pacientes', label: 'Pacientes', icon: FiUsers },
+    { to: '/atividades', label: 'Exercícios', icon: LuDumbbell },
     { to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PACIENTE: [
