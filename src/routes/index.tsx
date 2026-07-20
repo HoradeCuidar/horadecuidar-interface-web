@@ -13,6 +13,7 @@ import {
   ResetPassword,
   Atividades,
   CadastroAtividade,
+  EditarAtividade,
 } from '@/pages'
 
 const router = createBrowserRouter([
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
       { path: 'pacientes/:id/prescricoes/:prescricaoId/editar', element: <EditarPrescricaoMedicamentos /> },
       { path: 'atividades', element: <Atividades /> },
       { path: 'atividades/nova', element: <CadastroAtividade /> },
+      { path: 'atividades/:id/editar', element: <EditarAtividade /> },
       { path: 'meu-perfil', element: <MeuPerfil /> },
     ],
   },

@@ -30,6 +30,19 @@ async function parseJson<T>(res: Response, fallback: string): Promise<T> {
   return res.json() as Promise<T>
 }
 
+function montarFormData(
+  dados: OrientacaoFuncionalRequest,
+  imagem?: File | null
+): FormData {
+  const formData = new FormData()
+  formData.append(
+    'dados',
+    new Blob([JSON.stringify(dados)], { type: 'application/json' })
+  )
+  if (imagem) formData.append('imagem', imagem)
+  return formData
+}
+
 export const orientacaoFuncionalService = {
   async listar(
     page = 0,
@@ -43,26 +56,45 @@ export const orientacaoFuncionalService = {
     )
   },
 
+  async buscarPorId(id: number): Promise<OrientacaoFuncionalResponse> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.orientacaoFuncional.porId(id)}`
+    const res = await fetch(url, { method: 'GET', headers: authHeaders() })
+    return parseJson<OrientacaoFuncionalResponse>(
+      res,
+      'Erro ao buscar orientação funcional.'
+    )
+  },
+
   async criar(
     dados: OrientacaoFuncionalRequest,
     imagem?: File | null
   ): Promise<OrientacaoFuncionalResponse> {
-    const formData = new FormData()
-    formData.append(
-      'dados',
-      new Blob([JSON.stringify(dados)], { type: 'application/json' })
-    )
-    if (imagem) formData.append('imagem', imagem)
-
     const url = `${API_BASE_URL}${API_ENDPOINTS.orientacaoFuncional.base}`
     const res = await fetch(url, {
       method: 'POST',
       headers: authHeadersNoContentType(),
-      body: formData,
+      body: montarFormData(dados, imagem),
     })
     return parseJson<OrientacaoFuncionalResponse>(
       res,
       'Erro ao cadastrar orientação funcional.'
+    )
+  },
+
+  async atualizar(
+    id: number,
+    dados: OrientacaoFuncionalRequest,
+    imagem?: File | null
+  ): Promise<OrientacaoFuncionalResponse> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.orientacaoFuncional.porId(id)}`
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: authHeadersNoContentType(),
+      body: montarFormData(dados, imagem),
+    })
+    return parseJson<OrientacaoFuncionalResponse>(
+      res,
+      'Erro ao atualizar orientação funcional.'
     )
   },
 }

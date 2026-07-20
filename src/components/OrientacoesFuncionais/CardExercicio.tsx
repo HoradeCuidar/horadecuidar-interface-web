@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom'
+import { FiEdit2 } from 'react-icons/fi'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import type { OrientacaoFuncionalResponse } from '@/services/orientacaoFuncional.types'
 import { formatarData } from './orientacaoFuncional.utils'
 
@@ -7,6 +10,8 @@ type CardExercicioProps = {
 }
 
 export function CardExercicio({ item }: CardExercicioProps) {
+  const navigate = useNavigate()
+
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
       {item.urlImagem && (
@@ -22,15 +27,27 @@ export function CardExercicio({ item }: CardExercicioProps) {
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-sm font-semibold text-zinc-800">{item.nome}</h3>
-          <Badge
-            className={`shrink-0 border-0 px-2.5 py-0.5 text-[11px] font-medium ${
-              item.ativo
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-zinc-100 text-zinc-500'
-            }`}
-          >
-            {item.ativo ? 'Ativa' : 'Inativa'}
-          </Badge>
+          <div className="flex shrink-0 items-center gap-1">
+            <Badge
+              className={`border-0 px-2.5 py-0.5 text-[11px] font-medium ${
+                item.ativo
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'bg-zinc-100 text-zinc-500'
+              }`}
+            >
+              {item.ativo ? 'Ativa' : 'Inativa'}
+            </Badge>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-zinc-400 hover:bg-blue-50 hover:text-blue-600"
+              title="Editar exercício"
+              onClick={() => navigate(`/atividades/${item.id}/editar`)}
+            >
+              <FiEdit2 className="size-4" aria-hidden />
+            </Button>
+          </div>
         </div>
 
         {item.descricao && (
@@ -59,9 +76,7 @@ export function CardExercicio({ item }: CardExercicioProps) {
         )}
 
         <div className="mt-auto space-y-0.5 border-t border-zinc-100 pt-2">
-          <p className="text-[11px] text-zinc-400">
-            {item.responsavel.nome}
-          </p>
+          <p className="text-[11px] text-zinc-400">{item.responsavel.nome}</p>
           <p className="text-[11px] text-zinc-400">
             Cadastrado em {formatarData(item.dataCriacao)}
           </p>
