@@ -47,8 +47,13 @@ export const API_ENDPOINTS = {
     relatorio: (pacienteId: number, prescricaoId: string) =>
       `/api/pacientes/${pacienteId}/prescricoes/medicamentos/${prescricaoId}/relatorio`,
   },
-  prescricaoExercicio: {
-    base: (pacienteId: number) =>
-      `/api/pacientes/${pacienteId}/prescricoes/exercicios`,
+  orientacaoFuncional: {
+    base: '/api/orientacoes-funcionais',
+    porId: (id: number) => `/api/orientacoes-funcionais/${id}`,
+    status: (id: number) => `/api/orientacoes-funcionais/${id}/status`,
+  },
+  tagFuncional: {
+    base: '/api/tags-funcionais',
+    porId: (id: number) => `/api/tags-funcionais/${id}`,
   },
 }

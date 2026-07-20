@@ -3,7 +3,8 @@ export { doencaService } from './doenca'
 export { profissionalService } from './profissional'
 export { pacienteService } from './paciente'
 export { prescricaoMedicamentoService } from './prescricaoMedicamento'
-export { prescricaoExercicioService } from './prescricaoExercicio'
+export { orientacaoFuncionalService } from './orientacaoFuncional'
+export { tagFuncionalService } from './tagFuncional'
 export { uploadService } from './upload'
 
 export {
@@ -13,9 +14,3 @@ export {
   responseToForm,
   validarPrescricaoForm,
 } from './prescricaoMedicamento.mappers'
-
-export {
-  formToPrescricaoExercicioRequest,
-  validarPrescricaoExercicioForm,
-} from './prescricaoExercicio.mappers'
-
