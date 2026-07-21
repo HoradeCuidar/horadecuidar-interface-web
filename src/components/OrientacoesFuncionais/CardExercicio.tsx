@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-import { FiEdit2 } from 'react-icons/fi'
+﻿import { useNavigate } from 'react-router-dom'
+import { FiEdit2, FiTrash2, FiSlash, FiCheckCircle } from 'react-icons/fi'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { OrientacaoFuncionalResponse } from '@/services/orientacaoFuncional.types'
@@ -7,9 +7,15 @@ import { formatarData } from './orientacaoFuncional.utils'
 
 type CardExercicioProps = {
   item: OrientacaoFuncionalResponse
+  onAlterarStatus: (item: OrientacaoFuncionalResponse) => void
+  onExcluir: (item: OrientacaoFuncionalResponse) => void
 }
 
-export function CardExercicio({ item }: CardExercicioProps) {
+export function CardExercicio({
+  item,
+  onAlterarStatus,
+  onExcluir,
+}: CardExercicioProps) {
   const navigate = useNavigate()
 
   return (
@@ -27,7 +33,7 @@ export function CardExercicio({ item }: CardExercicioProps) {
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-sm font-semibold text-zinc-800">{item.nome}</h3>
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex shrink-0 items-center gap-0.5">
             <Badge
               className={`border-0 px-2.5 py-0.5 text-[11px] font-medium ${
                 item.ativo
@@ -46,6 +52,34 @@ export function CardExercicio({ item }: CardExercicioProps) {
               onClick={() => navigate(`/atividades/${item.id}/editar`)}
             >
               <FiEdit2 className="size-4" aria-hidden />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className={`h-8 w-8 ${
+                item.ativo
+                  ? 'text-zinc-400 hover:bg-amber-50 hover:text-amber-600'
+                  : 'text-zinc-400 hover:bg-emerald-50 hover:text-emerald-600'
+              }`}
+              title={item.ativo ? 'Inativar exercício' : 'Ativar exercício'}
+              onClick={() => onAlterarStatus(item)}
+            >
+              {item.ativo ? (
+                <FiSlash className="size-4" aria-hidden />
+              ) : (
+                <FiCheckCircle className="size-4" aria-hidden />
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-zinc-400 hover:bg-red-50 hover:text-red-600"
+              title="Excluir exercício"
+              onClick={() => onExcluir(item)}
+            >
+              <FiTrash2 className="size-4" aria-hidden />
             </Button>
           </div>
         </div>
