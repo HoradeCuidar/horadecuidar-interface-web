@@ -97,4 +97,27 @@ export const orientacaoFuncionalService = {
       'Erro ao atualizar orientação funcional.'
     )
   },
+
+  async alterarStatus(
+    id: number,
+    ativo: boolean
+  ): Promise<OrientacaoFuncionalResponse> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.orientacaoFuncional.status(id)}?ativo=${ativo}`
+    const res = await fetch(url, { method: 'PATCH', headers: authHeaders() })
+    return parseJson<OrientacaoFuncionalResponse>(
+      res,
+      'Erro ao alterar status da orientação funcional.'
+    )
+  },
+
+  async excluir(id: number): Promise<void> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.orientacaoFuncional.porId(id)}`
+    const res = await fetch(url, { method: 'DELETE', headers: authHeaders() })
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(
+        parseApiError(text, 'Erro ao excluir orientação funcional.')
+      )
+    }
+  },
 }

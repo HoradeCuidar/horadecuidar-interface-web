@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { EmptyState, ButtonCadastro, Skeleton } from '@/components'
-import { CardExercicio } from '@/components/OrientacoesFuncionais'
+import {
+  CardExercicio,
+  ModalConfirmacaoStatusExercicio,
+  ModalConfirmacaoExcluirExercicio,
+} from '@/components/OrientacoesFuncionais'
 import { orientacaoFuncionalService } from '@/services'
 import emptyExerciciosSvg from '@/assets/empty-exercicios.svg'
 import type {
@@ -18,6 +22,11 @@ export function Atividades() {
   const [data, setData] = useState<SpringPage<OrientacaoFuncionalResponse> | null>(null)
   const [loading, setLoading] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
+
+  const [exercicioStatus, setExercicioStatus] =
+    useState<OrientacaoFuncionalResponse | null>(null)
+  const [exercicioExcluir, setExercicioExcluir] =
+    useState<OrientacaoFuncionalResponse | null>(null)
 
   const carregar = useCallback(async (p: number) => {
     setLoading(true)
@@ -37,6 +46,10 @@ export function Atividades() {
   useEffect(() => {
     void carregar(page)
   }, [page, carregar])
+
+  function handleSucessoAcao() {
+    void carregar(page)
+  }
 
   if (loading && !data) {
     return (
@@ -71,6 +84,26 @@ export function Atividades() {
 
   const items = data?.content ?? []
 
+  const modais = (
+    <>
+      <ModalConfirmacaoStatusExercicio
+        aberto={exercicioStatus != null}
+        onFechar={() => setExercicioStatus(null)}
+        onSucesso={handleSucessoAcao}
+        exercicioId={exercicioStatus?.id ?? null}
+        nomeExercicio={exercicioStatus?.nome ?? ''}
+        ativar={exercicioStatus ? !exercicioStatus.ativo : false}
+      />
+      <ModalConfirmacaoExcluirExercicio
+        aberto={exercicioExcluir != null}
+        onFechar={() => setExercicioExcluir(null)}
+        onSucesso={handleSucessoAcao}
+        exercicioId={exercicioExcluir?.id ?? null}
+        nomeExercicio={exercicioExcluir?.nome ?? ''}
+      />
+    </>
+  )
+
   if (items.length === 0 && page === 0) {
     return (
       <div className="flex flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
@@ -92,6 +125,7 @@ export function Atividades() {
             onClick={() => navigate('/atividades/nova')}
           />
         </EmptyState>
+        {modais}
       </div>
     )
   }
@@ -108,7 +142,12 @@ export function Atividades() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
-          <CardExercicio key={item.id} item={item} />
+          <CardExercicio
+            key={item.id}
+            item={item}
+            onAlterarStatus={setExercicioStatus}
+            onExcluir={setExercicioExcluir}
+          />
         ))}
       </div>
 
@@ -137,6 +176,8 @@ export function Atividades() {
           </button>
         </div>
       )}
+
+      {modais}
     </div>
   )
 }
