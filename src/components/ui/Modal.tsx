@@ -59,7 +59,7 @@ export function Modal({
       aria-labelledby="modal-titulo"
     >
       <div
-        className={`flex max-h-[95vh] w-full ${getWidthClass(largura)} flex-col rounded-lg bg-white shadow-xl`}
+        className={`flex max-h-[95vh] w-full ${getWidthClass(largura)} flex-col overflow-hidden rounded-2xl bg-white shadow-xl`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={`shrink-0 flex items-start justify-between gap-2 px-8 py-4 ${headerClass}`}>

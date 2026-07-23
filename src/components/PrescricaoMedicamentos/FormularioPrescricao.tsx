@@ -1,4 +1,4 @@
-import { FiPlus, FiUser } from 'react-icons/fi'
+﻿import { FiPlus, FiUser } from 'react-icons/fi'
 import { Input, Button } from '@/components'
 import { ItemMedicamento } from './ItemMedicamento'
 import type { MedicamentoForm, PrescricaoFormData } from './prescricao.types'
@@ -87,7 +87,7 @@ export function FormularioPrescricao({
             placeholder="Observações gerais da prescrição..."
             value={form.observacaoGeral}
             onChange={(e) => onChangeCampo('observacaoGeral', e.target.value)}
-            className="w-full resize-none rounded-lg border-0 bg-surface-100 px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-brand-400"
+            className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted transition-colors focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>
 

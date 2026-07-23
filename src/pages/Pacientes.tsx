@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FiCheckCircle, FiEdit2, FiEye, FiSlash } from "react-icons/fi";
 import { 
   EmptyState, 
   ButtonCadastro, 
@@ -16,7 +17,7 @@ import { pacienteService } from "@/services/paciente";
 import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IconeOlho, IconeEditar, IconeFechar, IconeCheck } from "@/components/icons";
+import { IconeUsuario } from "@/components/icons";
 import type { ColumnDef } from "@/components/DataTable";
 
 export interface Paciente {
@@ -48,15 +49,29 @@ export function Pacientes() {
   }
 
   const columns: ColumnDef<Paciente>[] = [
-    { header: "Nome", accessorKey: "nome", className: "py-4 text-center font-medium text-zinc-700" },
-    { header: "Telefone", accessorKey: "telefone", className: "py-4 text-center text-zinc-600" },
+    {
+      header: "Nome",
+      headerClassName: "text-left text-base font-bold text-text",
+      className: "py-4 text-left",
+      render: (item) => (
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
+            <IconeUsuario className="size-4 shrink-0" />
+          </span>
+          <span className="font-heading font-medium tracking-tight text-text-muted">
+            {item.nome}
+          </span>
+        </div>
+      ),
+    },
+    { header: "Telefone", accessorKey: "telefone", className: "py-4 text-center text-text-muted" },
     {
       header: "Status",
       className: "py-4 text-center",
       render: (item) => (
         <Badge
-          className={`border-0 px-4 py-1.5 font-light text-[12px] rounded-xl hover:bg-opacity-90 ${
-            item.status === "active" ? "bg-[#3EC048] text-white" : "bg-[#C53032] text-white"
+          className={`rounded-xl border-0 px-4 py-1.5 text-[12px] font-semibold text-white ${
+            item.status === "active" ? "bg-success-500" : "bg-error-500"
           }`}
         >
           {item.status === "active" ? "Ativo" : "Inativo"}
@@ -67,12 +82,12 @@ export function Pacientes() {
       header: "Ações",
       className: "py-4 text-center",
       render: (item) => (
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-0.5">
           {item.status === "active" ? (
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-zinc-400 hover:text-red-600 hover:bg-red-100 rounded-full"
+              className="h-8 w-8 text-error-500 hover:bg-error-500/15 hover:text-error-700"
               title="Inativar"
               onClick={() => {
                 setPacienteAcaoId(item.id)
@@ -80,13 +95,13 @@ export function Pacientes() {
                 setConfirmacaoStatusAberto(true)
               }}
             >
-              <IconeFechar />
+              <FiSlash className="size-4" aria-hidden />
             </Button>
           ) : (
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-zinc-400 hover:text-green-600 hover:bg-green-100 rounded-full"
+              className="h-8 w-8 text-success-500 hover:bg-success-500/15 hover:text-success-700"
               title="Ativar"
               onClick={() => {
                 setPacienteAcaoId(item.id)
@@ -94,26 +109,26 @@ export function Pacientes() {
                 setConfirmacaoStatusAberto(true)
               }}
             >
-              <IconeCheck />
+              <FiCheckCircle className="size-4" aria-hidden />
             </Button>
           )}
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-zinc-400 hover:text-blue-600 hover:bg-blue-100 rounded-full"
+            className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
             title="Visualizar"
             onClick={() => navigate(`/pacientes/${item.id}`)}
           >
-            <IconeOlho />
+            <FiEye className="size-4" aria-hidden />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-zinc-400 hover:text-orange-600 hover:bg-orange-100 rounded-full"
+            className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
             title="Editar"
             onClick={() => handleEditar(item.id)}
           >
-            <IconeEditar />
+            <FiEdit2 className="size-4" aria-hidden />
           </Button>
         </div>
       ),
@@ -214,10 +229,10 @@ export function Pacientes() {
   return (
     <div className="flex flex-col pt-8 px-8 pb-0 overflow-visible">
       <div className="flex flex-col gap-1">
-        <h1 className="font-heading text-2xl font-bold text-zinc-800 dark:text-white">
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-text">
           Pacientes
         </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 font-normal">
+        <p className="text-sm font-normal text-text-muted">
           Acompanhe os pacientes cadastrados, seus planos de tratamento e monitoramentos ativos
         </p>
       </div>

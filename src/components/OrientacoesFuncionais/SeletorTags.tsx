@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { TagFuncional } from '@/services/orientacaoFuncional.types'
 
 type SeletorTagsProps = {
@@ -36,7 +37,15 @@ export function SeletorTags({
   if (tags.length === 0) {
     return (
       <p className="text-sm text-text-muted">
-        Nenhuma tag cadastrada. O exercício será salvo sem tags.
+        Nenhuma tag cadastrada.{' '}
+        <Link
+          to="/atividades/tags"
+          className="font-medium text-brand-600 hover:text-brand-700"
+        >
+          Cadastre tags
+        </Link>{' '}
+        para classificá-las nos exercícios. O exercício pode ser salvo sem
+        tags.
       </p>
     )
   }
@@ -56,7 +65,7 @@ export function SeletorTags({
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
                 ativa
                   ? 'border-brand-500 bg-brand-100 text-brand-700'
-                  : 'border-zinc-200 bg-white text-zinc-600 hover:border-brand-300'
+                  : 'border-zinc-200 bg-white text-text-muted hover:border-brand-300'
               }`}
             >
               {tag.nome}

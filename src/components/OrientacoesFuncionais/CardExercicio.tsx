@@ -19,9 +19,9 @@ export function CardExercicio({
   const navigate = useNavigate()
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
+    <article className="flex flex-col overflow-hidden rounded-xl border border-brand-200 border-l-4 border-l-brand-500 bg-white shadow-card transition hover:shadow-md">
       {item.urlImagem && (
-        <div className="h-36 w-full overflow-hidden bg-zinc-100">
+        <div className="h-36 w-full overflow-hidden bg-surface-100">
           <img
             src={item.urlImagem}
             alt=""
@@ -32,13 +32,13 @@ export function CardExercicio({
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-sm font-semibold text-zinc-800">{item.nome}</h3>
+          <h3 className="font-heading text-sm font-bold tracking-tight text-text">
+            {item.nome}
+          </h3>
           <div className="flex shrink-0 items-center gap-0.5">
             <Badge
-              className={`border-0 px-2.5 py-0.5 text-[11px] font-medium ${
-                item.ativo
-                  ? 'bg-emerald-100 text-emerald-700'
-                  : 'bg-zinc-100 text-zinc-500'
+              className={`border-0 px-2.5 py-0.5 text-[11px] font-semibold text-white ${
+                item.ativo ? 'bg-success-500' : 'bg-error-500'
               }`}
             >
               {item.ativo ? 'Ativa' : 'Inativa'}
@@ -47,7 +47,7 @@ export function CardExercicio({
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-zinc-400 hover:bg-blue-50 hover:text-blue-600"
+              className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
               title="Editar exercício"
               onClick={() => navigate(`/atividades/${item.id}/editar`)}
             >
@@ -59,8 +59,8 @@ export function CardExercicio({
               size="icon"
               className={`h-8 w-8 ${
                 item.ativo
-                  ? 'text-zinc-400 hover:bg-amber-50 hover:text-amber-600'
-                  : 'text-zinc-400 hover:bg-emerald-50 hover:text-emerald-600'
+                  ? 'text-error-500 hover:bg-error-500/15 hover:text-error-700'
+                  : 'text-success-500 hover:bg-success-500/15 hover:text-success-700'
               }`}
               title={item.ativo ? 'Inativar exercício' : 'Ativar exercício'}
               onClick={() => onAlterarStatus(item)}
@@ -75,7 +75,7 @@ export function CardExercicio({
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-zinc-400 hover:bg-red-50 hover:text-red-600"
+              className="h-8 w-8 text-error-500 hover:bg-error-500/15 hover:text-error-700"
               title="Excluir exercício"
               onClick={() => onExcluir(item)}
             >
@@ -85,12 +85,12 @@ export function CardExercicio({
         </div>
 
         {item.descricao && (
-          <p className="line-clamp-3 text-xs text-zinc-600">{item.descricao}</p>
+          <p className="line-clamp-3 text-xs text-text-muted">{item.descricao}</p>
         )}
 
         {item.finalidade && (
-          <p className="line-clamp-2 text-xs text-zinc-500">
-            <span className="font-medium text-zinc-600">Finalidade: </span>
+          <p className="line-clamp-2 text-xs text-text-muted">
+            <span className="font-medium text-text">Finalidade: </span>
             {item.finalidade}
           </p>
         )}
@@ -110,8 +110,8 @@ export function CardExercicio({
         )}
 
         <div className="mt-auto space-y-0.5 border-t border-zinc-100 pt-2">
-          <p className="text-[11px] text-zinc-400">{item.responsavel.nome}</p>
-          <p className="text-[11px] text-zinc-400">
+          <p className="text-[11px] text-text-muted">{item.responsavel.nome}</p>
+          <p className="text-[11px] text-text-muted">
             Cadastrado em {formatarData(item.dataCriacao)}
           </p>
         </div>

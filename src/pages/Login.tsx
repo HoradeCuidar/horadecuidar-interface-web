@@ -48,12 +48,12 @@ export function Login() {
           className="max-h-[4.5rem] w-auto max-w-full object-contain"
         />
       </div>
-      <div className="flex min-w-0 flex-col justify-center overflow-y-auto bg-surface-50 p-8">
+      <div className="flex min-w-0 flex-col justify-center overflow-y-auto bg-white p-8">
         <div className="text-center">
-          <h1 className="font-heading text-xl font-semibold text-text">
+          <h1 className="font-heading text-xl font-semibold tracking-tight text-text">
             Bem-vindo de volta!
           </h1>
-          <p className="mt-1 text-2xl font-semibold text-brand-500">
+          <p className="mt-1 text-2xl font-semibold text-brand-600">
             Faça seu login
           </p>
         </div>
@@ -81,7 +81,7 @@ export function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
-                  className="p-0.5 hover:opacity-70"
+                  className="p-0.5 text-text-muted transition hover:text-text"
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                 >
                   {showPassword ? <IconeOlhoOculto /> : <IconeOlho />}
@@ -91,7 +91,10 @@ export function Login() {
               {...register('password')}
             />
             <div className="mt-1.5 flex justify-end">
-              <Link to="/recuperar-senha" className="text-sm font-medium text-brand-500 hover:text-brand-600">
+              <Link
+                to="/recuperar-senha"
+                className="text-sm font-medium text-brand-600 hover:text-brand-700"
+              >
                 esqueceu sua senha?
               </Link>
             </div>

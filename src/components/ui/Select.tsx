@@ -23,7 +23,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       >
         {label}
       </label>
-      <div className={`rounded-lg bg-surface-100 ${isCompact ? 'px-3 py-2.5' : 'px-4 py-3'}`}>
+      <div
+        className={`rounded-lg border bg-white transition-colors ${
+          error
+            ? 'border-error-500'
+            : 'border-zinc-300 focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500'
+        } ${isCompact ? 'px-3 py-2.5' : 'px-4 py-3'}`}
+      >
         <select
           ref={ref}
           id={selectId}
