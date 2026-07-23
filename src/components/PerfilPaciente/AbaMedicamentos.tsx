@@ -10,7 +10,7 @@ import { prescricaoMedicamentoService } from '@/services'
 type VisaoMedicamentos = 'ativas' | 'historico'
 
 const CLASSE_BOTAO_VISAO =
-  'inline-flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-3.5 py-2 text-sm font-medium text-[#5D99F4] transition hover:bg-brand-100 hover:text-brand-600'
+  'inline-flex items-center gap-1.5 rounded-xl bg-brand-100 px-3.5 py-2 text-sm font-semibold text-brand-600 transition hover:bg-brand-200 hover:text-brand-700'
 
 type AbaMedicamentosProps = {
   pacienteId: number
@@ -157,7 +157,20 @@ export function AbaMedicamentos({
             className="min-h-0 rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-sm"
           >
             {visao === 'ativas' ? (
-              <ButtonCadastro label="Nova prescrição" onClick={onNovaPrescricao} />
+              <div className="flex flex-col items-center gap-3">
+                <ButtonCadastro
+                  label="Nova prescrição"
+                  onClick={onNovaPrescricao}
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisao('historico')}
+                  className={CLASSE_BOTAO_VISAO}
+                >
+                  Ver histórico completo de prescrições
+                  <FiArrowRight className="size-4" aria-hidden />
+                </button>
+              </div>
             ) : (
               <button
                 type="button"
