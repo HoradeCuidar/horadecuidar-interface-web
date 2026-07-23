@@ -11,22 +11,27 @@
   --color-brand-200: #CCDDFF;
   --color-brand-300: #99BBFF;
   --color-brand-400: #6C9DFF;
-  --color-brand-500: #6699FF;
-  --color-brand-600: #3377FF;
-  --color-brand-700: #0044CC;
+  --color-brand-500: #3D6BE0;
+  --color-brand-600: #1D4ED8;
+  --color-brand-700: #1739A6;
   --color-brand-800: #003399;
   --color-brand-900: #001133;
-  --color-surface-50: #FFFFFF;
-  --color-surface-100: #ECECEC;
+  --color-surface-50: #EEF1FA;
+  --color-surface-0: #F7F8FD;
+  --color-surface-100: #E4E8F5;
   --color-surface-200: #E6EEFF;
   --color-surface-900: #05272E;
-  --color-text: #333333;
-  --color-text-muted: #667A8A;
+  --color-text: #12173A;
+  --color-text-muted: #575E7E;
   --color-text-inverse: #FFFFFF;
-  --color-success: #2EAD6D;
-  --color-error: #E5533D;
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'IBM Plex Sans', system-ui, sans-serif;
+  --color-success: #1F9D5C;
+  --color-success-500: #1F9D5C;
+  --color-success-700: #146B3E;
+  --color-error: #E5342A;
+  --color-error-500: #E5342A;
+  --color-error-700: #A8221A;
+  --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Poppins', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
@@ -82,7 +87,7 @@ body {
 }
 
 input::placeholder {
-  color: #667A8A;
+  color: #575E7E;
 }
 
 @theme inline {
