@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { FiUpload, FiX } from 'react-icons/fi'
 import { Input, BotaoSalvar, BotaoCancelar } from '@/components'
@@ -177,7 +177,7 @@ export function FormularioExercicio({
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
             placeholder="Descreva o exercício"
-            className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted transition-colors focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>
 
@@ -194,7 +194,7 @@ export function FormularioExercicio({
             value={finalidade}
             onChange={(e) => setFinalidade(e.target.value)}
             placeholder="Objetivo do exercício"
-            className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted transition-colors focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>
 
