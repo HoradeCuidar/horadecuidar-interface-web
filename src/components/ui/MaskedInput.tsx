@@ -54,7 +54,13 @@ export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
         >
           {label}
         </label>
-        <div className={`flex items-center gap-2 rounded-lg bg-surface-100 ${isCompact ? 'px-3.5 py-2.5' : 'px-4 py-3'}`}>
+        <div
+          className={`flex items-center gap-2 rounded-lg border bg-white transition-colors ${
+            error
+              ? 'border-error-500'
+              : 'border-zinc-300 focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500'
+          } ${isCompact ? 'px-3.5 py-2.5' : 'px-4 py-3'}`}
+        >
           {leftIcon && <span className="shrink-0">{leftIcon}</span>}
           <IMaskInput
             inputRef={innerInputRef}

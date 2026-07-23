@@ -15,7 +15,7 @@ export function Button({
     'w-full rounded-lg py-3 font-semibold transition disabled:opacity-50 font-sans'
   const styles =
     variant === 'primary'
-      ? 'bg-brand-500 text-text-inverse hover:bg-brand-600'
+      ? 'bg-brand-600 text-text-inverse shadow-button hover:bg-brand-700'
       : 'bg-transparent'
   return (
     <button className={`${base} ${styles} ${className}`} {...rest}>

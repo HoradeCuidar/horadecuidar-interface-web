@@ -13,7 +13,7 @@ export function BotaoSalvar({
   return (
     <button
       type={type}
-      className={`w-auto rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:opacity-50 ${className}`}
+      className={`w-auto rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-button transition hover:bg-brand-700 disabled:opacity-50 ${className}`}
       {...rest}
     >
       {children}

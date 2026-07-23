@@ -20,7 +20,7 @@ export function MainLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-surface-200">
+    <div className="flex min-h-screen bg-surface-50">
       <aside className="sticky top-0 hidden h-screen w-[15.5rem] shrink-0 lg:block xl:w-[16.5rem]">
         <Sidebar />
       </aside>

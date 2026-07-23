@@ -20,6 +20,7 @@ export interface ColumnDef<T> {
   header: string | ReactNode;
   accessorKey?: keyof T;
   className?: string;
+  headerClassName?: string;
   render?: (item: T) => ReactNode;
 }
 
@@ -59,15 +60,18 @@ export function DataTable<T>({
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 overflow-visible pb-0">
-      <div className="w-full rounded-xl bg-[#E6EEFF] p-4 dark:bg-zinc-950 overflow-visible">
+    <div className="flex w-full flex-col gap-6 overflow-visible pb-0">
+      <div className="w-full overflow-visible rounded-xl border border-zinc-200 bg-white p-4 shadow-card">
         <Table>
           <TableHeader>
             <TableRow className="border-none hover:bg-transparent">
               {columns.map((col, index) => (
                 <TableHead
                   key={index}
-                  className="text-center font-bold text-black text-base"
+                  className={
+                    col.headerClassName ||
+                    "text-center text-base font-bold text-text"
+                  }
                 >
                   {col.header}
                 </TableHead>
@@ -80,7 +84,7 @@ export function DataTable<T>({
               <TableRow className="border-none hover:bg-transparent">
                 <TableCell
                   colSpan={columns.length}
-                  className="py-8 text-center text-zinc-500"
+                  className="py-8 text-center text-text-muted"
                 >
                   {emptyMessage}
                 </TableCell>
@@ -89,18 +93,20 @@ export function DataTable<T>({
               paginatedData.map((item, rowIndex) => (
                 <TableRow
                   key={rowIndex}
-                  className="bg-[#FAFAFA] border-none hover:bg-white shadow-sm transition-all"
+                  className="border-none bg-surface-0 shadow-sm transition-all hover:bg-surface-100"
                 >
                   {columns.map((col, colIndex) => (
                     <TableCell
                       key={colIndex}
-                      className={col.className || "py-4 text-center text-zinc-600"}
+                      className={
+                        col.className || "py-4 text-center text-text-muted"
+                      }
                     >
                       {col.render
                         ? col.render(item)
                         : col.accessorKey
-                        ? String(item[col.accessorKey] || "")
-                        : null}
+                          ? String(item[col.accessorKey] || "")
+                          : null}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -111,7 +117,7 @@ export function DataTable<T>({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex justify-center py-3 mt-2">
+        <div className="mt-2 flex justify-center py-3">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -121,7 +127,7 @@ export function DataTable<T>({
                   className={`${
                     currentPage === 1
                       ? "pointer-events-none opacity-50"
-                      : "bg-brand-100 text-brand-600 hover:bg-brand-200 cursor-pointer"
+                      : "cursor-pointer bg-brand-100 text-brand-600 hover:bg-brand-200"
                   }`}
                 />
               </PaginationItem>
@@ -134,8 +140,8 @@ export function DataTable<T>({
                     isActive={page === currentPage}
                     className={
                       page === currentPage
-                        ? "bg-brand-600 text-white hover:bg-brand-700 border-brand-600 cursor-pointer"
-                        : "bg-brand-100 text-brand-600 hover:bg-brand-200 border-brand-100 cursor-pointer"
+                        ? "cursor-pointer border-brand-600 bg-brand-600 text-white hover:bg-brand-700"
+                        : "cursor-pointer border-brand-100 bg-brand-100 text-brand-600 hover:bg-brand-200"
                     }
                   >
                     {page}
@@ -150,7 +156,7 @@ export function DataTable<T>({
                   className={`${
                     currentPage === totalPages
                       ? "pointer-events-none opacity-50"
-                      : "bg-brand-100 text-brand-600 hover:bg-brand-200 cursor-pointer"
+                      : "cursor-pointer bg-brand-100 text-brand-600 hover:bg-brand-200"
                   }`}
                 />
               </PaginationItem>
