@@ -26,6 +26,7 @@ export type DetalhesProfissional = {
   bairro?: string;
   cidade?: string;
   estado?: string;
+  fotoDePerfil?: string | null;
 };
 
 type ModalDetalhesProfissionalProps = {
@@ -125,6 +126,7 @@ export function ModalDetalhesProfissional({
           <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 sm:w-52">
             <Avatar
               name={dados.nome}
+              src={dados.fotoDePerfil}
               className="size-20 text-xl bg-[#E6EEFF] text-brand-600"
             />
             <p className="text-center text-base font-semibold text-text leading-tight">
