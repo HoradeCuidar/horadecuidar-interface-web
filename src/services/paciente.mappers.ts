@@ -15,6 +15,7 @@ export type PacienteDetalhes = {
   genero?: string
   doencas?: { id: number; nome: string }[]
   observacoes?: string
+  fotoDePerfil?: string | null
 }
 
 export type FormEditarPaciente = {

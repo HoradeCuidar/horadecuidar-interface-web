@@ -5,6 +5,8 @@ export { pacienteService } from './paciente'
 export { prescricaoMedicamentoService } from './prescricaoMedicamento'
 export { orientacaoFuncionalService } from './orientacaoFuncional'
 export { tagFuncionalService } from './tagFuncional'
+export { avaliacaoFisicaService } from './avaliacaoFisica'
+export { realizacaoFuncionalService } from './realizacaoFuncional'
 export { uploadService } from './upload'
 
 export {

@@ -1,4 +1,9 @@
-export type AbaPerfil = 'dados' | 'medicamentos' | 'alimentacao'
+export type AbaPerfil =
+  | 'dados'
+  | 'medicamentos'
+  | 'avaliacao'
+  | 'realizacoes'
+  | 'alimentacao'
 
 export type AbaPerfilConfig = {
   id: AbaPerfil

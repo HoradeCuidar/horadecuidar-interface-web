@@ -29,6 +29,7 @@ export function CabecalhoPaciente({ paciente, profissionalResponsavel }: Cabecal
         <div className="flex items-center gap-5">
           <Avatar
             name={paciente.nome}
+            src={paciente.fotoDePerfil}
             className="size-20 text-2xl bg-[#E6EEFF] text-brand-600"
           />
           <div className="flex flex-col gap-1.5">

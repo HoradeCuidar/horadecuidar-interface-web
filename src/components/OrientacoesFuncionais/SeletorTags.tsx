@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import type { ReactNode } from 'react'
 import type { TagFuncional } from '@/services/orientacaoFuncional.types'
 
 type SeletorTagsProps = {
@@ -7,6 +8,8 @@ type SeletorTagsProps = {
   onChange: (ids: number[]) => void
   loading?: boolean
   erro?: string | null
+  titulo?: string
+  emptyHint?: ReactNode
 }
 
 export function SeletorTags({
@@ -15,6 +18,8 @@ export function SeletorTags({
   onChange,
   loading = false,
   erro = null,
+  titulo = 'Tags (opcional)',
+  emptyHint,
 }: SeletorTagsProps) {
   function toggleTag(id: number) {
     if (selecionadas.includes(id)) {
@@ -36,23 +41,25 @@ export function SeletorTags({
 
   if (tags.length === 0) {
     return (
-      <p className="text-sm text-text-muted">
-        Nenhuma tag cadastrada.{' '}
-        <Link
-          to="/atividades/tags"
-          className="font-medium text-brand-600 hover:text-brand-700"
-        >
-          Cadastre tags
-        </Link>{' '}
-        para classificá-las nos exercícios. O exercício pode ser salvo sem
-        tags.
-      </p>
+      emptyHint ?? (
+        <p className="text-sm text-text-muted">
+          Nenhuma tag cadastrada.{' '}
+          <Link
+            to="/atividades/tags"
+            className="font-medium text-brand-600 hover:text-brand-700"
+          >
+            Cadastre tags
+          </Link>{' '}
+          para classificá-las nos exercícios. O exercício pode ser salvo sem
+          tags.
+        </p>
+      )
     )
   }
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm font-medium text-text">Tags (opcional)</p>
+      <p className="text-sm font-medium text-text">{titulo}</p>
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => {
           const ativa = selecionadas.includes(tag.id)

@@ -18,6 +18,7 @@ type PacienteApiResponse = {
   genero?: string
   doencas?: { id: number; nome: string }[]
   observacoes?: string
+  fotoDePerfil?: string | null
 }
 
 function mapDetalhes(data: PacienteApiResponse): PacienteDetalhes {
@@ -36,6 +37,7 @@ function mapDetalhes(data: PacienteApiResponse): PacienteDetalhes {
     genero: data.genero,
     doencas: data.doencas,
     observacoes: data.observacoes,
+    fotoDePerfil: data.fotoDePerfil ?? null,
   }
 }
 
