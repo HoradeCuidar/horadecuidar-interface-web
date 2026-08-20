@@ -17,6 +17,8 @@ import {
   Tags,
   CadastroTag,
   EditarTag,
+  CadastroAvaliacaoFisica,
+  EditarAvaliacaoFisica,
 } from '@/pages'
 
 const router = createBrowserRouter([
@@ -52,6 +54,8 @@ const router = createBrowserRouter([
       { path: 'pacientes/:id', element: <PerfilPaciente /> },
       { path: 'pacientes/:id/prescricoes/nova', element: <CadastroPrescricaoMedicamentos /> },
       { path: 'pacientes/:id/prescricoes/:prescricaoId/editar', element: <EditarPrescricaoMedicamentos /> },
+      { path: 'pacientes/:id/avaliacoes/nova', element: <CadastroAvaliacaoFisica /> },
+      { path: 'pacientes/:id/avaliacoes/:avaliacaoId/editar', element: <EditarAvaliacaoFisica /> },
       { path: 'atividades/tags', element: <Tags /> },
       { path: 'atividades/tags/nova', element: <CadastroTag /> },
       { path: 'atividades/tags/:id/editar', element: <EditarTag /> },

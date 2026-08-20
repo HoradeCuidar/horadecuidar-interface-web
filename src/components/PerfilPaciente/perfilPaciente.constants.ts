@@ -3,6 +3,8 @@ import type { AbaPerfilConfig } from './perfilPaciente.types'
 export const ABAS_PERFIL_PACIENTE: AbaPerfilConfig[] = [
   { id: 'dados', label: 'Dados do Participante' },
   { id: 'medicamentos', label: 'Medicamentos' },
+  { id: 'avaliacao', label: 'Avaliação física' },
+  { id: 'realizacoes', label: 'Realizações' },
   { id: 'alimentacao', label: 'Alimentação' },
 ]
 

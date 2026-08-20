@@ -1,13 +1,10 @@
 import { EmptyState, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components'
-
 import type { PacienteDetalhes } from '@/services/paciente.mappers'
-
 import { AbaDadosParticipante } from './AbaDadosParticipante'
-
 import { AbaMedicamentos } from './AbaMedicamentos'
-
+import { AbaAvaliacaoFisica } from '@/components/AvaliacaoFisica'
+import { AbaHistoricoRealizacao } from '@/components/HistoricoRealizacao'
 import { ABAS_PERFIL_PACIENTE } from './perfilPaciente.constants'
-
 import type { AbaPerfil } from './perfilPaciente.types'
 
 type PerfilPacienteAbasProps = {
@@ -74,6 +71,14 @@ export function PerfilPacienteAbas({
           onNovaPrescricao={onNovaPrescricao}
           onEditarPrescricao={onEditarPrescricao}
         />
+      </TabsContent>
+
+      <TabsContent value="avaliacao">
+        <AbaAvaliacaoFisica pacienteId={paciente.id} />
+      </TabsContent>
+
+      <TabsContent value="realizacoes">
+        <AbaHistoricoRealizacao pacienteId={paciente.id} />
       </TabsContent>
 
       <TabsContent value="alimentacao">
