@@ -56,4 +56,14 @@ export const API_ENDPOINTS = {
     base: '/api/tags-funcionais',
     porId: (id: number) => `/api/tags-funcionais/${id}`,
   },
+  avaliacaoFisica: {
+    base: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/avaliacoes-fisicas`,
+    porId: (pacienteId: number, avaliacaoId: number) =>
+      `/api/pacientes/${pacienteId}/avaliacoes-fisicas/${avaliacaoId}`,
+  },
+  realizacaoFuncional: {
+    historico: (pacienteId: number) =>
+      `/api/paciente/${pacienteId}/realizacao-funcional/historico`,
+  },
 }
