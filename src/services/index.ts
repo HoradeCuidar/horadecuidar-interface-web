@@ -8,6 +8,13 @@ export { tagFuncionalService } from './tagFuncional'
 export { avaliacaoFisicaService } from './avaliacaoFisica'
 export { realizacaoFuncionalService } from './realizacaoFuncional'
 export { uploadService } from './upload'
+export { dashboardService } from './dashboard'
+export type {
+  DashboardResumo,
+  PrescricaoProximaVencimento,
+  PacienteBaixaAdesao,
+  DistribuicaoDoenca,
+} from './dashboard'
 
 export {
   formToPrescricaoRequest,
