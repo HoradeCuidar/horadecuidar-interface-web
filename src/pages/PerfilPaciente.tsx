@@ -49,6 +49,9 @@ export function PerfilPaciente() {
         onEditarPrescricao={(prescricaoId) =>
           navigate(`/pacientes/${id}/prescricoes/${prescricaoId}/editar`)
         }
+        onNovaPrescricaoNutricional={() =>
+          navigate(`/pacientes/${id}/prescricoes-nutricionais/nova`)
+        }
       />
     </div>
   )
