@@ -66,4 +66,7 @@ export const API_ENDPOINTS = {
     historico: (pacienteId: number) =>
       `/api/paciente/${pacienteId}/realizacao-funcional/historico`,
   },
+  prescricaoNutricional: {
+    cadastrar: '/api/nutricional/cadastrar',
+  },
 }
