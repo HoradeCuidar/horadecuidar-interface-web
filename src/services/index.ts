@@ -9,6 +9,13 @@ export { avaliacaoFisicaService } from './avaliacaoFisica'
 export { realizacaoFuncionalService } from './realizacaoFuncional'
 export { prescricaoNutricionalService } from './prescricaoNutricional'
 export { uploadService } from './upload'
+export { dashboardService } from './dashboard'
+export type {
+  DashboardResumo,
+  PrescricaoProximaVencimento,
+  PacienteBaixaAdesao,
+  DistribuicaoDoenca,
+} from './dashboard'
 
 export {
   formToPrescricaoRequest,
