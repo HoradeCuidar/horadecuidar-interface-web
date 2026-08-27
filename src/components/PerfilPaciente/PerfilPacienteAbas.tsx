@@ -1,9 +1,10 @@
-import { EmptyState, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components'
 import type { PacienteDetalhes } from '@/services/paciente.mappers'
 import { AbaDadosParticipante } from './AbaDadosParticipante'
 import { AbaMedicamentos } from './AbaMedicamentos'
 import { AbaAvaliacaoFisica } from '@/components/AvaliacaoFisica'
 import { AbaHistoricoRealizacao } from '@/components/HistoricoRealizacao'
+import { AbaAlimentacao } from './AbaAlimentacao'
 import { ABAS_PERFIL_PACIENTE } from './perfilPaciente.constants'
 import type { AbaPerfil } from './perfilPaciente.types'
 
@@ -14,16 +15,7 @@ type PerfilPacienteAbasProps = {
   onAbaChange: (aba: AbaPerfil) => void
   onNovaPrescricao: () => void
   onEditarPrescricao: (prescricaoId: string) => void
-}
-
-function ConteudoEmBreve({ titulo }: { titulo: string }) {
-  return (
-    <EmptyState
-      title={titulo}
-      description="Esta seção será implementada em breve."
-      className="min-h-0 py-12"
-    />
-  )
+  onNovaPrescricaoNutricional: () => void
 }
 
 function PainelAba({ children }: { children: React.ReactNode }) {
@@ -41,6 +33,7 @@ export function PerfilPacienteAbas({
   onAbaChange,
   onNovaPrescricao,
   onEditarPrescricao,
+  onNovaPrescricaoNutricional,
 }: PerfilPacienteAbasProps) {
   return (
     <Tabs
@@ -82,9 +75,7 @@ export function PerfilPacienteAbas({
       </TabsContent>
 
       <TabsContent value="alimentacao">
-        <PainelAba>
-          <ConteudoEmBreve titulo="Prescrições de alimentação" />
-        </PainelAba>
+        <AbaAlimentacao onNovaPrescricao={onNovaPrescricaoNutricional} />
       </TabsContent>
     </Tabs>
   )
