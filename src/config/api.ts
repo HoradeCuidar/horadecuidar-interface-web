@@ -73,4 +73,7 @@ export const API_ENDPOINTS = {
     pacientesBaixaAdesao: '/api/dashboard/pacientes-baixa-adesao',
     distribuicaoDoencas: '/api/dashboard/distribuicao-doencas',
   },
+  prescricaoNutricional: {
+    cadastrar: '/api/nutricional/cadastrar',
+  },
 }
