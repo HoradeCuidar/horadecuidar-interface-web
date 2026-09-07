@@ -1,4 +1,9 @@
-export const API_BASE_URL = ''
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+
+// An empty value preserves Vite's development proxy as a local fallback.
+export const API_BASE_URL = configuredApiBaseUrl
+  ? configuredApiBaseUrl.replace(/\/+$/, '')
+  : ''
 
 export const API_ENDPOINTS = {
   auth: {
