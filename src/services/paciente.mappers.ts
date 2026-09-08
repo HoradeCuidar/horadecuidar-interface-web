@@ -29,7 +29,7 @@ export type FormEditarPaciente = {
   estado: string
   cidade: string
   numeroCasa: string
-  doencaId: string
+  doencaIds: string[]
   observacoes: string
   username: string
 }
@@ -45,7 +45,7 @@ export const FORM_EDITAR_PACIENTE_INICIAL: FormEditarPaciente = {
   estado: '',
   cidade: '',
   numeroCasa: '',
-  doencaId: '',
+  doencaIds: [],
   observacoes: '',
   username: '',
 }
@@ -69,7 +69,7 @@ export function apiToFormGenero(g?: string): string {
 }
 
 export function detalhesToForm(p: PacienteDetalhes): FormEditarPaciente {
-  const primeiraDoenca = p.doencas?.[0]
+  const doencaIds = p.doencas?.map((doenca) => String(doenca.id)) ?? []
   return {
     nome: p.nome ?? '',
     dataNascimento: p.dataDeNascimento ? apiDateToForm(p.dataDeNascimento) : '',
@@ -81,7 +81,7 @@ export function detalhesToForm(p: PacienteDetalhes): FormEditarPaciente {
     estado: p.estado ?? '',
     cidade: p.cidade ?? '',
     numeroCasa: p.numeroDaCasa ?? '',
-    doencaId: primeiraDoenca ? String(primeiraDoenca.id) : '',
+    doencaIds,
     observacoes: p.observacoes ?? '',
     username: p.username ?? '',
   }
@@ -119,13 +119,13 @@ function generoFormToApi(value: string): CadastroPacientePayload['genero'] {
 }
 
 export function formToPayload(dados: Record<string, unknown>): CadastroPacientePayload {
-  const doencaId = dados.doencaId
-  const doencas: number[] =
-    typeof doencaId === 'string' && doencaId && !doencaId.startsWith('temp-')
-      ? [Number(doencaId)]
-      : typeof doencaId === 'number'
-        ? [doencaId]
-        : []
+  const doencaIds = dados.doencaIds
+  const doencas: number[] = Array.isArray(doencaIds)
+    ? doencaIds
+        .filter((id): id is string | number => typeof id === 'string' || typeof id === 'number')
+        .filter((id) => !String(id).startsWith('temp-'))
+        .map(Number)
+    : []
 
   return {
     nome: String(dados.nome ?? '').trim(),
@@ -177,7 +177,7 @@ export function formTemAlteracoes(
     trimVal(form.bairro) !== trimVal(inicial.bairro) ||
     trimVal(form.estado) !== trimVal(inicial.estado) ||
     trimVal(form.cidade) !== trimVal(inicial.cidade) ||
-    trimVal(form.doencaId) !== trimVal(inicial.doencaId) ||
+    form.doencaIds.join(',') !== inicial.doencaIds.join(',') ||
     trimVal(form.observacoes) !== trimVal(inicial.observacoes) ||
     trimVal(form.username) !== trimVal(inicial.username)
   )

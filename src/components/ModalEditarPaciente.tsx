@@ -55,6 +55,7 @@ export function ModalEditarPaciente({
         titulo="Editar Paciente"
         subtitulo={nomeOriginal}
         largura="md"
+        altura="tall"
         headerTone="blue"
         footer={
           <>
@@ -109,8 +110,8 @@ export function ModalEditarPaciente({
               {stepId === 'doencas' && (
                 <PassoDoencas
                   doencasLista={doencasLista}
-                  doencaId={form.doencaId}
-                  setDoencaId={setCampo('doencaId')}
+                  doencaIds={form.doencaIds}
+                  setDoencaIds={(ids) => setCampo('doencaIds')(ids)}
                   onAbrirModalCadastrarDoenca={() =>
                     setDoencasModal((prev) => ({ ...prev, cadastrarAberto: true }))
                   }

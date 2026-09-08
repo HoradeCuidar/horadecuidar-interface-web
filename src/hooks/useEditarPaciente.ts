@@ -66,7 +66,7 @@ export function useEditarPaciente({
   const isLastStep = currentIndex === PASSOS_EDICAO.length - 1
 
   const setCampo = useCallback(
-    (campo: keyof FormEditarPaciente) => (valor: string) => {
+    <Campo extends keyof FormEditarPaciente>(campo: Campo) => (valor: FormEditarPaciente[Campo]) => {
       setForm((prev) => ({ ...prev, [campo]: valor }))
     },
     [],
@@ -140,7 +140,12 @@ export function useEditarPaciente({
     try {
       const criada = await doencaService.cadastrar(nomeTrim)
       await recarregarDoencas()
-      setForm((prev) => ({ ...prev, doencaId: String(criada.id) }))
+      setForm((prev) => ({
+        ...prev,
+        doencaIds: prev.doencaIds.includes(String(criada.id))
+          ? prev.doencaIds
+          : [...prev.doencaIds, String(criada.id)],
+      }))
       setDoencasModal((prev) => ({ ...prev, cadastrarAberto: false, novaDoencaNome: '' }))
       toast.success('Doença cadastrada.')
     } catch (err) {
@@ -154,9 +159,10 @@ export function useEditarPaciente({
     try {
       await doencaService.deletar(Number(doencasModal.excluindoId))
       await recarregarDoencas()
-      setForm((prev) =>
-        prev.doencaId === doencasModal.excluindoId ? { ...prev, doencaId: '' } : prev,
-      )
+      setForm((prev) => ({
+        ...prev,
+        doencaIds: prev.doencaIds.filter((id) => id !== doencasModal.excluindoId),
+      }))
       setDoencasModal((prev) => ({ ...prev, excluirAberto: false, excluindoId: '' }))
       toast.success('Doença excluída com sucesso.')
     } catch (err) {

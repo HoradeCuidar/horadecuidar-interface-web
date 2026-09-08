@@ -9,6 +9,7 @@ type ModalProps = {
   children: React.ReactNode
   footer?: React.ReactNode
   largura?: 'sm' | 'md' | 'lg'
+  altura?: 'default' | 'tall'
   headerTone?: 'default' | 'blue'
   showCloseButton?: boolean
 }
@@ -27,6 +28,7 @@ export function Modal({
   children,
   footer,
   largura = 'md',
+  altura = 'default',
   headerTone = 'default',
   showCloseButton = false,
 }: ModalProps) {
@@ -59,7 +61,7 @@ export function Modal({
       aria-labelledby="modal-titulo"
     >
       <div
-        className={`flex max-h-[95vh] w-full ${getWidthClass(largura)} flex-col overflow-hidden rounded-2xl bg-white shadow-xl`}
+        className={`flex max-h-[95vh] w-full ${getWidthClass(largura)} ${altura === 'tall' ? 'min-h-[min(560px,calc(100vh-2rem))]' : ''} flex-col overflow-hidden rounded-2xl bg-white shadow-xl`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={`shrink-0 flex items-start justify-between gap-2 px-8 py-4 ${headerClass}`}>
