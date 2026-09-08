@@ -3,8 +3,8 @@ import { SelectDoenca } from '@/components/SelectDoenca'
 
 type PassoDoencasProps = {
   doencasLista: { value: string; label: string }[]
-  doencaId: string
-  setDoencaId: (v: string) => void
+  doencaIds: string[]
+  setDoencaIds: (v: string[]) => void
   onAbrirModalCadastrarDoenca: () => void
   onDeleteDoenca?: (id: string) => void
   onEditDoenca?: (id: string, nome: string) => void
@@ -14,8 +14,8 @@ type PassoDoencasProps = {
 
 export function PassoDoencas({
   doencasLista,
-  doencaId,
-  setDoencaId,
+  doencaIds,
+  setDoencaIds,
   onAbrirModalCadastrarDoenca,
   onDeleteDoenca,
   onEditDoenca,
@@ -27,8 +27,14 @@ export function PassoDoencas({
       <div className="grid gap-2 sm:grid-cols-2">
         <SelectDoenca
           options={doencasLista}
-          value={doencaId}
-          onSelect={setDoencaId}
+          value={doencaIds}
+          onSelect={(id) =>
+            setDoencaIds(
+              doencaIds.includes(id)
+                ? doencaIds.filter((selectedId) => selectedId !== id)
+                : [...doencaIds, id],
+            )
+          }
           onAddClick={onAbrirModalCadastrarDoenca}
           onDeleteClick={onDeleteDoenca}
           onEditClick={onEditDoenca}

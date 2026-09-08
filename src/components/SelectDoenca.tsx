@@ -4,7 +4,7 @@ type Option = { value: string; label: string }
 
 type SelectDoencaProps = {
   options: Option[]
-  value: string
+  value: string[]
   onSelect: (value: string) => void
   onAddClick: () => void
   onDeleteClick?: (value: string) => void
@@ -15,7 +15,7 @@ export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteCli
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const ref = useRef<HTMLDivElement>(null)
-  const selected = options.find((d) => d.value === value)
+  const selected = options.filter((d) => value.includes(d.value))
 
   useEffect(() => {
     if (!open) return
@@ -44,8 +44,10 @@ export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteCli
         aria-haspopup="listbox"
         aria-label="Selecione uma doença"
       >
-        <span className={value ? '' : 'text-text-muted'}>
-          {selected?.label ?? 'Selecione uma doença'}
+        <span className={value.length > 0 ? '' : 'text-text-muted'}>
+          {selected.length > 0
+            ? `${selected.length} doença${selected.length > 1 ? 's' : ''} selecionada${selected.length > 1 ? 's' : ''}`
+            : 'Selecione uma doença'}
         </span>
         <svg
           className={`h-3.5 w-3.5 shrink-0 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`}
@@ -93,19 +95,27 @@ export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteCli
                 <li
                   key={d.value}
                   className={`flex items-center justify-between px-4 py-1 hover:bg-surface-100 group transition duration-150 ${
-                    value === d.value ? 'bg-surface-100 font-medium' : ''
+                    value.includes(d.value) ? 'bg-surface-100 font-medium' : ''
                   }`}
                 >
                   <button
                     type="button"
                     role="option"
-                    aria-selected={value === d.value}
+                    aria-selected={value.includes(d.value)}
                     onClick={() => {
                       onSelect(d.value)
-                      setOpen(false)
                     }}
-                    className="flex-1 py-2 text-left text-sm text-text focus:outline-none"
+                    className="flex flex-1 items-center gap-2 py-2 text-left text-sm text-text focus:outline-none"
                   >
+                    <input
+                      type="checkbox"
+                      checked={value.includes(d.value)}
+                      onChange={() => onSelect(d.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-4 w-4 rounded border-surface-300 text-brand-500 focus:ring-brand-500"
+                      tabIndex={-1}
+                      aria-label={`Selecionar ${d.label}`}
+                    />
                     {d.label}
                   </button>
                   <button
