@@ -218,6 +218,7 @@ export function AbaMedicamentos({
           {lista.map((item) => (
             <CardPrescricao
               key={item.id}
+              pacienteId={pacienteId}
               prescricao={item}
               expandida={Boolean(expandidas[item.id])}
               onToggle={() => toggle(item.id)}
