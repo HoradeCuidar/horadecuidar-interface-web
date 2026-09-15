@@ -10,6 +10,13 @@ import {
 import type { PrescricaoFormData } from '@/components/PrescricaoMedicamentos/prescricao.types'
 import type { PrescricaoListagem } from '@/components/PrescricaoMedicamentos/prescricaoListagem.types'
 
+export type RelatorioAdesaoPrescricao = {
+  prescricaoId: string
+  totalDosesEsperadas: number
+  dosesRealizadas: number
+  percentualAdesao: number
+}
+
 function authHeaders(): HeadersInit {
   const token = authService.getToken()
   if (!token) throw new Error('Faca login para continuar.')
@@ -40,6 +47,18 @@ async function listarAtivasRaw(
   return data ?? []
 }
 
+async function listarHistoricoRaw(
+  pacienteId: number
+): Promise<PrescricaoMedicamentoResponse[]> {
+  const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoMedicamento.historico(pacienteId)}`
+  const res = await fetch(url, { method: 'GET', headers: authHeaders() })
+  const data = await parseJson<PrescricaoMedicamentoResponse[]>(
+    res,
+    'Erro ao listar histórico de prescrições.'
+  )
+  return data ?? []
+}
+
 export const prescricaoMedicamentoService = {
   async listarAtivas(pacienteId: number): Promise<PrescricaoListagem[]> {
     const data = await listarAtivasRaw(pacienteId)
@@ -47,25 +66,25 @@ export const prescricaoMedicamentoService = {
   },
 
   async listarHistorico(pacienteId: number): Promise<PrescricaoListagem[]> {
-    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoMedicamento.historico(pacienteId)}`
-    const res = await fetch(url, { method: 'GET', headers: authHeaders() })
-    const data = await parseJson<PrescricaoMedicamentoResponse[]>(
-      res,
-      'Erro ao listar histórico de prescrições.'
-    )
-    return responsesToListagem(data ?? [])
+    const data = await listarHistoricoRaw(pacienteId)
+    return responsesToListagem(data)
   },
 
   async buscarPorId(
     pacienteId: number,
     prescricaoId: string
   ): Promise<PrescricaoMedicamentoResponse> {
-    const lista = await listarAtivasRaw(pacienteId)
-    const encontrada = lista.find((p) => String(p.id) === String(prescricaoId))
-    if (!encontrada) {
-      throw new Error('Prescricao nao encontrada.')
-    }
-    return encontrada
+    const ativas = await listarAtivasRaw(pacienteId)
+    const naAtivas = ativas.find((p) => String(p.id) === String(prescricaoId))
+    if (naAtivas) return naAtivas
+
+    const historico = await listarHistoricoRaw(pacienteId)
+    const noHistorico = historico.find(
+      (p) => String(p.id) === String(prescricaoId)
+    )
+    if (noHistorico) return noHistorico
+
+    throw new Error('Prescricao nao encontrada.')
   },
 
   async criar(
@@ -122,5 +141,20 @@ export const prescricaoMedicamentoService = {
     )}`
     const res = await fetch(url, { method: 'DELETE', headers: authHeaders() })
     await parseJson<void>(res, 'Erro ao excluir prescricao.')
+  },
+
+  async relatorioAdesao(
+    pacienteId: number,
+    prescricaoId: string
+  ): Promise<RelatorioAdesaoPrescricao> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoMedicamento.relatorio(
+      pacienteId,
+      prescricaoId
+    )}`
+    const res = await fetch(url, { method: 'GET', headers: authHeaders() })
+    return parseJson<RelatorioAdesaoPrescricao>(
+      res,
+      'Erro ao carregar relatório de adesão da prescritção.'
+    )
   },
 }

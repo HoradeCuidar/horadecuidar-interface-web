@@ -38,6 +38,7 @@ export function PerfilPaciente() {
       <CabecalhoPaciente
         paciente={paciente}
         profissionalResponsavel={profissionalResponsavel}
+        onRelatorio={() => navigate(`/pacientes/${id}/relatorios/adesao`)}
       />
 
       <PerfilPacienteAbas

@@ -78,6 +78,20 @@ export const API_ENDPOINTS = {
     pacientesBaixaAdesao: '/api/dashboard/pacientes-baixa-adesao',
     distribuicaoDoencas: '/api/dashboard/distribuicao-doencas',
   },
+  relatorioAdesaoMedicamento: {
+    resumo: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/medicamentos/resumo`,
+    evolucao: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/medicamentos/evolucao`,
+    detalhamento: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/medicamentos/detalhamento`,
+  },
+  relatorioOrientacaoFuncional: {
+    resumo: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/orientacoes-funcionais/resumo`,
+    detalhamento: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/orientacoes-funcionais/detalhamento`,
+  },
   prescricaoNutricional: {
     cadastrar: '/api/nutricional/cadastrar',
   },

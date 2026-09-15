@@ -7,6 +7,7 @@ import { CORES_BADGE_DOENCA } from './perfilPaciente.constants'
 type CabecalhoPacienteProps = {
   paciente: PacienteDetalhes
   profissionalResponsavel: string
+  onRelatorio?: () => void
 }
 
 function calcularIdade(dataNascimento?: string): number | null {
@@ -20,7 +21,11 @@ function calcularIdade(dataNascimento?: string): number | null {
   return idade
 }
 
-export function CabecalhoPaciente({ paciente, profissionalResponsavel }: CabecalhoPacienteProps) {
+export function CabecalhoPaciente({
+  paciente,
+  profissionalResponsavel,
+  onRelatorio,
+}: CabecalhoPacienteProps) {
   const idade = calcularIdade(paciente.dataDeNascimento)
 
   return (
@@ -33,7 +38,9 @@ export function CabecalhoPaciente({ paciente, profissionalResponsavel }: Cabecal
             className="size-20 text-2xl bg-[#E6EEFF] text-brand-600"
           />
           <div className="flex flex-col gap-1.5">
-            <h1 className="font-heading text-xl font-bold text-zinc-800">{paciente.nome}</h1>
+            <h1 className="font-heading text-xl font-bold text-zinc-800">
+              {paciente.nome}
+            </h1>
             <p className="text-sm text-zinc-500">
               {idade != null && `${idade} anos`}
               {idade != null && ' • '}
@@ -58,8 +65,8 @@ export function CabecalhoPaciente({ paciente, profissionalResponsavel }: Cabecal
         <Button
           variant="outline"
           className="shrink-0 rounded-xl border-brand-500 text-brand-600 hover:bg-brand-50"
-          disabled
-          title="Em breve"
+          onClick={onRelatorio}
+          disabled={!onRelatorio}
         >
           Relatório de adesão
         </Button>
