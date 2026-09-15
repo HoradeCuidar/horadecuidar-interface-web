@@ -29,6 +29,7 @@ export type PrescricaoMedicamentoRequest = {
 }
 
 export type ItemMedicacaoResponse = {
+  id?: number
   nomeMedicamento: string
   dosagemValor: number
   dosagemUnidade: string
@@ -37,6 +38,13 @@ export type ItemMedicacaoResponse = {
   intervaloTipo: string
   viaAdministracao: string
   observacao?: string | null
+  ativo?: boolean
+}
+
+function medicacoesAtivas(
+  medicacoes: ItemMedicacaoResponse[] | undefined
+): ItemMedicacaoResponse[] {
+  return (medicacoes ?? []).filter((item) => item.ativo !== false)
 }
 
 export type PrescricaoMedicamentoResponse = {
@@ -106,9 +114,9 @@ export function responseToListagem(
   const dataInicio = toIsoDate(dto.dataInicio)
   const dataTermino = toIsoDate(dto.dataFim)
 
-  const medicamentos: MedicamentoListagem[] = (dto.medicacoes ?? []).map(
+  const medicamentos: MedicamentoListagem[] = medicacoesAtivas(dto.medicacoes).map(
     (item, index) => ({
-      id: `${dto.id}-${index}`,
+      id: `${dto.id}-${item.id ?? index}`,
       nome: item.nomeMedicamento,
       dosagemLabel: `${item.dosagemValor}${labelDe(OPCOES_UNIDADE_DOSAGEM, item.dosagemUnidade)}`,
       quantidadeLabel: `${item.quantidadeDoses} dose(s)`,
@@ -149,7 +157,7 @@ export function responseToForm(
   dto: PrescricaoMedicamentoResponse,
   nomeParticipante: string
 ): PrescricaoFormData {
-  const medicacoes = dto.medicacoes ?? []
+  const medicacoes = medicacoesAtivas(dto.medicacoes)
   return {
     nomeParticipante,
     dataInicio: toIsoDate(dto.dataInicio),
