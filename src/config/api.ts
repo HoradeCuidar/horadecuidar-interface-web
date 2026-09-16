@@ -94,5 +94,13 @@ export const API_ENDPOINTS = {
   },
   prescricaoNutricional: {
     cadastrar: '/api/nutricional/cadastrar',
+    visualizarTodos: (pacienteId: number) =>
+      `/api/nutricional/visualizarTodos/${pacienteId}`,
+    visualizar: (prescricaoId: number) =>
+      `/api/nutricional/visualizar/${prescricaoId}`,
+    ativar: (prescricaoId: number) =>
+      `/api/nutricional/ativar/${prescricaoId}`,
+    inativar: (prescricaoId: number) =>
+      `/api/nutricional/inativar/${prescricaoId}`,
   },
 }
