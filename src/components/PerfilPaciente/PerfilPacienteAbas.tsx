@@ -75,7 +75,10 @@ export function PerfilPacienteAbas({
       </TabsContent>
 
       <TabsContent value="alimentacao">
-        <AbaAlimentacao onNovaPrescricao={onNovaPrescricaoNutricional} />
+        <AbaAlimentacao
+          pacienteId={paciente.id}
+          onNovaPrescricao={onNovaPrescricaoNutricional}
+        />
       </TabsContent>
     </Tabs>
   )
