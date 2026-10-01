@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 AGENTS.md
+
+# ENV
+.env
+.env.*
+!.env.example
