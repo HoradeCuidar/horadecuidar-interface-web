@@ -4,6 +4,7 @@ export type AbaPerfil =
   | 'avaliacao'
   | 'realizacoes'
   | 'alimentacao'
+  | 'exames'
 
 export type AbaPerfilConfig = {
   id: AbaPerfil
