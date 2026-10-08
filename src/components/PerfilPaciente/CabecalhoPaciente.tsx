@@ -1,4 +1,5 @@
-import { Avatar } from '@/components'
+import { useState } from 'react'
+import { FotoPerfilUpload } from '@/components/MeuPerfil/FotoPerfilUpload'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { PacienteDetalhes } from '@/services/paciente.mappers'
@@ -27,15 +28,17 @@ export function CabecalhoPaciente({
   onRelatorio,
 }: CabecalhoPacienteProps) {
   const idade = calcularIdade(paciente.dataDeNascimento)
+  const [fotoUrl, setFotoUrl] = useState(paciente.fotoDePerfil ?? null)
 
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-5">
-          <Avatar
-            name={paciente.nome}
-            src={paciente.fotoDePerfil}
-            className="size-20 text-2xl bg-[#E6EEFF] text-brand-600"
+          <FotoPerfilUpload
+            nome={paciente.nome}
+            fotoUrl={fotoUrl}
+            usuarioId={paciente.id}
+            onFotoAtualizada={setFotoUrl}
           />
           <div className="flex flex-col gap-1.5">
             <h1 className="font-heading text-xl font-bold text-zinc-800">
