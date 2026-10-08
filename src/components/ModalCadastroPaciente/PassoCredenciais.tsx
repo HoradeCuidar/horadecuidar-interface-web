@@ -18,21 +18,23 @@ export function PassoCredenciais({
       <div className="grid gap-2 sm:grid-cols-2">
         <Input
           size="compact"
-          label="Username"
-          placeholder="Digite seu username"
+          label="Nome de usuário *"
+          placeholder="Ex.: antonietaa"
           value={username}
           onChange={(e) => setUsername(e.target.value.replace(/\s/g, ''))}
         />
         <Input
           size="compact"
-          label="Senha"
+          label="Senha *"
           type="password"
-          placeholder="Mín. 8 caracteres"
+          placeholder="Digite pelo menos 8 caracteres"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
           minLength={8}
+          success={senha.length >= 8}
         />
       </div>
+      <p className="text-xs text-text-muted">A senha precisa ter apenas 8 caracteres ou mais. Letras, números e símbolos são opcionais.</p>
     </section>
   )
 }

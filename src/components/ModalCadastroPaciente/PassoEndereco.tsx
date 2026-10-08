@@ -27,6 +27,7 @@ export function PassoEndereco({
 }: PassoEnderecoProps) {
   return (
     <section className="space-y-2">
+      <p className="text-xs text-text-muted">Os dados de endereço são opcionais.</p>
       <div className="grid gap-2 sm:grid-cols-3">
         <Input
           size="compact"

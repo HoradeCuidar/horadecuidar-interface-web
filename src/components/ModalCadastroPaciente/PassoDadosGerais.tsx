@@ -12,6 +12,7 @@ type PassoDadosGeraisProps = {
   setGenero: (v: string) => void
   email: string
   setEmail: (v: string) => void
+  telefoneObrigatorio?: boolean
 }
 
 export function PassoDadosGerais({
@@ -25,20 +26,21 @@ export function PassoDadosGerais({
   setGenero,
   email,
   setEmail,
+  telefoneObrigatorio = true,
 }: PassoDadosGeraisProps) {
   return (
     <section className="space-y-2">
       <div className="grid gap-2 sm:grid-cols-3">
         <Input
           size="compact"
-          label="Nome"
+          label="Nome *"
           placeholder="Digite o nome..."
           value={nome}
           onChange={(e) => setNome(e.target.value)}
         />
         <MaskedInput
           size="compact"
-          label="Telefone"
+          label={telefoneObrigatorio ? 'Telefone *' : 'Telefone (opcional)'}
           mask="(00) 0 0000-0000"
           value={telefone}
           onAccept={(v) => setTelefone(v ?? '')}
@@ -46,7 +48,7 @@ export function PassoDadosGerais({
         />
         <MaskedInput
           size="compact"
-          label="Data de nascimento"
+          label="Data de nascimento *"
           mask="00/00/0000"
           value={dataNascimento}
           onAccept={(v) => setDataNascimento(v ?? '')}
@@ -54,14 +56,14 @@ export function PassoDadosGerais({
         />
         <Select
           size="compact"
-          label="Gênero"
+          label="Gênero *"
           options={[...opcoesGenero]}
           value={genero}
           onChange={(e) => setGenero(e.target.value)}
         />
         <Input
           size="compact"
-          label="E-mail"
+          label="E-mail *"
           type="email"
           placeholder="Digite o e-mail..."
           value={email}

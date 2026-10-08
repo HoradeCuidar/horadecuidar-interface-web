@@ -24,6 +24,7 @@ export function PassoDoencas({
 }: PassoDoencasProps) {
   return (
     <section className="space-y-2">
+      <p className="text-xs text-text-muted">Selecione ao menos uma doença. Observações clínicas são opcionais.</p>
       <div className="grid gap-2 sm:grid-cols-2">
         <SelectDoenca
           options={doencasLista}

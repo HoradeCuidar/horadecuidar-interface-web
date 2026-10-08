@@ -5,6 +5,7 @@ type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> 
   value?: string
   size?: 'default' | 'compact'
   error?: string
+  success?: boolean
   leftIcon?: React.ReactNode
   rightSlot?: React.ReactNode
 }
@@ -14,6 +15,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     label,
     id,
     error,
+    success,
     leftIcon,
     rightSlot,
     size = 'default',
@@ -37,6 +39,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         className={`flex items-center gap-2 rounded-lg border bg-white transition-colors ${
           error
             ? 'border-error-500'
+            : success
+              ? 'border-success-500 focus-within:border-success-500 focus-within:ring-1 focus-within:ring-success-500'
             : 'border-zinc-300 focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500'
         } ${isCompact ? 'px-3.5 py-2.5' : 'px-4 py-3'}`}
       >
