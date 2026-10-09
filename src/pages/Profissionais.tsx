@@ -202,8 +202,9 @@ export function Profissionais() {
 
   async function handleSubmitCadastro(dados: Record<string, string>) {
     try {
-      await profissionalService.cadastrar(dados);
-      toast.success("Profissional cadastrado com sucesso.");
+      const { conviteEnviado } = await profissionalService.cadastrar(dados);
+      if (conviteEnviado) toast.success("Profissional cadastrado e convite enviado.");
+      else toast.warning("Profissional cadastrado, mas o convite por e-mail falhou. Verifique a configuração de envio.");
       setModalAberto(false);
       await loadProfissionais();
     } catch (e) {

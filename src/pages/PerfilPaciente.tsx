@@ -36,6 +36,7 @@ export function PerfilPaciente() {
       <BotaoVoltar onClick={() => navigate('/pacientes')}>Voltar</BotaoVoltar>
 
       <CabecalhoPaciente
+        key={paciente.id}
         paciente={paciente}
         profissionalResponsavel={profissionalResponsavel}
         onRelatorio={() => navigate(`/pacientes/${id}/relatorios/adesao`)}

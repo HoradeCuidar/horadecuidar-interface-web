@@ -10,6 +10,7 @@ import {
 import { PassoDadosGerais } from './ModalCadastroPaciente/PassoDadosGerais'
 import { PassoEndereco } from './ModalCadastroPaciente/PassoEndereco'
 import { PassoCredenciais } from './ModalCadastroPaciente/PassoCredenciais'
+import { dateToApi } from '@/services/profissional.mappers'
 
 type ModalCadastroProfissionalProps = {
   aberto: boolean
@@ -73,6 +74,28 @@ export function ModalCadastroProfissional({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (stepId === 'dados-gerais') {
+      const dataApi = dateToApi(dataNascimento)
+      const [ano, mes, dia] = dataApi.split('-').map(Number)
+      const data = new Date(ano, mes - 1, dia)
+      const hoje = new Date()
+      hoje.setHours(0, 0, 0, 0)
+      const erro = !nome.trim() ? 'Informe o nome.'
+        : !ano || data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia || data >= hoje ? 'Informe uma data de nascimento válida e anterior a hoje.'
+        : !genero ? 'Selecione o gênero.'
+        : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ? 'Informe um e-mail válido.'
+        : telefone && !/^\d{10,11}$/.test(telefone.replace(/\D/g, '')) ? 'Informe um telefone com 10 ou 11 dígitos.'
+        : null
+      if (erro) { toast.error(erro); return }
+    }
+    if (stepId === 'endereco' && estado && !/^[A-Za-z]{2}$/.test(estado)) {
+      toast.error('Estado deve conter 2 letras.')
+      return
+    }
+    if (stepId === 'credenciais') {
+      if (!/^[a-zA-Z0-9._-]+$/.test(username.trim())) { toast.error('Informe um nome de usuário usando letras, números, ponto, hífen ou sublinhado.'); return }
+      if (senha.length < 8) { toast.error('A senha deve ter pelo menos 8 caracteres.'); return }
+    }
     if (!isLastStep) {
       irParaProximoPasso()
       return
@@ -143,6 +166,7 @@ export function ModalCadastroProfissional({
               setDataNascimento={setDataNascimento}
               telefone={telefone}
               setTelefone={setTelefone}
+              telefoneObrigatorio={false}
               genero={genero}
               setGenero={setGenero}
               email={email}

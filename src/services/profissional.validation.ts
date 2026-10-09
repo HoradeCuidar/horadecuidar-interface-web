@@ -1,19 +1,25 @@
 import { dateToApi, onlyDigits } from './profissional.mappers'
 
 export function validarCadastroProfissional(dados: Record<string, string>): string | null {
+  if (!dados.nome?.trim()) return 'Nome é obrigatório.'
+  if (!dados.username?.trim()) return 'Nome de usuário é obrigatório.'
+  if (!dados.senha) return 'Senha é obrigatória.'
   if (!(dados.senha?.length >= 8)) {
     return 'Senha deve ter no mínimo 8 caracteres.'
   }
   const tel = onlyDigits(dados.telefone ?? '')
-  if (tel.length < 10 || tel.length > 11) {
+  if (tel && (tel.length < 10 || tel.length > 11)) {
     return 'Telefone deve conter 10 ou 11 dígitos.'
   }
   const dataStr = dateToApi(dados.dataNascimento ?? '')
-  if (!dataStr) {
-    return 'Data de nascimento inválida. Use dd/mm/yyyy.'
-  }
+  const [ano, mes, dia] = dataStr.split('-').map(Number)
+  const data = new Date(ano, mes - 1, dia)
+  const hoje = new Date()
+  hoje.setHours(0, 0, 0, 0)
+  if (!ano || data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia || data >= hoje)
+    return 'Informe uma data de nascimento válida e anterior a hoje.'
   const estadoStr = (dados.estado?.trim() ?? '').slice(0, 2).toUpperCase()
-  if (estadoStr.length !== 2) {
+  if (estadoStr && !/^[A-Z]{2}$/.test(estadoStr)) {
     return 'Estado deve conter 2 letras (ex.: CE).'
   }
   if (!/^[a-zA-Z0-9._-]+$/.test(dados.username?.trim() ?? '')) {
@@ -22,6 +28,7 @@ export function validarCadastroProfissional(dados: Record<string, string>): stri
   if (!dados.genero?.trim()) {
     return 'Selecione o gênero.'
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email?.trim() ?? '')) return 'Informe um e-mail válido.'
   return null
 }
 

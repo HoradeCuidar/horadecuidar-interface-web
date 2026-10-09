@@ -42,7 +42,7 @@ function mapDetalhes(data: PacienteApiResponse): PacienteDetalhes {
 }
 
 export const pacienteService = {
-  async cadastrar(dados: Record<string, unknown>): Promise<unknown> {
+  async cadastrar(dados: Record<string, unknown>): Promise<{ conviteEnviado: boolean }> {
     const token = authService.getToken()
     if (!token) {
       throw new Error('Faça login para cadastrar um paciente.')
@@ -65,7 +65,8 @@ export const pacienteService = {
       throw new Error(parseApiError(text, 'Erro ao cadastrar paciente.'))
     }
 
-    return res.json()
+    await res.json()
+    return { conviteEnviado: res.headers.get('X-Invitation-Status') === 'sent' }
   },
 
   async listar(): Promise<any[]> {
