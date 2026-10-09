@@ -210,8 +210,9 @@ export function Pacientes() {
   }
 
   async function handleSubmitPaciente(dados: Record<string, unknown>) {
-    await pacienteService.cadastrar(dados);
-    toast.success("Paciente cadastrado com sucesso.");
+    const { conviteEnviado } = await pacienteService.cadastrar(dados);
+    if (conviteEnviado) toast.success("Paciente cadastrado e convite enviado.");
+    else toast.warning("Paciente cadastrado, mas o convite por e-mail falhou. Verifique a configuração de envio.");
     setModalCadastroAberto(false);
     await loadPacientes();
   }

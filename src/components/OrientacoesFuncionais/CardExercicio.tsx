@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { OrientacaoFuncionalResponse } from '@/services/orientacaoFuncional.types'
 import { formatarData } from './orientacaoFuncional.utils'
+import imagemPadrao from '@/assets/alongamento-default-funcional.png'
 
 type CardExercicioProps = {
   item: OrientacaoFuncionalResponse
@@ -20,15 +21,14 @@ export function CardExercicio({
 
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-brand-200 border-l-4 border-l-brand-500 bg-white shadow-card transition hover:shadow-md">
-      {item.urlImagem && (
-        <div className="h-36 w-full overflow-hidden bg-surface-100">
-          <img
-            src={item.urlImagem}
-            alt=""
-            className="size-full object-cover"
-          />
-        </div>
-      )}
+      <div className="h-50 w-full overflow-hidden bg-surface-100">
+        <img
+          src={item.urlImagem?.trim() || imagemPadrao}
+          onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = imagemPadrao }}
+          alt=""
+          className="size-full object-cover"
+        />
+      </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">

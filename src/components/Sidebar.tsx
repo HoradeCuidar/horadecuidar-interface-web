@@ -57,6 +57,7 @@ const grupoExercicios: NavGroupItem = {
 const navPorRole: Record<Role, NavItem[]> = {
   ADMIN: [
     { kind: 'link', to: '/home', label: 'Dashboard', icon: FiGrid },
+    { kind: 'link', to: '/pacientes', label: 'Pacientes', icon: FiUsers },
     {
       kind: 'link',
       to: '/profissionais',

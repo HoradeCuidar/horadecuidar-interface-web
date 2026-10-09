@@ -9,6 +9,7 @@ import {
   ModalConfirmacaoExcluirDoenca,
 } from '@/components'
 import { doencaService } from '@/services/doenca'
+import { dateToApi } from '@/services/profissional.mappers'
 import { toast } from 'sonner'
 import { PassoDadosGerais } from './ModalCadastroPaciente/PassoDadosGerais'
 import { PassoEndereco } from './ModalCadastroPaciente/PassoEndereco'
@@ -99,6 +100,28 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
     if (next) setStepId(next.id)
   }
 
+  function validarPasso(): string | null {
+    if (stepId === 'dados-gerais') {
+      if (!nome.trim()) return 'Informe o nome.'
+      if (!/^\d{10,11}$/.test(telefone.replace(/\D/g, ''))) return 'Informe um telefone com 10 ou 11 dígitos.'
+      // MaskedInput entrega os dígitos sem as barras por padrão.
+      const dataApi = dateToApi(dataNascimento)
+      const [ano, mes, dia] = dataApi.split('-').map(Number)
+      const data = new Date(ano, mes - 1, dia)
+      const hoje = new Date()
+      hoje.setHours(0, 0, 0, 0)
+      if (!ano || data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia || data >= hoje) return 'Informe uma data de nascimento válida e anterior a hoje.'
+      if (!genero) return 'Selecione o gênero.'
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return 'Informe um e-mail válido.'
+    }
+    // if (stepId === 'doencas' && doencaIds.length === 0) return 'Selecione ao menos uma doença.'
+    if (stepId === 'credenciais') {
+      if (!/^[a-zA-Z0-9._-]+$/.test(username.trim())) return 'Informe um nome de usuário usando letras, números, ponto, hífen ou sublinhado.'
+      if (senha.length < 8) return 'A senha deve ter pelo menos 8 caracteres.'
+    }
+    return null
+  }
+
   function irParaPassoAnterior() {
     const prev = passos[currentIndex - 1]
     if (prev) setStepId(prev.id)
@@ -162,6 +185,11 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    const erro = validarPasso()
+    if (erro) {
+      toast.error(erro)
+      return
+    }
     if (!isLastStep) {
       irParaProximoPasso()
       return

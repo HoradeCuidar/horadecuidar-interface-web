@@ -92,7 +92,24 @@ export const API_ENDPOINTS = {
     detalhamento: (pacienteId: number) =>
       `/api/pacientes/${pacienteId}/relatorios/adesao/orientacoes-funcionais/detalhamento`,
   },
+  exames: {
+    listar: (pacienteId: number) => `/api/participantes/${pacienteId}/exames`,
+    cadastrar: (pacienteId: number) => `/api/participantes/${pacienteId}/exames`,
+    detalhes: (exameId: number) => `/api/exames/${exameId}`,
+    arquivo: (exameId: number) => `/api/exames/${exameId}/arquivo`,
+    corrigir: (exameId: number) => `/api/exames/${exameId}`,
+    agendar: (exameId: number) => `/api/exames/${exameId}/agendamento`,
+    publicar: (exameId: number) => `/api/exames/${exameId}/publicacao`,
+  },
   prescricaoNutricional: {
     cadastrar: '/api/nutricional/cadastrar',
+    visualizarTodos: (pacienteId: number) =>
+      `/api/nutricional/visualizarTodos/${pacienteId}`,
+    visualizar: (prescricaoId: number) =>
+      `/api/nutricional/visualizar/${prescricaoId}`,
+    ativar: (prescricaoId: number) =>
+      `/api/nutricional/ativar/${prescricaoId}`,
+    inativar: (prescricaoId: number) =>
+      `/api/nutricional/inativar/${prescricaoId}`,
   },
 }

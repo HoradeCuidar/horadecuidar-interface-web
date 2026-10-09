@@ -5,6 +5,7 @@ import { AbaMedicamentos } from './AbaMedicamentos'
 import { AbaAvaliacaoFisica } from '@/components/AvaliacaoFisica'
 import { AbaHistoricoRealizacao } from '@/components/HistoricoRealizacao'
 import { AbaAlimentacao } from './AbaAlimentacao'
+import { AbaExames } from '@/components/Exames/AbaExames'
 import { ABAS_PERFIL_PACIENTE } from './perfilPaciente.constants'
 import type { AbaPerfil } from './perfilPaciente.types'
 
@@ -75,7 +76,14 @@ export function PerfilPacienteAbas({
       </TabsContent>
 
       <TabsContent value="alimentacao">
-        <AbaAlimentacao onNovaPrescricao={onNovaPrescricaoNutricional} />
+        <AbaAlimentacao
+          pacienteId={paciente.id}
+          onNovaPrescricao={onNovaPrescricaoNutricional}
+        />
+      </TabsContent>
+
+      <TabsContent value="exames">
+        <AbaExames pacienteId={paciente.id} nomePaciente={paciente.nome} />
       </TabsContent>
     </Tabs>
   )

@@ -9,12 +9,14 @@ type FotoPerfilUploadProps = {
   nome: string
   fotoUrl: string | null
   onFotoAtualizada: (url: string) => void
+  usuarioId?: number
 }
 
 export function FotoPerfilUpload({
   nome,
   fotoUrl,
   onFotoAtualizada,
+  usuarioId,
 }: FotoPerfilUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [previewSrc, setPreviewSrc] = useState<string | null>(null)
@@ -51,8 +53,8 @@ export function FotoPerfilUpload({
   async function handleConfirmarCrop(file: File) {
     setEnviando(true)
     try {
-      const url = await uploadService.uploadFotoPerfil(file)
-      authService.updateUser({ fotoDePerfil: url })
+      const url = await uploadService.uploadFotoPerfil(file, usuarioId)
+      if (usuarioId == null) authService.updateUser({ fotoDePerfil: url })
       onFotoAtualizada(url)
       toast.success('Foto de perfil atualizada.')
     } catch (err) {

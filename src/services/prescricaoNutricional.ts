@@ -6,7 +6,10 @@ import {
   formToPrescricaoNutricionalRequest,
   validarPrescricaoNutricionalForm,
 } from './prescricaoNutricional.mappers'
-import type { PrescricaoNutricionalResponse } from './prescricaoNutricional.types'
+import type {
+  PrescricaoNutricionalResponse,
+  PrescricaoNutricionalResumo,
+} from './prescricaoNutricional.types'
 
 function authHeaders(): HeadersInit {
   const token = authService.getToken()
@@ -15,6 +18,15 @@ function authHeaders(): HeadersInit {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   }
+}
+
+async function parseJson<T>(res: Response, fallback: string): Promise<T> {
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(parseApiError(text, fallback))
+  }
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
 }
 
 export const prescricaoNutricionalService = {
@@ -34,11 +46,50 @@ export const prescricaoNutricionalService = {
       body: JSON.stringify(payload),
     })
 
-    if (!res.ok) {
-      const text = await res.text()
-      throw new Error(parseApiError(text, 'Erro ao cadastrar prescrição nutricional.'))
-    }
+    return parseJson<PrescricaoNutricionalResponse>(
+      res,
+      'Erro ao cadastrar prescrição nutricional.'
+    )
+  },
 
-    return res.json() as Promise<PrescricaoNutricionalResponse>
+  async listarPorPaciente(
+    pacienteId: number
+  ): Promise<PrescricaoNutricionalResumo[]> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoNutricional.visualizarTodos(pacienteId)}`
+    const res = await fetch(url, { method: 'GET', headers: authHeaders() })
+    const data = await parseJson<PrescricaoNutricionalResumo[]>(
+      res,
+      'Erro ao listar prescrições nutricionais.'
+    )
+    return data ?? []
+  },
+
+  async buscarPorId(
+    prescricaoId: number
+  ): Promise<PrescricaoNutricionalResponse> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoNutricional.visualizar(prescricaoId)}`
+    const res = await fetch(url, { method: 'GET', headers: authHeaders() })
+    return parseJson<PrescricaoNutricionalResponse>(
+      res,
+      'Erro ao carregar detalhe da prescrição nutricional.'
+    )
+  },
+
+  async ativar(prescricaoId: number): Promise<PrescricaoNutricionalResumo> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoNutricional.ativar(prescricaoId)}`
+    const res = await fetch(url, { method: 'PATCH', headers: authHeaders() })
+    return parseJson<PrescricaoNutricionalResumo>(
+      res,
+      'Erro ao ativar a prescrição nutricional.'
+    )
+  },
+
+  async inativar(prescricaoId: number): Promise<PrescricaoNutricionalResumo> {
+    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoNutricional.inativar(prescricaoId)}`
+    const res = await fetch(url, { method: 'PATCH', headers: authHeaders() })
+    return parseJson<PrescricaoNutricionalResumo>(
+      res,
+      'Erro ao inativar a prescrição nutricional.'
+    )
   },
 }

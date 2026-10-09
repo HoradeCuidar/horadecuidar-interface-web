@@ -5,7 +5,7 @@ import { parseApiError } from './apiErrors'
 const MAX_BYTES = 5 * 1024 * 1024
 
 export const uploadService = {
-  async uploadFotoPerfil(file: File): Promise<string> {
+  async uploadFotoPerfil(file: File, usuarioId?: number): Promise<string> {
     const token = authService.getToken()
     if (!token) {
       throw new Error('Faça login para enviar a foto de perfil.')
@@ -21,7 +21,7 @@ export const uploadService = {
     const formData = new FormData()
     formData.append('file', file)
 
-    const url = `${API_BASE_URL}${API_ENDPOINTS.upload.fotoPerfil}`
+    const url = `${API_BASE_URL}${API_ENDPOINTS.upload.fotoPerfil}${usuarioId == null ? '' : `/${usuarioId}`}`
     let res: Response
     try {
       res = await fetch(url, {

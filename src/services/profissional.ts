@@ -11,7 +11,7 @@ import { parseApiError } from './apiErrors'
 export type { CadastroProfissionalPayload } from './profissional.mappers'
 
 export const profissionalService = {
-  async cadastrar(dados: Record<string, string>): Promise<unknown> {
+  async cadastrar(dados: Record<string, string>): Promise<{ conviteEnviado: boolean }> {
     const token = authService.getToken()
     if (!token) {
       throw new Error('Faça login para cadastrar um profissional.')
@@ -37,7 +37,8 @@ export const profissionalService = {
       throw new Error(parseApiError(text, 'Erro ao cadastrar profissional.'))
     }
 
-    return res.json()
+    await res.json()
+    return { conviteEnviado: res.headers.get('X-Invitation-Status') === 'sent' }
   },
   async listar(): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string }>> {
     const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.visualizarTodos}?page=0&size=100`
