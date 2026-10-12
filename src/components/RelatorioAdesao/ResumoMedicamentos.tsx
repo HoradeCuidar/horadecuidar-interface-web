@@ -3,9 +3,10 @@ import {
   CircleDashed,
   Percent,
   Pill,
+  Utensils,
   XCircle,
 } from 'lucide-react'
-import type { ResumoAdesaoMedicamento } from '@/services'
+import type { ResumoAdesaoMedicamento, ResumoAdesaoNutricional } from '@/services'
 import { formatarPercentual } from './relatorioAdesao.utils'
 
 type IconType = React.ComponentType<{
@@ -60,20 +61,22 @@ function Cartao({
   )
 }
 
-export function ResumoMedicamentos({
+function ResumoAdesao({
   dados,
+  nutricional = false,
 }: {
-  dados: ResumoAdesaoMedicamento
+  dados: ResumoAdesaoMedicamento | ResumoAdesaoNutricional
+  nutricional?: boolean
 }) {
   return (
     <section
       className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
-      aria-label="Resumo de adesão a medicamentos"
+      aria-label={nutricional ? 'Resumo de adesão nutricional' : 'Resumo de adesão a medicamentos'}
     >
       <Cartao
-        titulo="Doses esperadas"
+        titulo={nutricional ? 'Refeições esperadas' : 'Doses esperadas'}
         valor={dados.esperado.toLocaleString('pt-BR')}
-        Icone={Pill}
+        Icone={nutricional ? Utensils : Pill}
         tom="azul"
       />
       <Cartao
@@ -102,4 +105,12 @@ export function ResumoMedicamentos({
       />
     </section>
   )
+}
+
+export function ResumoMedicamentos({ dados }: { dados: ResumoAdesaoMedicamento }) {
+  return <ResumoAdesao dados={dados} />
+}
+
+export function ResumoNutricional({ dados }: { dados: ResumoAdesaoNutricional }) {
+  return <ResumoAdesao dados={dados} nutricional />
 }

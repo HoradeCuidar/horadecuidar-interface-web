@@ -21,6 +21,7 @@ export function limitarPercentual(valor: number | null | undefined): number {
 export function labelTipoOcorrencia(tipo: string): string {
   const map: Record<string, string> = {
     MEDICAMENTO: 'Medicamento',
+    NUTRICIONAL: 'Refeições',
     ALIMENTACAO: 'Alimentação',
   }
   return map[tipo] ?? tipo
