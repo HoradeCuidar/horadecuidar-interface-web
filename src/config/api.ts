@@ -86,6 +86,14 @@ export const API_ENDPOINTS = {
     detalhamento: (pacienteId: number) =>
       `/api/pacientes/${pacienteId}/relatorios/adesao/medicamentos/detalhamento`,
   },
+  relatorioAdesaoNutricional: {
+    resumo: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/nutricional/resumo`,
+    evolucao: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/nutricional/evolucao`,
+    detalhamento: (pacienteId: number) =>
+      `/api/pacientes/${pacienteId}/relatorios/adesao/nutricional/detalhamento`,
+  },
   relatorioOrientacaoFuncional: {
     resumo: (pacienteId: number) =>
       `/api/pacientes/${pacienteId}/relatorios/adesao/orientacoes-funcionais/resumo`,

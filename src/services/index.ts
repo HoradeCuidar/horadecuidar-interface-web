@@ -32,6 +32,15 @@ export type {
   PageDetalhamentoMedicamento,
 } from './relatorioAdesaoMedicamento.types'
 export { periodoPadraoUltimos14Dias } from './relatorioAdesaoMedicamento.types'
+export { relatorioAdesaoNutricionalService } from './relatorioAdesaoNutricional'
+export type {
+  ResumoAdesaoNutricional,
+  EvolucaoAdesaoNutricional,
+  PeriodoEvolucaoNutricional,
+  DetalhamentoAdesaoNutricional,
+  DetalhamentoDiarioNutricional,
+  PageDetalhamentoNutricional,
+} from './relatorioAdesaoNutricional.types'
 export { relatorioOrientacaoFuncionalService } from './relatorioOrientacaoFuncional'
 export type {
   ResumoOrientacaoFuncional,

@@ -6,6 +6,7 @@ import {
   RelatorioAdesaoErro,
   RelatorioAdesaoSkeleton,
   ResumoMedicamentos,
+  ResumoNutricional,
   ResumoOrientacoes,
   SeletorPeriodo,
   TabelaDetalhamento,
@@ -14,13 +15,14 @@ import {
 import { PerfilPacienteSkeleton } from '@/components/PerfilPaciente/PerfilPacienteSkeleton'
 import { usePerfilPaciente } from '@/hooks/usePerfilPaciente'
 import { useRelatorioAdesaoMedicamento } from '@/hooks/useRelatorioAdesaoMedicamento'
+import { useRelatorioAdesaoNutricional } from '@/hooks/useRelatorioAdesaoNutricional'
 import { useRelatorioOrientacaoFuncional } from '@/hooks/useRelatorioOrientacaoFuncional'
 import {
   periodoPadraoUltimos14Dias,
   type PeriodoRelatorio,
 } from '@/services'
 
-type AbaRelatorio = 'medicamentos' | 'orientacoes'
+type AbaRelatorio = 'medicamentos' | 'nutricional' | 'orientacoes'
 
 export function RelatorioAdesao() {
   const { id } = useParams<{ id: string }>()
@@ -51,8 +53,14 @@ export function RelatorioAdesao() {
     enabled: aba === 'orientacoes',
   })
 
+  const nut = useRelatorioAdesaoNutricional({
+    pacienteId: pacienteIdValido,
+    periodo: periodoAplicado,
+    enabled: aba === 'nutricional',
+  })
+
   const carregandoPeriodo =
-    aba === 'medicamentos' ? med.carregando : ori.carregando
+    aba === 'medicamentos' ? med.carregando : aba === 'nutricional' ? nut.carregando : ori.carregando
 
   function voltarPerfil() {
     navigate(`/pacientes/${id}`)
@@ -93,6 +101,11 @@ export function RelatorioAdesao() {
         onChange={setPeriodoDraft}
         onAplicar={aplicarPeriodo}
         carregando={carregandoPeriodo}
+        descricao={aba === 'nutricional'
+          ? 'Selecione o intervalo para analisar a adesão às refeições prescritas.'
+          : aba === 'orientacoes'
+            ? 'Selecione o intervalo para analisar as orientações funcionais.'
+            : undefined}
       />
 
       <Tabs
@@ -102,6 +115,7 @@ export function RelatorioAdesao() {
       >
         <TabsList>
           <TabsTrigger value="medicamentos">Medicamentos</TabsTrigger>
+          <TabsTrigger value="nutricional">Nutricional</TabsTrigger>
           <TabsTrigger value="orientacoes">Orientações</TabsTrigger>
         </TabsList>
 
@@ -122,6 +136,28 @@ export function RelatorioAdesao() {
                 carregando={med.carregandoDetalhe}
                 onPaginaAnterior={med.paginaAnterior}
                 onPaginaProxima={med.paginaProxima}
+              />
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="nutricional">
+          {nut.carregando ? (
+            <RelatorioAdesaoSkeleton />
+          ) : nut.erro || !nut.resumo || !nut.evolucao || !nut.detalhamento ? (
+            <RelatorioAdesaoErro
+              mensagem={nut.erro}
+              onRetry={() => void nut.recarregar()}
+            />
+          ) : (
+            <div className="space-y-5">
+              <ResumoNutricional dados={nut.resumo} />
+              <EvolucaoSemanal dados={nut.evolucao} />
+              <TabelaDetalhamento
+                pagina={nut.detalhamento}
+                carregando={nut.carregandoDetalhe}
+                onPaginaAnterior={nut.paginaAnterior}
+                onPaginaProxima={nut.paginaProxima}
               />
             </div>
           )}

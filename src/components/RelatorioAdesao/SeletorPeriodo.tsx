@@ -6,6 +6,7 @@ type SeletorPeriodoProps = {
   onChange: (periodo: PeriodoRelatorio) => void
   onAplicar: () => void
   carregando?: boolean
+  descricao?: string
 }
 
 export function SeletorPeriodo({
@@ -13,12 +14,13 @@ export function SeletorPeriodo({
   onChange,
   onAplicar,
   carregando = false,
+  descricao = 'Selecione o intervalo para analisar a adesão aos medicamentos.',
 }: SeletorPeriodoProps) {
   return (
     <section className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm sm:p-6">
       <h2 className="font-heading text-base font-semibold text-text">Período</h2>
       <p className="mt-1 text-sm text-text-muted">
-        Selecione o intervalo para analisar a adesão aos medicamentos.
+        {descricao}
       </p>
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
