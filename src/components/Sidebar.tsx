@@ -45,12 +45,12 @@ const ROLE_LABEL: Record<Role, string> = {
 
 const grupoExercicios: NavGroupItem = {
   kind: 'group',
-  label: 'Exercícios',
+  label: 'Orientações funcionais',
   icon: LuDumbbell,
   matchPrefix: '/atividades',
   children: [
     { to: '/atividades', label: 'Catálogo' },
-    { to: '/atividades/tags', label: 'Tags' },
+    { to: '/atividades/tags', label: 'Categorias e tags' },
   ],
 }
 
@@ -74,6 +74,7 @@ const navPorRole: Record<Role, NavItem[]> = {
     { kind: 'link', to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PACIENTE: [
+    { kind: 'link', to: '/atividades', label: 'Orientações funcionais', icon: LuDumbbell },
     { kind: 'link', to: '/home', label: 'Dashboard', icon: FiGrid },
     { kind: 'link', to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
@@ -123,7 +124,7 @@ function NavGroup({
         }`}
       >
         <Icon className="size-5 shrink-0" aria-hidden />
-        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+        <span className="min-w-0 flex-1 whitespace-normal text-left leading-tight">{item.label}</span>
         <FiChevronDown
           className={`size-4 shrink-0 transition-transform ${aberto ? 'rotate-180' : ''}`}
           aria-hidden
