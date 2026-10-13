@@ -1,3 +1,4 @@
+import { DetalheOrientacao } from '@/pages/DetalheOrientacao'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuthLayout, MainLayout } from '@/layouts'
 import {
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
       { path: 'atividades/tags/:id/editar', element: <EditarTag /> },
       { path: 'atividades', element: <Atividades /> },
       { path: 'atividades/nova', element: <CadastroAtividade /> },
+      { path: 'atividades/:id', element: <DetalheOrientacao /> },
       { path: 'atividades/:id/editar', element: <EditarAtividade /> },
       { path: 'meu-perfil', element: <MeuPerfil /> },
     ],

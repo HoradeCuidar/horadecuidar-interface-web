@@ -37,7 +37,7 @@ export function CadastroTag() {
         <div className="mx-auto w-full max-w-2xl">
           <FormularioTag
             titulo="Nova tag"
-            descricaoPagina="Cadastre uma tag para classificar exercícios do catálogo."
+            descricaoPagina="Cadastre uma tag para classificar orientações do catálogo."
             labelSalvar="Salvar tag"
             salvando={salvando}
             onSubmit={handleSubmit}

@@ -1,121 +1,30 @@
-﻿import { useNavigate } from 'react-router-dom'
-import { FiEdit2, FiTrash2, FiSlash, FiCheckCircle } from 'react-icons/fi'
+import { useNavigate } from 'react-router-dom'
+import { FiEdit2, FiSlash } from 'react-icons/fi'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { BotaoOrientacao as Button } from './BotaoOrientacao'
+import { authService } from '@/services'
 import type { OrientacaoFuncionalResponse } from '@/services/orientacaoFuncional.types'
-import { formatarData } from './orientacaoFuncional.utils'
 import imagemPadrao from '@/assets/alongamento-default-funcional.png'
 
-type CardExercicioProps = {
-  item: OrientacaoFuncionalResponse
-  onAlterarStatus: (item: OrientacaoFuncionalResponse) => void
-  onExcluir: (item: OrientacaoFuncionalResponse) => void
-}
-
-export function CardExercicio({
-  item,
-  onAlterarStatus,
-  onExcluir,
-}: CardExercicioProps) {
+export function CardExercicio({ item, onAlterarStatus }: {
+  item: OrientacaoFuncionalResponse; onAlterarStatus: (item: OrientacaoFuncionalResponse) => void
+}) {
   const navigate = useNavigate()
-
-  return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-brand-200 border-l-4 border-l-brand-500 bg-white shadow-card transition hover:shadow-md">
-      <div className="h-50 w-full overflow-hidden bg-surface-100">
-        <img
-          src={item.urlImagem?.trim() || imagemPadrao}
-          onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = imagemPadrao }}
-          alt=""
-          className="size-full object-cover"
-        />
+  const profissional = ['ADMIN', 'PROFISSIONAL_DA_SAUDE'].includes(authService.getUser()?.role ?? '')
+  const capa = item.midias.find(m => m.capa)
+  const status = { RASCUNHO: 'Rascunho', PUBLICADA: 'Publicada', INATIVA: 'Inativa' }
+  return <article className="flex flex-col overflow-hidden rounded-xl border border-brand-200 border-l-4 border-l-brand-500 bg-white shadow-card">
+    <img src={capa?.url || imagemPadrao} alt={capa?.textoAlternativo || ''} className="h-50 w-full bg-surface-100 object-cover" />
+    <div className="flex flex-1 flex-col gap-3 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-heading font-bold text-text">{item.nome}</h2>{profissional && <Badge variant="outline">{status[item.status]}</Badge>}</div>
+      {item.categoria && <span className="w-fit rounded-full bg-amber-100 px-2 py-1 text-xs text-amber-800">{item.categoria.nome}</span>}
+      <p className="line-clamp-3 text-sm text-text-muted">{item.resumo || 'Resumo não preenchido.'}</p>
+      <div className="flex flex-wrap gap-1">{item.tags.map(tag => <span key={tag.id} className="rounded-full bg-brand-100 px-2 py-1 text-xs text-brand-700">{tag.nome}</span>)}</div>
+      <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-zinc-100 pt-3">
+        <Button variant="outline" onClick={() => navigate(`/atividades/${item.id}`)}>Ver instruções e cuidados</Button>
+        {profissional && <><Button variant="ghost" size="icon" title="Editar orientação" aria-label="Editar orientação" onClick={() => navigate(`/atividades/${item.id}/editar`)}><FiEdit2 /></Button>
+          {item.status !== 'INATIVA' && <Button variant="ghost" size="icon" title="Inativar orientação" aria-label="Inativar orientação" onClick={() => onAlterarStatus(item)}><FiSlash className="text-red-500" /></Button>}</>}
       </div>
-
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-heading text-sm font-bold tracking-tight text-text">
-            {item.nome}
-          </h3>
-          <div className="flex shrink-0 items-center gap-0.5">
-            <Badge
-              className={`border-0 px-2.5 py-0.5 text-[11px] font-semibold text-white ${
-                item.ativo ? 'bg-success-500' : 'bg-error-500'
-              }`}
-            >
-              {item.ativo ? 'Ativa' : 'Inativa'}
-            </Badge>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
-              title="Editar exercício"
-              onClick={() => navigate(`/atividades/${item.id}/editar`)}
-            >
-              <FiEdit2 className="size-4" aria-hidden />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className={`h-8 w-8 ${
-                item.ativo
-                  ? 'text-error-500 hover:bg-error-500/15 hover:text-error-700'
-                  : 'text-success-500 hover:bg-success-500/15 hover:text-success-700'
-              }`}
-              title={item.ativo ? 'Inativar exercício' : 'Ativar exercício'}
-              onClick={() => onAlterarStatus(item)}
-            >
-              {item.ativo ? (
-                <FiSlash className="size-4" aria-hidden />
-              ) : (
-                <FiCheckCircle className="size-4" aria-hidden />
-              )}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-error-500 hover:bg-error-500/15 hover:text-error-700"
-              title="Excluir exercício"
-              onClick={() => onExcluir(item)}
-            >
-              <FiTrash2 className="size-4" aria-hidden />
-            </Button>
-          </div>
-        </div>
-
-        {item.descricao && (
-          <p className="line-clamp-3 text-xs text-text-muted">{item.descricao}</p>
-        )}
-
-        {item.finalidade && (
-          <p className="line-clamp-2 text-xs text-text-muted">
-            <span className="font-medium text-text">Finalidade: </span>
-            {item.finalidade}
-          </p>
-        )}
-
-        {item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {item.tags.map((tag) => (
-              <span
-                key={tag.id}
-                title={tag.descricao ?? undefined}
-                className="rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-medium text-brand-700"
-              >
-                {tag.nome}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-auto space-y-0.5 border-t border-zinc-100 pt-2">
-          <p className="text-[11px] text-text-muted">{item.responsavel.nome}</p>
-          <p className="text-[11px] text-text-muted">
-            Cadastrado em {formatarData(item.dataCriacao)}
-          </p>
-        </div>
-      </div>
-    </article>
-  )
+    </div>
+  </article>
 }

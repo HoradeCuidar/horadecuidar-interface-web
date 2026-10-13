@@ -26,12 +26,12 @@ export function ModalConfirmacaoExcluirTag({
     setConfirmando(true)
     try {
       await tagFuncionalService.excluir(tagId)
-      toast.success('Tag excluída com sucesso.')
+      toast.success('Tag inativada com sucesso.')
       onSucesso()
       onFechar()
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao excluir a tag.'
+        error instanceof Error ? error.message : 'Erro ao inativar a tag.'
       )
     } finally {
       setConfirmando(false)
@@ -42,7 +42,7 @@ export function ModalConfirmacaoExcluirTag({
     <Modal
       aberto={aberto}
       onFechar={onFechar}
-      titulo="Excluir tag"
+      titulo="Inativar tag"
       largura="sm"
       showCloseButton
       footer={
@@ -56,7 +56,7 @@ export function ModalConfirmacaoExcluirTag({
             disabled={confirmando}
             className="rounded-lg bg-error-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-error-700 disabled:opacity-50"
           >
-            {confirmando ? 'Excluindo...' : 'Excluir'}
+            {confirmando ? 'Excluindo...' : 'Inativar'}
           </button>
         </>
       }
@@ -79,11 +79,11 @@ export function ModalConfirmacaoExcluirTag({
           </svg>
         </div>
         <h3 className="mb-1 font-heading text-base font-bold tracking-tight text-text">
-          Excluir &quot;{nomeTag}&quot;?
+          Inativar &quot;{nomeTag}&quot;?
         </h3>
         <p className="text-sm text-text-muted">
-          Esta ação não poderá ser desfeita. Se a tag estiver vinculada a
-          exercícios, ela será removida mesmo assim.
+          A tag deixará de ser oferecida em novos cadastros. As orientações
+          que já utilizam esta tag manterão seu vínculo.
         </p>
       </div>
     </Modal>
