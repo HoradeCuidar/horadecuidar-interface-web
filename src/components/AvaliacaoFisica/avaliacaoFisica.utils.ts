@@ -126,3 +126,18 @@ export function labelFlexibilidade(valor: FlexibilidadeFisica): string {
   if (valor === 'MEDIA') return 'Média'
   return 'Excelente'
 }
+
+export function tituloAvaliacao(avaliacao: {
+  realizaAtividadeFisica: boolean
+  atividadeRealizada: string | null
+}): string {
+  const nome = avaliacao.atividadeRealizada?.trim()
+  if (avaliacao.realizaAtividadeFisica && nome) return nome
+  if (!avaliacao.realizaAtividadeFisica) return 'Sem atividade física regular'
+  return 'Avaliação física'
+}
+
+export function formatarForcaKg(valor: number | null): string | null {
+  if (valor == null || !Number.isFinite(valor)) return null
+  return `${valor.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} kg`
+}

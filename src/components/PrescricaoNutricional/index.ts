@@ -1,6 +1,8 @@
 export { FormularioPrescricaoNutricional } from './FormularioPrescricaoNutricional'
 export { CardPrescricaoNutricional } from './CardPrescricaoNutricional'
 export { DetalhePrescricaoNutricional } from './DetalhePrescricaoNutricional'
+export { CardRefeicaoLeitura } from './CardRefeicaoLeitura'
+export { LinhaAlimentoLeitura } from './LinhaAlimentoLeitura'
 export { ModalConfirmacaoStatusPrescricaoNutricional } from './ModalConfirmacaoStatusPrescricaoNutricional'
 export type { AcaoStatusPrescricaoNutricional } from './ModalConfirmacaoStatusPrescricaoNutricional'
 export {

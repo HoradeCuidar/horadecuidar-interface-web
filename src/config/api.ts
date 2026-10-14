@@ -119,5 +119,7 @@ export const API_ENDPOINTS = {
       `/api/nutricional/ativar/${prescricaoId}`,
     inativar: (prescricaoId: number) =>
       `/api/nutricional/inativar/${prescricaoId}`,
+    editar: (prescricaoId: number) =>
+      `/api/nutricional/editar/${prescricaoId}`,
   },
 }

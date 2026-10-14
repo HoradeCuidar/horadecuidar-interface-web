@@ -26,3 +26,17 @@ export function formatarVencimento(dias: number): string {
 export function limitarPercentual(percentual: number): number {
   return Math.min(100, Math.max(0, percentual))
 }
+
+export function calcularPrevalencia(
+  quantidade: number,
+  participantesAtivos: number
+): number {
+  if (participantesAtivos <= 0) return 0
+  return limitarPercentual((quantidade / participantesAtivos) * 100)
+}
+
+export function formatarPercentual(valor: number): string {
+  return `${limitarPercentual(valor).toLocaleString('pt-BR', {
+    maximumFractionDigits: 1,
+  })}%`
+}

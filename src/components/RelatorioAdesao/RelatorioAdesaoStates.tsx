@@ -32,7 +32,7 @@ export function RelatorioAdesaoErro({
       <button
         type="button"
         onClick={onRetry}
-        className="mt-4 text-sm font-semibold text-brand-600 hover:underline"
+        className="mt-4 text-sm font-semibold text-brand-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
       >
         Tentar novamente
       </button>

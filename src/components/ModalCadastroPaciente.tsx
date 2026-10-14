@@ -215,7 +215,7 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
       handleLimpar()
       onFechar()
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Erro ao cadastrar paciente.')
+      toast.error(e instanceof Error ? e.message : 'Erro ao Cadastrar Participante.')
     }
   }
 
@@ -227,7 +227,7 @@ export function ModalCadastroPaciente({ aberto, onFechar, onSubmit }: ModalCadas
           handleLimpar()
           onFechar()
         }}
-        titulo="Cadastrar Paciente"
+        titulo="Cadastrar Participante"
         largura="md"
         altura="tall"
         headerTone="blue"

@@ -29,7 +29,7 @@ export function useRelatorioOrientacaoFuncional({
     if (!enabled) return
 
     if (pacienteId == null || Number.isNaN(pacienteId)) {
-      setErro('Paciente inválido.')
+      setErro('Participante inválido.')
       setCarregando(false)
       return
     }

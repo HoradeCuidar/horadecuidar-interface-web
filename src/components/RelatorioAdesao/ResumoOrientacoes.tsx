@@ -1,73 +1,67 @@
-import { Activity, Clock } from 'lucide-react'
+import { Activity, Clock, Target } from 'lucide-react'
 import type { ResumoOrientacaoFuncional } from '@/services'
+import { CartaoMetrica } from './CartaoMetrica'
 import { formatarDuracaoMinutos } from './relatorioAdesao.utils'
-
-type IconType = React.ComponentType<{
-  className?: string
-  'aria-hidden'?: boolean
-}>
-
-function Cartao({
-  titulo,
-  valor,
-  Icone,
-  tom,
-}: {
-  titulo: string
-  valor: string
-  Icone: IconType
-  tom: 'azul' | 'verde'
-}) {
-  const estilos = {
-    azul: 'bg-brand-100 text-brand-500',
-    verde: 'bg-emerald-100 text-emerald-600',
-  }
-  const coresValor = {
-    azul: 'text-[#3f5f9f]',
-    verde: 'text-emerald-600',
-  }
-
-  return (
-    <article className="flex min-h-22 items-center gap-4 rounded-2xl border border-zinc-100 bg-white px-5 py-4 shadow-sm">
-      <span
-        className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${estilos[tom]}`}
-      >
-        <Icone className="size-6" aria-hidden />
-      </span>
-      <div className="min-w-0">
-        <p
-          className={`font-heading text-2xl font-bold leading-none ${coresValor[tom]}`}
-        >
-          {valor}
-        </p>
-        <p className="mt-1 text-xs leading-snug text-text-muted">{titulo}</p>
-      </div>
-    </article>
-  )
-}
 
 export function ResumoOrientacoes({
   dados,
 }: {
   dados: ResumoOrientacaoFuncional
 }) {
+  const tempoMedio =
+    dados.quantidade > 0
+      ? Math.round(dados.tempoRealizacao / dados.quantidade)
+      : null
+
   return (
     <section
-      className="grid gap-4 sm:grid-cols-2"
+      className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
       aria-label="Resumo de orientações funcionais"
     >
-      <Cartao
+      <CartaoMetrica
         titulo="Realizações no período"
         valor={dados.quantidade.toLocaleString('pt-BR')}
         Icone={Activity}
         tom="azul"
+        rodape={
+          dados.quantidade === 0
+            ? 'Nenhuma execução confirmada no intervalo'
+            : `${dados.quantidade === 1 ? '1 execução confirmada' : `${dados.quantidade} execuções confirmadas`}`
+        }
       />
-      <Cartao
-        titulo="Tempo total de realização"
+      <CartaoMetrica
+        titulo="Tempo total ativo"
         valor={formatarDuracaoMinutos(dados.tempoRealizacao)}
         Icone={Clock}
         tom="verde"
+        rodape={
+          tempoMedio != null
+            ? `Média de ${formatarDuracaoMinutos(tempoMedio)} por sessão`
+            : 'Sem sessões para calcular média'
+        }
+      />
+      <CartaoMetrica
+        titulo="Período analisado"
+        valor={rotuloPeriodoCurto(dados.dataInicial, dados.dataFinal)}
+        Icone={Target}
+        tom="neutro"
+        rodape={`${formatarDataBrLocal(dados.dataInicial)} – ${formatarDataBrLocal(dados.dataFinal)}`}
       />
     </section>
   )
+}
+
+function formatarDataBrLocal(iso: string): string {
+  const [y, m, d] = iso.slice(0, 10).split('-')
+  if (!y || !m || !d) return iso
+  return `${d}/${m}/${y}`
+}
+
+function rotuloPeriodoCurto(inicio: string, fim: string): string {
+  const a = new Date(`${inicio.slice(0, 10)}T12:00:00`)
+  const b = new Date(`${fim.slice(0, 10)}T12:00:00`)
+  if (Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return '—'
+  const dias =
+    Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  return `${dias} ${dias === 1 ? 'dia' : 'dias'}`
 }

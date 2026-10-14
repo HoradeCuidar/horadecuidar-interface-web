@@ -48,13 +48,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         <input
           ref={ref}
           id={inputId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${inputId}-erro` : undefined}
           className={`min-w-0 flex-1 border-0 bg-transparent text-text placeholder:text-sm placeholder:text-text-muted focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
           {...rest}
         />
         {rightSlot && <span className="shrink-0 text-text-muted">{rightSlot}</span>}
       </div>
       {error && (
-        <p className="mt-1 text-sm text-error">
+        <p id={`${inputId}-erro`} className="mt-1 text-sm text-error-500" role="alert">
           {error}
         </p>
       )}

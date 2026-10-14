@@ -67,25 +67,34 @@ export function FotoPerfilUpload({
 
   return (
     <>
-      <div className="flex flex-col items-center gap-1.5">
+      <div className="relative">
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={enviando}
-          className="group relative rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          className="group relative rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700"
           aria-label="Alterar foto de perfil"
-          title="Alterar foto"
         >
-          <Avatar name={nome} src={fotoUrl} className="size-24 text-xl sm:size-28" />
-          <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/45 opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+          <Avatar
+            name={nome}
+            src={fotoUrl}
+            className="size-24 text-xl sm:size-28"
+          />
+          <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
             <FiCamera className="size-6 text-white" aria-hidden />
           </span>
-          {enviando && (
+          {enviando ? (
             <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 text-xs font-medium text-white">
               Enviando...
             </span>
-          )}
+          ) : null}
         </button>
+        <span
+          className="pointer-events-none absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full border-2 border-white bg-brand-600 text-white shadow-sm"
+          aria-hidden
+        >
+          <FiCamera className="size-3.5" />
+        </span>
         <input
           ref={inputRef}
           type="file"
@@ -93,9 +102,6 @@ export function FotoPerfilUpload({
           className="sr-only"
           onChange={handleChange}
         />
-        <p className="max-w-[8rem] text-center text-[11px] leading-tight text-text-muted">
-          Clique para alterar
-        </p>
       </div>
 
       <ModalRecortarFoto

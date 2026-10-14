@@ -21,7 +21,14 @@ export function MainLayout() {
 
   return (
     <div className="flex min-h-screen bg-surface-50">
-      <aside className="sticky top-0 hidden h-screen w-[15.5rem] shrink-0 lg:block xl:w-[16.5rem]">
+      <a href="#conteudo-principal" className="skip-link">
+        Ir para o conteúdo principal
+      </a>
+
+      <aside
+        className="sticky top-0 hidden h-screen w-[15.5rem] shrink-0 lg:block xl:w-[16.5rem]"
+        aria-label="Navegação principal"
+      >
         <Sidebar />
       </aside>
 
@@ -33,28 +40,42 @@ export function MainLayout() {
             aria-label="Fechar menu"
             onClick={fecharMenu}
           />
-          <div className="absolute inset-y-0 left-0 z-50 w-[min(18rem,85vw)] shadow-xl">
+          <div
+            className="absolute inset-y-0 left-0 z-50 w-[min(18rem,85vw)] shadow-xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu de navegação"
+          >
             <Sidebar onNavigate={fecharMenu} />
           </div>
         </div>
       )}
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-zinc-200 bg-surface-50 px-4 py-3 lg:hidden">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-surface-100 bg-surface-50 px-4 py-3 lg:hidden">
           <button
             type="button"
             onClick={() => setMenuAberto(true)}
-            className="rounded-lg p-2 text-[#1A2D37] transition hover:bg-zinc-100"
+            className="rounded-lg p-2 text-text transition hover:bg-surface-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
             aria-label="Abrir menu"
+            aria-expanded={menuAberto}
           >
-            {menuAberto ? <FiX className="size-6" /> : <FiMenu className="size-6" />}
+            {menuAberto ? (
+              <FiX className="size-6" aria-hidden />
+            ) : (
+              <FiMenu className="size-6" aria-hidden />
+            )}
           </button>
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#1A2D37]">
+          <p className="text-sm font-semibold uppercase tracking-wide text-text">
             Hora de Cuidar
           </p>
         </header>
 
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col border-t-4 border-brand-600 bg-surface-50">
+        <main
+          id="conteudo-principal"
+          tabIndex={-1}
+          className="flex min-h-0 min-w-0 flex-1 flex-col border-t-4 border-brand-600 bg-surface-50"
+        >
           <Outlet />
         </main>
       </div>

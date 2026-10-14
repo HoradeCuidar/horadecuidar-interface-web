@@ -1,5 +1,6 @@
 export { useEditarPaciente } from './useEditarPaciente'
 export { usePerfilPaciente } from './usePerfilPaciente'
+export { usePrescricaoNutricionalForm } from './usePrescricaoNutricionalForm'
 export { useDashboard } from './useDashboard'
 export type { DashboardData } from './useDashboard'
 export { useRelatorioAdesaoMedicamento } from './useRelatorioAdesaoMedicamento'

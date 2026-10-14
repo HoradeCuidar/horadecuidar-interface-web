@@ -11,30 +11,26 @@ import type { AbaPerfil } from './perfilPaciente.types'
 
 type PerfilPacienteAbasProps = {
   paciente: PacienteDetalhes
-  profissionalResponsavel: string
+  usuarioSessao: string
   abaAtiva: AbaPerfil
   onAbaChange: (aba: AbaPerfil) => void
+  onPerfilAtualizado?: () => void
   onNovaPrescricao: () => void
   onEditarPrescricao: (prescricaoId: string) => void
   onNovaPrescricaoNutricional: () => void
-}
-
-function PainelAba({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-      {children}
-    </div>
-  )
+  onEditarPrescricaoNutricional: (prescricaoId: number) => void
 }
 
 export function PerfilPacienteAbas({
   paciente,
-  profissionalResponsavel,
+  usuarioSessao,
   abaAtiva,
   onAbaChange,
+  onPerfilAtualizado,
   onNovaPrescricao,
   onEditarPrescricao,
   onNovaPrescricaoNutricional,
+  onEditarPrescricaoNutricional,
 }: PerfilPacienteAbasProps) {
   return (
     <Tabs
@@ -42,21 +38,25 @@ export function PerfilPacienteAbas({
       onValueChange={(value) => onAbaChange(value as AbaPerfil)}
       className="gap-5"
     >
-      <TabsList>
-        {ABAS_PERFIL_PACIENTE.map(({ id, label }) => (
-          <TabsTrigger key={id} value={id}>
-            {label}
+      <TabsList className="border-surface-100">
+        {ABAS_PERFIL_PACIENTE.map(({ id, label, Icone }) => (
+          <TabsTrigger
+            key={id}
+            value={id}
+            className="inline-flex items-center gap-2"
+          >
+            <Icone className="size-4 shrink-0" aria-hidden />
+            <span>{label}</span>
           </TabsTrigger>
         ))}
       </TabsList>
 
       <TabsContent value="dados">
-        <PainelAba>
-          <AbaDadosParticipante
-            paciente={paciente}
-            profissionalResponsavel={profissionalResponsavel}
-          />
-        </PainelAba>
+        <AbaDadosParticipante
+          paciente={paciente}
+          usuarioSessao={usuarioSessao}
+          onAtualizado={onPerfilAtualizado}
+        />
       </TabsContent>
 
       <TabsContent value="medicamentos">
@@ -79,6 +79,7 @@ export function PerfilPacienteAbas({
         <AbaAlimentacao
           pacienteId={paciente.id}
           onNovaPrescricao={onNovaPrescricaoNutricional}
+          onEditarPrescricao={onEditarPrescricaoNutricional}
         />
       </TabsContent>
 

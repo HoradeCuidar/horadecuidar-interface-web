@@ -136,7 +136,7 @@ export function EditarPrescricaoMedicamentos() {
     return (
       <div className="flex flex-col gap-4 px-8 pt-8">
         <BotaoVoltar onClick={() => navigate('/pacientes')}>Voltar</BotaoVoltar>
-        <p className="text-sm text-red-600">{erroPaciente ?? 'Paciente nao encontrado.'}</p>
+        <p className="text-sm text-red-600">{erroPaciente ?? 'Participante não encontrado.'}</p>
       </div>
     )
   }

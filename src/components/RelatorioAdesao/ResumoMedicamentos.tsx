@@ -7,59 +7,8 @@ import {
   XCircle,
 } from 'lucide-react'
 import type { ResumoAdesaoMedicamento, ResumoAdesaoNutricional } from '@/services'
-import { formatarPercentual } from './relatorioAdesao.utils'
-
-type IconType = React.ComponentType<{
-  className?: string
-  'aria-hidden'?: boolean
-}>
-
-type Tom = 'azul' | 'verde' | 'vermelho' | 'laranja' | 'neutro'
-
-function Cartao({
-  titulo,
-  valor,
-  Icone,
-  tom,
-}: {
-  titulo: string
-  valor: string
-  Icone: IconType
-  tom: Tom
-}) {
-  const estilos: Record<Tom, string> = {
-    azul: 'bg-brand-100 text-brand-500',
-    verde: 'bg-emerald-100 text-emerald-600',
-    vermelho: 'bg-red-100 text-red-500',
-    laranja: 'bg-orange-100 text-orange-500',
-    neutro: 'bg-zinc-100 text-zinc-500',
-  }
-  const coresValor: Record<Tom, string> = {
-    azul: 'text-[#3f5f9f]',
-    verde: 'text-emerald-600',
-    vermelho: 'text-red-500',
-    laranja: 'text-orange-500',
-    neutro: 'text-zinc-600',
-  }
-
-  return (
-    <article className="flex min-h-22 items-center gap-4 rounded-2xl border border-zinc-100 bg-white px-5 py-4 shadow-sm">
-      <span
-        className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${estilos[tom]}`}
-      >
-        <Icone className="size-6" aria-hidden />
-      </span>
-      <div className="min-w-0">
-        <p
-          className={`font-heading text-2xl font-bold leading-none ${coresValor[tom]}`}
-        >
-          {valor}
-        </p>
-        <p className="mt-1 text-xs leading-snug text-text-muted">{titulo}</p>
-      </div>
-    </article>
-  )
-}
+import { CartaoMetrica } from './CartaoMetrica'
+import { formatarPercentual, nivelAdesao } from './relatorioAdesao.utils'
 
 function ResumoAdesao({
   dados,
@@ -68,49 +17,84 @@ function ResumoAdesao({
   dados: ResumoAdesaoMedicamento | ResumoAdesaoNutricional
   nutricional?: boolean
 }) {
+  const nivel = nivelAdesao(dados.percentual)
+  const tomBadge =
+    nivel.tom === 'sucesso'
+      ? 'verde'
+      : nivel.tom === 'alerta'
+        ? 'laranja'
+        : nivel.tom === 'critico'
+          ? 'vermelho'
+          : 'neutro'
+
   return (
     <section
       className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
-      aria-label={nutricional ? 'Resumo de adesão nutricional' : 'Resumo de adesão a medicamentos'}
+      aria-label={
+        nutricional
+          ? 'Resumo de adesão nutricional'
+          : 'Resumo de adesão a medicamentos'
+      }
     >
-      <Cartao
+      <CartaoMetrica
         titulo={nutricional ? 'Refeições esperadas' : 'Doses esperadas'}
         valor={dados.esperado.toLocaleString('pt-BR')}
         Icone={nutricional ? Utensils : Pill}
         tom="azul"
+        rodape={`${formatarDataCurta(dados.dataInicial)} – ${formatarDataCurta(dados.dataFinal)}`}
       />
-      <Cartao
+      <CartaoMetrica
         titulo="Realizadas"
         valor={dados.realizado.toLocaleString('pt-BR')}
         Icone={CheckCircle2}
         tom="verde"
+        rodape={
+          dados.esperado > 0
+            ? `${formatarPercentual((dados.realizado / dados.esperado) * 100)} do esperado`
+            : undefined
+        }
       />
-      <Cartao
+      <CartaoMetrica
         titulo="Não realizadas"
         valor={dados.naoRealizado.toLocaleString('pt-BR')}
         Icone={XCircle}
         tom="vermelho"
       />
-      <Cartao
+      <CartaoMetrica
         titulo="Sem registro"
         valor={dados.semRegistro.toLocaleString('pt-BR')}
         Icone={CircleDashed}
         tom="laranja"
       />
-      <Cartao
-        titulo="Adesão"
+      <CartaoMetrica
+        titulo="Adesão geral"
         valor={formatarPercentual(dados.percentual)}
         Icone={Percent}
-        tom="neutro"
+        tom={tomBadge}
+        badge={{ rotulo: nivel.rotulo, tom: tomBadge }}
       />
     </section>
   )
 }
 
-export function ResumoMedicamentos({ dados }: { dados: ResumoAdesaoMedicamento }) {
+function formatarDataCurta(iso: string): string {
+  const [y, m, d] = iso.slice(0, 10).split('-')
+  if (!y || !m || !d) return iso
+  return `${d}/${m}`
+}
+
+export function ResumoMedicamentos({
+  dados,
+}: {
+  dados: ResumoAdesaoMedicamento
+}) {
   return <ResumoAdesao dados={dados} />
 }
 
-export function ResumoNutricional({ dados }: { dados: ResumoAdesaoNutricional }) {
+export function ResumoNutricional({
+  dados,
+}: {
+  dados: ResumoAdesaoNutricional
+}) {
   return <ResumoAdesao dados={dados} nutricional />
 }

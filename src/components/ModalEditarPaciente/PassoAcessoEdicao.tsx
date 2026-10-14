@@ -15,7 +15,7 @@ export function PassoAcessoEdicao({ username }: PassoAcessoEdicaoProps) {
         disabled
       />
       <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3 text-xs text-yellow-800 dark:bg-yellow-950/20 dark:border-yellow-900/30 dark:text-yellow-400">
-        A senha do paciente não pode ser editada aqui. Se o paciente esquecer a senha, ele deve utilizar a ferramenta de recuperação de senha.
+        A senha do participante não pode ser editada aqui. Se o participante esquecer a senha, ele deve utilizar a ferramenta de recuperação de senha.
       </div>
     </section>
   )

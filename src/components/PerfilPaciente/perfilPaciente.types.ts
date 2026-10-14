@@ -1,3 +1,5 @@
+import type { IconType } from 'react-icons'
+
 export type AbaPerfil =
   | 'dados'
   | 'medicamentos'
@@ -9,4 +11,5 @@ export type AbaPerfil =
 export type AbaPerfilConfig = {
   id: AbaPerfil
   label: string
+  Icone: IconType
 }
