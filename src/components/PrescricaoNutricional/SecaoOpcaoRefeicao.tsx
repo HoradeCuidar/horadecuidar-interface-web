@@ -1,5 +1,9 @@
 import { FiPlus, FiTrash2 } from 'react-icons/fi'
 import { Input } from '@/components'
+import {
+  BOTAO_REMOVER,
+  BOTAO_TRACEJADO,
+} from './formularioNutricional.styles'
 import { ItemAlimento } from './ItemAlimento'
 import type { AlimentoForm, OpcaoRefeicaoForm } from './prescricaoNutricional.types'
 
@@ -33,20 +37,30 @@ export function SecaoOpcaoRefeicao({
   onRemoverAlimento,
   onRemoverOpcao,
 }: SecaoOpcaoRefeicaoProps) {
+  const qtdAlimentos = opcao.alimentos.length
+  const titulo =
+    opcao.descricao.trim() || `Opção ${indice + 1}`
+
   return (
-    <div className="rounded-lg border border-brand-100 bg-brand-50/30 p-3">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-brand-700">Opção {indice + 1}</p>
-        {podeRemover && (
+    <div className="rounded-xl border border-surface-100 bg-white p-3.5 sm:p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-sm font-semibold text-text">{titulo}</p>
+          <p className="text-[11px] font-medium text-text-muted">
+            {qtdAlimentos}{' '}
+            {qtdAlimentos === 1 ? 'alimento prescrito' : 'alimentos prescritos'}
+          </p>
+        </div>
+        {podeRemover ? (
           <button
             type="button"
             onClick={() => onRemoverOpcao(opcao.id)}
-            className="inline-flex items-center gap-1 text-xs font-medium text-error transition hover:underline"
+            className={BOTAO_REMOVER}
           >
-            <FiTrash2 className="size-4" aria-hidden />
+            <FiTrash2 className="size-3.5" aria-hidden />
             Remover opção
           </button>
-        )}
+        ) : null}
       </div>
 
       <div className="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -62,11 +76,11 @@ export function SecaoOpcaoRefeicao({
           size="compact"
           value={opcao.descricao}
           onChange={(e) => onChangeOpcao(opcao.id, 'descricao', e.target.value)}
-          placeholder="Ex: Opção A"
+          placeholder="Ex.: Opção A"
         />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2.5">
         {opcao.alimentos.map((alimento, i) => (
           <ItemAlimento
             key={alimento.id}
@@ -84,7 +98,7 @@ export function SecaoOpcaoRefeicao({
       <button
         type="button"
         onClick={() => onAdicionarAlimento(opcao.id)}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-brand-400 bg-transparent py-2.5 text-sm font-semibold text-brand-500 transition hover:bg-brand-50 sm:w-auto sm:px-4"
+        className={`mt-3 ${BOTAO_TRACEJADO}`}
       >
         <FiPlus className="size-4" aria-hidden />
         Adicionar alimento

@@ -1,7 +1,6 @@
-import {
-  formatarAlimentoPrescrito,
-  type PrescricaoNutricionalResponse,
-} from '@/services/prescricaoNutricional.types'
+import { FiInfo } from 'react-icons/fi'
+import { CardRefeicaoLeitura } from './CardRefeicaoLeitura'
+import type { PrescricaoNutricionalResponse } from '@/services/prescricaoNutricional.types'
 
 type DetalhePrescricaoNutricionalProps = {
   detalhe: PrescricaoNutricionalResponse
@@ -13,71 +12,36 @@ export function DetalhePrescricaoNutricional({
   const refeicoes = [...(detalhe.refeicoes ?? [])].sort(
     (a, b) => (a.ordem ?? 0) - (b.ordem ?? 0)
   )
+  const observacoes = detalhe.observacoes?.trim()
 
   return (
     <div className="mt-4 space-y-3">
-      {detalhe.observacoes ? (
-        <p className="rounded-xl border border-zinc-200 bg-surface-0 px-3 py-2 text-sm text-text-muted">
-          {detalhe.observacoes}
-        </p>
+      {observacoes ? (
+        <div className="flex gap-2.5 rounded-xl border border-brand-100 bg-brand-50 px-3.5 py-3">
+          <FiInfo
+            className="mt-0.5 size-4 shrink-0 text-brand-600"
+            aria-hidden
+          />
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-700">
+              Orientações gerais
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-brand-900/80">
+              {observacoes}
+            </p>
+          </div>
+        </div>
       ) : null}
 
       {refeicoes.length === 0 ? (
         <p className="text-sm text-text-muted">Nenhuma refeição cadastrada.</p>
       ) : (
-        refeicoes.map((refeicao, indexRefeicao) => {
-          const opcoes = [...(refeicao.opcoes ?? [])].sort(
-            (a, b) => (a.ordem ?? 0) - (b.ordem ?? 0)
-          )
-          return (
-            <section
-              key={`${refeicao.nome}-${refeicao.ordem}-${indexRefeicao}`}
-              className="rounded-xl border border-zinc-200 bg-surface-0 px-3 py-3 sm:px-3.5"
-            >
-              <h3 className="font-heading text-sm font-bold text-text sm:text-base">
-                {refeicao.nome}
-              </h3>
-              {refeicao.observacoes ? (
-                <p className="mt-1 text-xs text-text-muted">
-                  {refeicao.observacoes}
-                </p>
-              ) : null}
-
-              <ul className="mt-3 flex flex-col gap-2.5">
-                {opcoes.map((opcao, indexOpcao) => (
-                  <li
-                    key={`${opcao.ordem}-${indexOpcao}`}
-                    className="rounded-lg border border-zinc-200 bg-white px-3 py-2.5"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                      Opção {opcao.ordem}
-                      {opcao.descricao ? ` — ${opcao.descricao}` : ''}
-                    </p>
-                    <ul className="mt-2 flex flex-col gap-1.5">
-                      {(opcao.alimentos ?? []).map((alimento, indexAlimento) => {
-                        const detalheAlimento = formatarAlimentoPrescrito(alimento)
-                        return (
-                          <li
-                            key={alimento.id ?? `${alimento.descricao}-${indexAlimento}`}
-                            className="text-sm text-text"
-                          >
-                            <span className="font-medium">{alimento.descricao}</span>
-                            {detalheAlimento ? (
-                              <span className="text-text-muted">
-                                {' '}
-                                · {detalheAlimento}
-                              </span>
-                            ) : null}
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )
-        })
+        refeicoes.map((refeicao, indexRefeicao) => (
+          <CardRefeicaoLeitura
+            key={`${refeicao.nome}-${refeicao.ordem}-${indexRefeicao}`}
+            refeicao={refeicao}
+          />
+        ))
       )}
     </div>
   )
