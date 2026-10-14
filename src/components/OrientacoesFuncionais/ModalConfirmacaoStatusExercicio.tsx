@@ -22,7 +22,7 @@ export function ModalConfirmacaoStatusExercicio({
 }: ModalConfirmacaoStatusExercicioProps) {
   const [loading, setLoading] = useState(false)
 
-  const titulo = ativar ? 'Ativar exercício' : 'Inativar exercício'
+  const titulo = ativar ? 'Ativar orientação' : 'Inativar orientação'
   const descricao = ativar
     ? `Tem certeza que deseja ativar "${nomeExercicio}"? Ele voltará a aparecer para os participantes.`
     : `Tem certeza que deseja inativar "${nomeExercicio}"? Ele deixará de aparecer para os participantes, mas permanecerá no catálogo.`
@@ -36,8 +36,8 @@ export function ModalConfirmacaoStatusExercicio({
       await orientacaoFuncionalService.alterarStatus(exercicioId, ativar)
       toast.success(
         ativar
-          ? 'Exercício ativado com sucesso.'
-          : 'Exercício inativado com sucesso.'
+          ? 'Orientação ativado com sucesso.'
+          : 'Orientação inativado com sucesso.'
       )
       onSucesso()
       onFechar()
@@ -45,7 +45,7 @@ export function ModalConfirmacaoStatusExercicio({
       toast.error(
         error instanceof Error
           ? error.message
-          : 'Erro ao alterar o status do exercício.'
+          : 'Erro ao alterar o status do orientação.'
       )
     } finally {
       setLoading(false)

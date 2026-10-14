@@ -42,7 +42,7 @@ export function validarEdicaoProfissional(dados: Record<string, string>): string
     return 'Data de nascimento inválida. Use dd/mm/yyyy.'
   }
   const estadoStr = (dados.estado?.trim() ?? '').slice(0, 2).toUpperCase()
-  if (estadoStr.length !== 2) {
+  if (estadoStr && !/^[A-Z]{2}$/.test(estadoStr)) {
     return 'Estado deve conter 2 letras (ex.: CE).'
   }
   if (!/^[a-zA-Z0-9._-]+$/.test(dados.username?.trim() ?? '')) {
@@ -66,15 +66,11 @@ export function validarMeuPerfilProfissional(dados: Record<string, string>): str
     return 'Data de nascimento inválida. Use dd/mm/yyyy.'
   }
   const estadoStr = (dados.estado?.trim() ?? '').slice(0, 2).toUpperCase()
-  if (estadoStr.length !== 2) {
+  if (estadoStr && !/^[A-Z]{2}$/.test(estadoStr)) {
     return 'Estado deve conter 2 letras (ex.: CE).'
   }
   if (!dados.genero?.trim()) {
     return 'Selecione o gênero.'
   }
-  if (!(dados.rua?.trim())) return 'Rua é obrigatória.'
-  if (!(dados.bairro?.trim())) return 'Bairro é obrigatório.'
-  if (!(dados.cidade?.trim())) return 'Cidade é obrigatória.'
-  if (!(dados.numeroCasa?.trim())) return 'Número da casa é obrigatório.'
   return null
 }

@@ -2,7 +2,7 @@ import { API_BASE_URL, API_ENDPOINTS } from '@/config/api'
 import { authService } from './auth'
 import { parseApiError } from './apiErrors'
 import type { SpringPage } from './orientacaoFuncional.types'
-import type { RegistroRealizacaoFuncional } from './realizacaoFuncional.types'
+import type { StatusRealizacao, SensacaoFinal, RegistroRealizacaoFuncional } from './realizacaoFuncional.types'
 
 function authHeaders(): HeadersInit {
   const token = authService.getToken()
@@ -22,6 +22,11 @@ async function parseJson<T>(res: Response, fallback: string): Promise<T> {
 }
 
 export const realizacaoFuncionalService = {
+  async registrar(pacienteId: number, dados: { id: number; status: StatusRealizacao; duracaoRealizadaMinutos: number | null; sensacaoFinal: SensacaoFinal | null; observacao: string | null }): Promise<RegistroRealizacaoFuncional> {
+    return parseJson(await fetch(`${API_BASE_URL}/api/paciente/${pacienteId}/realizacao-funcional`, {
+      method: 'POST', headers: authHeaders(), body: JSON.stringify(dados),
+    }), 'Erro ao registrar realização.')
+  },
   async historico(
     pacienteId: number,
     page = 0,

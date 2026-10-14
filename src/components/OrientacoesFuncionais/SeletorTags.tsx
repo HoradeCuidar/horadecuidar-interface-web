@@ -50,7 +50,7 @@ export function SeletorTags({
           >
             Cadastre tags
           </Link>{' '}
-          para classificá-las nos exercícios. O exercício pode ser salvo sem
+          para organizar as orientações. O rascunho pode ser salvo sem
           tags.
         </p>
       )

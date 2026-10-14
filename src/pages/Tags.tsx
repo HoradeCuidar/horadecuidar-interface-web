@@ -1,3 +1,4 @@
+import { GerenciarCategorias } from '@/components/OrientacoesFuncionais/GerenciarCategorias'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { EmptyState, ButtonCadastro, Skeleton } from '@/components'
@@ -78,9 +79,10 @@ export function Tags() {
         <h1 className="font-heading text-xl font-bold tracking-tight text-text sm:text-2xl">
           Tags
         </h1>
+        <GerenciarCategorias />
         <EmptyState
           title="Nenhuma tag cadastrada!"
-          description="Cadastre tags para organizar os exercícios do catálogo."
+          description="Cadastre tags para organizar as orientações do catálogo."
           className="min-h-0 rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-card"
         >
           <ButtonCadastro
@@ -105,6 +107,7 @@ export function Tags() {
         />
       </div>
 
+      <GerenciarCategorias />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tags.map((tag) => (
           <CardTag
