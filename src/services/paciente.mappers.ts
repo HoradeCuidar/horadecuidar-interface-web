@@ -7,6 +7,8 @@ export type PacienteDetalhes = {
   username: string
   dataDeNascimento: string
   telefone: string
+  idade?: number | null
+  status?: string
   rua?: string
   bairro?: string
   estado?: string

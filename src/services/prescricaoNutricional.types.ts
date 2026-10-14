@@ -71,6 +71,7 @@ export type PrescricaoNutricionalResumo = {
 }
 
 export type PrescricaoNutricionalResponse = {
+  id?: number
   pacienteId: number
   profissionalId: number
   dataInicio: string
@@ -79,6 +80,12 @@ export type PrescricaoNutricionalResponse = {
   status: StatusPrescricaoNutricional | string
   observacoes?: string | null
   refeicoes: RefeicaoResponse[]
+}
+
+export type PrescricaoNutricionalUpdateRequest = {
+  dataFim: string
+  observacoes?: string | null
+  refeicoes: RefeicaoRequest[]
 }
 
 export function isStatusAtiva(

@@ -1,9 +1,44 @@
+import type { PeriodoRelatorio } from '@/services'
+
 export function formatarPercentual(valor: number | null | undefined): string {
   if (valor == null || Number.isNaN(Number(valor))) return '—'
   return `${Number(valor).toLocaleString('pt-BR', {
     maximumFractionDigits: 1,
     minimumFractionDigits: 0,
   })}%`
+}
+
+function toIsoDate(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export function periodoUltimosNDias(dias: number): PeriodoRelatorio {
+  const fim = new Date()
+  const inicio = new Date()
+  inicio.setDate(fim.getDate() - (dias - 1))
+  return { dataInicial: toIsoDate(inicio), dataFinal: toIsoDate(fim) }
+}
+
+export function periodoMesAtual(): PeriodoRelatorio {
+  const hoje = new Date()
+  const inicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1)
+  return { dataInicial: toIsoDate(inicio), dataFinal: toIsoDate(hoje) }
+}
+
+export function nivelAdesao(percentual: number | null | undefined): {
+  rotulo: string
+  tom: 'sucesso' | 'alerta' | 'critico' | 'neutro'
+} {
+  if (percentual == null || Number.isNaN(Number(percentual))) {
+    return { rotulo: 'Sem dado', tom: 'neutro' }
+  }
+  const p = Number(percentual)
+  if (p >= 80) return { rotulo: 'Adequada', tom: 'sucesso' }
+  if (p >= 70) return { rotulo: 'Atenção', tom: 'alerta' }
+  return { rotulo: 'Baixa adesão', tom: 'critico' }
 }
 
 export function formatarDataBr(iso: string | null | undefined): string {

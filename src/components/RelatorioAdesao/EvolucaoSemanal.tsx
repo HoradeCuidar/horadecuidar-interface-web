@@ -1,25 +1,43 @@
-import type { EvolucaoAdesaoMedicamento } from '@/services'
+import type {
+  EvolucaoAdesaoMedicamento,
+  EvolucaoAdesaoNutricional,
+} from '@/services'
 import {
   formatarDataBr,
   formatarPercentual,
   limitarPercentual,
+  nivelAdesao,
 } from './relatorioAdesao.utils'
+
+type EvolucaoSemanalProps = {
+  dados: EvolucaoAdesaoMedicamento | EvolucaoAdesaoNutricional
+  dominio?: 'medicamentos' | 'nutricional'
+}
+
+const TOM_BARRA = {
+  sucesso: 'bg-success',
+  alerta: 'bg-orange-400',
+  critico: 'bg-red-500',
+  neutro: 'bg-brand-500',
+} as const
 
 export function EvolucaoSemanal({
   dados,
-}: {
-  dados: EvolucaoAdesaoMedicamento
-}) {
+  dominio = 'medicamentos',
+}: EvolucaoSemanalProps) {
   const periodos = dados.periodos ?? []
   const maxPercentual = Math.max(
     1,
     ...periodos.map((p) => limitarPercentual(p.percentualAdesao))
   )
+  const nutricional = dominio === 'nutricional'
 
   return (
-    <section className="rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-surface-100 bg-white p-5 shadow-sm sm:p-6">
       <h2 className="font-heading text-base font-semibold text-text">
-        Evolução semanal
+        {nutricional
+          ? 'Evolução semanal das refeições'
+          : 'Evolução semanal'}
       </h2>
       <p className="mt-1 text-sm text-text-muted">
         Percentual de adesão agrupado por semana no período selecionado.
@@ -34,6 +52,7 @@ export function EvolucaoSemanal({
           {periodos.map((periodo) => {
             const percentual = limitarPercentual(periodo.percentualAdesao)
             const largura = (percentual / maxPercentual) * 100
+            const nivel = nivelAdesao(periodo.percentualAdesao)
             return (
               <li
                 key={`${periodo.inicioSemana}-${periodo.fimSemana}`}
@@ -44,13 +63,13 @@ export function EvolucaoSemanal({
                     {formatarDataBr(periodo.inicioConsiderado)} –{' '}
                     {formatarDataBr(periodo.fimConsiderado)}
                   </p>
-                  <p className="text-sm font-semibold text-brand-600">
+                  <p className="text-sm font-semibold text-brand-700">
                     {formatarPercentual(periodo.percentualAdesao)}
                   </p>
                 </div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-zinc-100">
+                <div className="h-2.5 overflow-hidden rounded-full bg-surface-0">
                   <div
-                    className="h-full rounded-full bg-brand-500 transition-all"
+                    className={`h-full rounded-full transition-all ${TOM_BARRA[nivel.tom]}`}
                     style={{ width: `${largura}%` }}
                   />
                 </div>

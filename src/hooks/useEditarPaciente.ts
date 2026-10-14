@@ -221,7 +221,7 @@ export function useEditarPaciente({
     setSalvando(true)
     try {
       await pacienteService.editar(pacienteId, form)
-      toast.success('Paciente editado com sucesso.')
+      toast.success('Participante editado com sucesso.')
       handleLimpar()
       onSucesso()
       onFechar()

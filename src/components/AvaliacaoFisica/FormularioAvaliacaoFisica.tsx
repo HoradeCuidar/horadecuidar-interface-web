@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
+import {
+  FiActivity,
+  FiCheck,
+  FiFileText,
+  FiZap,
+} from 'react-icons/fi'
 import { Input, Select, BotaoSalvar, BotaoCancelar } from '@/components'
 import { SeletorTags } from '@/components/OrientacoesFuncionais'
 import { tagFuncionalService } from '@/services'
@@ -20,16 +26,45 @@ type FormularioAvaliacaoFisicaProps = {
   titulo: string
   descricaoPagina: string
   labelSalvar: string
+  nomeParticipante?: string
   valoresIniciais?: ValoresFormAvaliacao
   salvando: boolean
   onSubmit: (dados: AvaliacaoFisicaRequest) => Promise<void>
   onCancelar: () => void
 }
 
+const textareaClass =
+  'w-full resize-y rounded-xl border border-surface-100 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500'
+
+function SecaoForm({
+  titulo,
+  icone,
+  children,
+}: {
+  titulo: string
+  icone: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <section className="border-l-4 border-brand-600 pl-4">
+      <div className="mb-4 flex items-center gap-2.5">
+        <span className="flex size-8 items-center justify-center rounded-lg bg-brand-100 text-brand-700">
+          {icone}
+        </span>
+        <h2 className="font-heading text-base font-bold tracking-tight text-text">
+          {titulo}
+        </h2>
+      </div>
+      <div className="flex flex-col gap-4">{children}</div>
+    </section>
+  )
+}
+
 export function FormularioAvaliacaoFisica({
   titulo,
   descricaoPagina,
   labelSalvar,
+  nomeParticipante,
   valoresIniciais = VALORES_VAZIOS_AVALIACAO,
   salvando,
   onSubmit,
@@ -88,40 +123,48 @@ export function FormularioAvaliacaoFisica({
   return (
     <form
       onSubmit={(e) => void handleSubmit(e)}
-      className="rounded-xl border border-zinc-200 bg-white p-4 shadow-card sm:p-6 md:p-8"
+      className="rounded-2xl border border-surface-100 bg-white p-5 shadow-sm sm:p-6 md:p-8"
     >
-      <header className="mb-6">
-        <h1 className="font-heading text-xl font-bold tracking-tight text-text sm:text-2xl">
-          {titulo}
-        </h1>
-        <p className="mt-1 text-sm text-text-muted">{descricaoPagina}</p>
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="font-heading text-xl font-bold tracking-tight text-text sm:text-2xl">
+            {titulo}
+          </h1>
+          <p className="mt-1 text-sm text-text-muted">{descricaoPagina}</p>
+        </div>
+        {nomeParticipante ? (
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-700">
+            <span className="size-1.5 rounded-full bg-brand-600" aria-hidden />
+            Participante: {nomeParticipante}
+          </span>
+        ) : null}
       </header>
 
-      <div className="flex flex-col gap-6">
-        <section className="flex flex-col gap-4">
-          <h2 className="font-heading text-base font-bold tracking-tight text-text">
-            Atividade física
-          </h2>
-          <label className="flex items-center gap-2 text-sm text-text">
+      <div className="flex flex-col gap-8">
+        <SecaoForm
+          titulo="Atividade física"
+          icone={<FiActivity className="size-4" aria-hidden />}
+        >
+          <label className="flex items-center gap-2 text-sm font-medium text-text">
             <input
               type="checkbox"
               checked={form.realizaAtividadeFisica}
               onChange={(e) =>
                 setCampo('realizaAtividadeFisica', e.target.checked)
               }
-              className="size-4 rounded border-zinc-300 text-brand-600 focus:ring-brand-500"
+              className="size-4 rounded border-surface-100 text-brand-600 focus:ring-brand-500"
             />
-            Realiza atividade física
+            Realiza atividade física regular
           </label>
 
-          {form.realizaAtividadeFisica && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {form.realizaAtividadeFisica ? (
+            <div className="grid gap-4 rounded-xl bg-surface-0 p-4 sm:grid-cols-2">
               <Input
                 label="Atividade realizada"
                 size="compact"
                 value={form.atividadeRealizada}
                 onChange={(e) => setCampo('atividadeRealizada', e.target.value)}
-                placeholder="Ex: Caminhada"
+                placeholder="Ex.: Musculação e caminhada"
               />
               <Input
                 label="Frequência semanal"
@@ -129,10 +172,10 @@ export function FormularioAvaliacaoFisica({
                 inputMode="numeric"
                 value={form.frequenciaSemanal}
                 onChange={(e) => setCampo('frequenciaSemanal', e.target.value)}
-                placeholder="Ex: 3"
+                placeholder="Ex.: 3"
               />
             </div>
-          )}
+          ) : null}
 
           <Select
             label="Flexibilidade"
@@ -147,84 +190,89 @@ export function FormularioAvaliacaoFisica({
             }
             required
           />
-        </section>
+        </SecaoForm>
 
-        <section className="flex flex-col gap-4">
-          <h2 className="font-heading text-base font-bold tracking-tight text-text">
-            Força palmar
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Input
-              label="Direita"
-              size="compact"
-              inputMode="decimal"
-              value={form.forcaPalmarDireita}
-              onChange={(e) => setCampo('forcaPalmarDireita', e.target.value)}
-              placeholder="kg"
-            />
-            <Input
-              label="Esquerda"
-              size="compact"
-              inputMode="decimal"
-              value={form.forcaPalmarEsquerda}
-              onChange={(e) => setCampo('forcaPalmarEsquerda', e.target.value)}
-              placeholder="kg"
-            />
-            <Select
-              label="Assimetria"
-              size="compact"
-              options={OPCOES_ASSIMETRIA}
-              value={form.assimetriaPalmar}
-              onChange={(e) =>
-                setCampo(
-                  'assimetriaPalmar',
-                  e.target.value as ValoresFormAvaliacao['assimetriaPalmar']
-                )
-              }
-            />
+        <SecaoForm
+          titulo="Força muscular e assimetrias"
+          icone={<FiZap className="size-4" aria-hidden />}
+        >
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+              Força palmar
+            </p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <Input
+                label="Direita"
+                size="compact"
+                inputMode="decimal"
+                value={form.forcaPalmarDireita}
+                onChange={(e) => setCampo('forcaPalmarDireita', e.target.value)}
+                placeholder="0.0 kg"
+              />
+              <Input
+                label="Esquerda"
+                size="compact"
+                inputMode="decimal"
+                value={form.forcaPalmarEsquerda}
+                onChange={(e) => setCampo('forcaPalmarEsquerda', e.target.value)}
+                placeholder="0.0 kg"
+              />
+              <Select
+                label="Assimetria"
+                size="compact"
+                options={OPCOES_ASSIMETRIA}
+                value={form.assimetriaPalmar}
+                onChange={(e) =>
+                  setCampo(
+                    'assimetriaPalmar',
+                    e.target.value as ValoresFormAvaliacao['assimetriaPalmar']
+                  )
+                }
+              />
+            </div>
           </div>
-        </section>
 
-        <section className="flex flex-col gap-4">
-          <h2 className="font-heading text-base font-bold tracking-tight text-text">
-            Força de joelho
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Input
-              label="Direita"
-              size="compact"
-              inputMode="decimal"
-              value={form.forcaJoelhoDireita}
-              onChange={(e) => setCampo('forcaJoelhoDireita', e.target.value)}
-              placeholder="kg"
-            />
-            <Input
-              label="Esquerda"
-              size="compact"
-              inputMode="decimal"
-              value={form.forcaJoelhoEsquerda}
-              onChange={(e) => setCampo('forcaJoelhoEsquerda', e.target.value)}
-              placeholder="kg"
-            />
-            <Select
-              label="Assimetria"
-              size="compact"
-              options={OPCOES_ASSIMETRIA}
-              value={form.assimetriaJoelho}
-              onChange={(e) =>
-                setCampo(
-                  'assimetriaJoelho',
-                  e.target.value as ValoresFormAvaliacao['assimetriaJoelho']
-                )
-              }
-            />
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+              Força de joelho
+            </p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <Input
+                label="Direita"
+                size="compact"
+                inputMode="decimal"
+                value={form.forcaJoelhoDireita}
+                onChange={(e) => setCampo('forcaJoelhoDireita', e.target.value)}
+                placeholder="0.0 kg"
+              />
+              <Input
+                label="Esquerda"
+                size="compact"
+                inputMode="decimal"
+                value={form.forcaJoelhoEsquerda}
+                onChange={(e) => setCampo('forcaJoelhoEsquerda', e.target.value)}
+                placeholder="0.0 kg"
+              />
+              <Select
+                label="Assimetria"
+                size="compact"
+                options={OPCOES_ASSIMETRIA}
+                value={form.assimetriaJoelho}
+                onChange={(e) =>
+                  setCampo(
+                    'assimetriaJoelho',
+                    e.target.value as ValoresFormAvaliacao['assimetriaJoelho']
+                  )
+                }
+              />
+            </div>
           </div>
-        </section>
+        </SecaoForm>
 
-        <section className="flex flex-col gap-4">
-          <h2 className="font-heading text-base font-bold tracking-tight text-text">
-            Observações
-          </h2>
+        <SecaoForm
+          titulo="Observações"
+          icone={<FiFileText className="size-4" aria-hidden />}
+        >
           <div>
             <label
               htmlFor="queixas"
@@ -234,10 +282,11 @@ export function FormularioAvaliacaoFisica({
             </label>
             <textarea
               id="queixas"
-              rows={2}
+              rows={3}
               value={form.queixas}
               onChange={(e) => setCampo('queixas', e.target.value)}
-              className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              placeholder="Descreva os relatos de dor, desconforto ou limitações informadas pelo participante..."
+              className={textareaClass}
             />
           </div>
           <div>
@@ -249,12 +298,13 @@ export function FormularioAvaliacaoFisica({
             </label>
             <textarea
               id="obs-musculo"
-              rows={2}
+              rows={3}
               value={form.observacoesMusculoEsqueleticas}
               onChange={(e) =>
                 setCampo('observacoesMusculoEsqueleticas', e.target.value)
               }
-              className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              placeholder="Inspeção postural, amplitude articular, desvios ou tensões observadas..."
+              className={textareaClass}
             />
           </div>
           <div>
@@ -269,10 +319,11 @@ export function FormularioAvaliacaoFisica({
               rows={3}
               value={form.orientacoesGerais}
               onChange={(e) => setCampo('orientacoesGerais', e.target.value)}
-              className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              placeholder="Recomendações ergonômicas, metas de curto prazo e frequência sugerida..."
+              className={textareaClass}
             />
           </div>
-        </section>
+        </SecaoForm>
 
         <SeletorTags
           tags={tags}
@@ -286,7 +337,7 @@ export function FormularioAvaliacaoFisica({
               Nenhuma tag cadastrada.{' '}
               <Link
                 to="/atividades/tags"
-                className="font-medium text-brand-600 hover:text-brand-700"
+                className="font-medium text-brand-700 hover:text-brand-800"
               >
                 Cadastre tags
               </Link>{' '}
@@ -296,12 +347,19 @@ export function FormularioAvaliacaoFisica({
         />
       </div>
 
-      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <div className="mt-8 flex flex-col-reverse gap-3 border-t border-surface-100 pt-6 sm:flex-row sm:justify-end">
         <BotaoCancelar type="button" onClick={onCancelar} disabled={salvando}>
           Cancelar
         </BotaoCancelar>
         <BotaoSalvar type="submit" disabled={salvando} className="sm:min-w-48">
-          {salvando ? 'Salvando...' : labelSalvar}
+          {salvando ? (
+            'Salvando...'
+          ) : (
+            <span className="inline-flex items-center gap-1.5">
+              <FiCheck className="size-4" aria-hidden />
+              {labelSalvar}
+            </span>
+          )}
         </BotaoSalvar>
       </div>
     </form>

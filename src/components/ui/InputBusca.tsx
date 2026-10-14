@@ -9,7 +9,7 @@ export function InputBusca(props: React.InputHTMLAttributes<HTMLInputElement>) {
       </div>
       <Input
         {...props}
-        placeholder="Pesquisar..."
+        placeholder={props.placeholder ?? 'Pesquisar...'}
         className="border-zinc-300 bg-white pl-10 focus-visible:border-brand-500 focus-visible:ring-brand-500"
       />
     </div>

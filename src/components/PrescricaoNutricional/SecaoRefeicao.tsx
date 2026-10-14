@@ -1,5 +1,11 @@
 import { FiPlus, FiTrash2 } from 'react-icons/fi'
 import { Input } from '@/components'
+import {
+  BOTAO_REMOVER,
+  BOTAO_TRACEJADO,
+  TEXTAREA_FORM,
+} from './formularioNutricional.styles'
+import { iconeRefeicaoPorNome } from './prescricaoNutricional.listagem.utils'
 import { SecaoOpcaoRefeicao } from './SecaoOpcaoRefeicao'
 import type {
   AlimentoForm,
@@ -53,22 +59,38 @@ export function SecaoRefeicao({
   onRemoverAlimento,
   onRemoverRefeicao,
 }: SecaoRefeicaoProps) {
+  const Icone = iconeRefeicaoPorNome(refeicao.nome || 'refeição')
+  const titulo =
+    refeicao.nome.trim() || `Refeição ${indice + 1}`
+  const qtdOpcoes = refeicao.opcoes.length
+
   return (
-    <section className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4">
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <h3 className="font-heading text-sm font-bold text-text">
-          Refeição {indice + 1}
-        </h3>
-        {podeRemover && (
+    <section className="rounded-xl border border-surface-100 bg-surface-0/70 p-4 sm:p-5">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-700">
+            <Icone className="size-4" aria-hidden />
+          </span>
+          <div className="min-w-0">
+            <h3 className="font-heading text-sm font-bold text-text">
+              {titulo}
+            </h3>
+            <p className="text-[11px] font-medium text-text-muted">
+              Refeição {indice + 1} · {qtdOpcoes}{' '}
+              {qtdOpcoes === 1 ? 'opção' : 'opções'}
+            </p>
+          </div>
+        </div>
+        {podeRemover ? (
           <button
             type="button"
             onClick={() => onRemoverRefeicao(refeicao.id)}
-            className="inline-flex items-center gap-1 text-xs font-medium text-error transition hover:underline"
+            className={BOTAO_REMOVER}
           >
-            <FiTrash2 className="size-4" aria-hidden />
-            Remover refeição
+            <FiTrash2 className="size-3.5" aria-hidden />
+            Remover
           </button>
-        )}
+        ) : null}
       </div>
 
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -77,14 +99,16 @@ export function SecaoRefeicao({
           size="compact"
           value={refeicao.nome}
           onChange={(e) => onChangeRefeicao(refeicao.id, 'nome', e.target.value)}
-          placeholder="Ex: Café da manhã"
+          placeholder="Ex.: Café da manhã"
         />
         <Input
           label="Ordem"
           size="compact"
           inputMode="numeric"
           value={refeicao.ordem}
-          onChange={(e) => onChangeRefeicao(refeicao.id, 'ordem', e.target.value)}
+          onChange={(e) =>
+            onChangeRefeicao(refeicao.id, 'ordem', e.target.value)
+          }
         />
         <div className="sm:col-span-2">
           <label
@@ -100,7 +124,8 @@ export function SecaoRefeicao({
             onChange={(e) =>
               onChangeRefeicao(refeicao.id, 'observacoes', e.target.value)
             }
-            className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            placeholder="Horário, preparo ou restrições desta refeição (opcional)"
+            className={TEXTAREA_FORM}
           />
         </div>
       </div>
@@ -132,7 +157,7 @@ export function SecaoRefeicao({
       <button
         type="button"
         onClick={() => onAdicionarOpcao(refeicao.id)}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-brand-400 bg-transparent py-2.5 text-sm font-semibold text-brand-500 transition hover:bg-brand-50 sm:w-auto sm:px-4"
+        className={`mt-4 ${BOTAO_TRACEJADO}`}
       >
         <FiPlus className="size-4" aria-hidden />
         Adicionar opção

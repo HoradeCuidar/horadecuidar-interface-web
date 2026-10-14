@@ -36,7 +36,10 @@ export function Home() {
             <PainelPrescricoes prescricoes={dados.prescricoes} />
           </div>
 
-          <DistribuicaoDoencas dados={dados.doencas} />
+          <DistribuicaoDoencas
+            dados={dados.doencas}
+            participantesAtivos={dados.resumo.participantesAtivos}
+          />
         </div>
       )}
     </div>

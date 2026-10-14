@@ -25,7 +25,7 @@ export function ModalConfirmacaoStatusExercicio({
   const titulo = ativar ? 'Ativar orientação' : 'Inativar orientação'
   const descricao = ativar
     ? `Tem certeza que deseja ativar "${nomeExercicio}"? Ele voltará a aparecer para os participantes.`
-    : `Tem certeza que deseja inativar "${nomeExercicio}"? Ela deixará de aparecer para os participantes, mas permanecerá no catálogo.`
+    : `Tem certeza que deseja inativar "${nomeExercicio}"? Ele deixará de aparecer para os participantes, mas permanecerá no catálogo.`
   const labelBotao = ativar ? 'Ativar' : 'Inativar'
 
   async function handleConfirmar() {

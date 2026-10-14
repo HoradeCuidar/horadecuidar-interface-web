@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FiArrowRight, FiChevronDown, FiEdit2, FiXCircle } from 'react-icons/fi'
 import { BiCapsule } from 'react-icons/bi'
 import {

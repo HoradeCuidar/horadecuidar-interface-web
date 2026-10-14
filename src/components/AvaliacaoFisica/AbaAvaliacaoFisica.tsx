@@ -85,11 +85,16 @@ export function AbaAvaliacaoFisica({ pacienteId }: AbaAvaliacaoFisicaProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm font-medium text-text-muted">
-          Avaliações físicas
-        </p>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-heading text-base font-semibold text-text">
+            Avaliações físicas
+          </h2>
+          <p className="mt-0.5 text-xs text-text-muted">
+            Histórico e acompanhamento funcional do participante
+          </p>
+        </div>
         <ButtonCadastro
           label="Nova avaliação"
           onClick={() =>
@@ -99,10 +104,11 @@ export function AbaAvaliacaoFisica({ pacienteId }: AbaAvaliacaoFisicaProps) {
       </div>
 
       <div className="flex flex-col gap-3">
-        {lista.map((item) => (
+        {lista.map((item, index) => (
           <CardAvaliacaoFisica
             key={item.id}
             item={item}
+            maisRecente={index === 0}
             podeEditar={userId != null && item.profissional.id === userId}
             onEditar={() =>
               navigate(
