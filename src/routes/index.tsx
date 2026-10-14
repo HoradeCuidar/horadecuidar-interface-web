@@ -20,6 +20,7 @@ import {
   CadastroAvaliacaoFisica,
   EditarAvaliacaoFisica,
   CadastroPrescricaoNutricional,
+  EditarPrescricaoNutricional,
   RelatorioAdesao,
 } from '@/pages'
 
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: 'pacientes/:id/prescricoes-nutricionais/nova',
         element: <CadastroPrescricaoNutricional />,
+      },
+      {
+        path: 'pacientes/:id/prescricoes-nutricionais/:prescricaoId/editar',
+        element: <EditarPrescricaoNutricional />,
       },
       {
         path: 'pacientes/:id/relatorios/adesao',

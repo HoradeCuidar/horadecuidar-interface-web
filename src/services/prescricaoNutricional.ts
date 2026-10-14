@@ -4,6 +4,7 @@ import { authService } from './auth'
 import { parseApiError } from './apiErrors'
 import {
   formToPrescricaoNutricionalRequest,
+  formToPrescricaoNutricionalUpdateRequest,
   validarPrescricaoNutricionalForm,
 } from './prescricaoNutricional.mappers'
 import type {
@@ -90,6 +91,27 @@ export const prescricaoNutricionalService = {
     return parseJson<PrescricaoNutricionalResumo>(
       res,
       'Erro ao inativar a prescrição nutricional.'
+    )
+  },
+
+  async editar(
+    prescricaoId: number,
+    form: PrescricaoNutricionalFormData
+  ): Promise<PrescricaoNutricionalResponse> {
+    const erro = validarPrescricaoNutricionalForm(form)
+    if (erro) throw new Error(erro)
+
+    const payload = formToPrescricaoNutricionalUpdateRequest(form)
+    const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoNutricional.editar(prescricaoId)}`
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(payload),
+    })
+
+    return parseJson<PrescricaoNutricionalResponse>(
+      res,
+      'Erro ao editar a prescrição nutricional.'
     )
   },
 }
