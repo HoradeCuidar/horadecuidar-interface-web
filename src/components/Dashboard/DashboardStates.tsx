@@ -1,12 +1,15 @@
 import { RefreshCw, TriangleAlert } from 'lucide-react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
+const focoBotao =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700'
+
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-7" aria-label="Carregando dashboard">
+    <div className="space-y-7" aria-busy="true" aria-label="Carregando dashboard">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[1, 2, 3, 4].map((item) => (
-          <Skeleton key={item} className="h-22 rounded-2xl" />
+          <Skeleton key={item} className="h-24 rounded-2xl" />
         ))}
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
@@ -26,8 +29,11 @@ export function DashboardError({
   onRetry: () => void
 }) {
   return (
-    <section className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-red-100 bg-white px-6 text-center shadow-sm">
-      <TriangleAlert className="size-10 text-red-500" aria-hidden />
+    <section
+      className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-red-100 bg-white px-6 text-center shadow-sm"
+      role="alert"
+    >
+      <TriangleAlert className="size-10 text-red-700" aria-hidden />
       <h2 className="mt-4 font-heading text-lg font-semibold text-text">
         Não foi possível carregar o dashboard
       </h2>
@@ -35,7 +41,7 @@ export function DashboardError({
       <button
         type="button"
         onClick={onRetry}
-        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600"
+        className={`mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-text-inverse transition hover:bg-brand-700 ${focoBotao}`}
       >
         <RefreshCw className="size-4" aria-hidden />
         Tentar novamente

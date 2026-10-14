@@ -1,4 +1,7 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react'
+
+const focoBotao =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700'
 
 export function PaginacaoDashboard({
   pagina,
@@ -15,7 +18,7 @@ export function PaginacaoDashboard({
     <nav className="flex items-center justify-end gap-1" aria-label="Paginação">
       <button
         type="button"
-        className="flex size-7 items-center justify-center rounded-lg bg-brand-100 text-brand-600 transition hover:bg-brand-200 disabled:cursor-not-allowed disabled:opacity-40"
+        className={`flex size-7 items-center justify-center rounded-lg bg-brand-100 text-brand-700 transition hover:bg-brand-200 disabled:cursor-not-allowed disabled:opacity-40 ${focoBotao}`}
         disabled={pagina === 1}
         onClick={() => onChange(pagina - 1)}
         aria-label="Página anterior"
@@ -27,7 +30,7 @@ export function PaginacaoDashboard({
       </span>
       <button
         type="button"
-        className="flex size-7 items-center justify-center rounded-lg bg-brand-100 text-brand-600 transition hover:bg-brand-200 disabled:cursor-not-allowed disabled:opacity-40"
+        className={`flex size-7 items-center justify-center rounded-lg bg-brand-100 text-brand-700 transition hover:bg-brand-200 disabled:cursor-not-allowed disabled:opacity-40 ${focoBotao}`}
         disabled={pagina === totalPaginas}
         onClick={() => onChange(pagina + 1)}
         aria-label="Próxima página"
@@ -38,10 +41,55 @@ export function PaginacaoDashboard({
   )
 }
 
-export function EstadoVazioDashboard({ texto }: { texto: string }) {
+export function EstadoVazioDashboard({
+  texto,
+  detalhe,
+  destaque,
+}: {
+  texto: string
+  detalhe?: string
+  destaque?: string
+}) {
   return (
-    <div className="flex min-h-48 items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-surface-0 px-6 text-center text-sm text-text-muted">
-      {texto}
+    <div
+      className="flex min-h-48 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-surface-100 bg-surface-0 px-6 text-center"
+      role="status"
+    >
+      {destaque ? (
+        <span className="rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success-700">
+          {destaque}
+        </span>
+      ) : null}
+      {destaque ? (
+        <CheckCircle2 className="size-10 text-success" aria-hidden />
+      ) : null}
+      <p className="text-sm font-medium text-text">{texto}</p>
+      {detalhe ? (
+        <p className="max-w-sm text-xs text-text-muted">{detalhe}</p>
+      ) : null}
     </div>
+  )
+}
+
+export function BadgePainel({
+  children,
+  tom = 'brand',
+}: {
+  children: React.ReactNode
+  tom?: 'brand' | 'sucesso' | 'alerta' | 'risco'
+}) {
+  const tons = {
+    brand: 'bg-brand-100 text-brand-700',
+    sucesso: 'bg-success/15 text-success-700',
+    alerta: 'bg-orange-100 text-orange-700',
+    risco: 'bg-red-100 text-red-700',
+  }
+
+  return (
+    <span
+      className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${tons[tom]}`}
+    >
+      {children}
+    </span>
   )
 }
