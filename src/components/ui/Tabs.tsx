@@ -68,8 +68,11 @@ export function TabsList({ className, children, ...props }: TabsListProps) {
   }
 
   return (
-    <div className={cn('border-b border-zinc-200', className)} {...props}>
-      <nav role="tablist" className="flex gap-6 overflow-x-auto">
+    <div className={cn('border-b border-surface-100', className)} {...props}>
+      <nav
+        role="tablist"
+        className="flex gap-1 overflow-x-auto pb-px sm:gap-2"
+      >
         {children}
       </nav>
     </div>
@@ -121,10 +124,10 @@ export function TabsTrigger({
       disabled={disabled}
       onClick={() => onValueChange(value)}
       className={cn(
-        'shrink-0 border-b-2 pb-3 text-sm font-medium transition-colors',
+        'shrink-0 border-b-2 px-2.5 pb-3 pt-1 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700 sm:px-3',
         isActive
-          ? 'border-brand-600 text-brand-600'
-          : 'border-transparent text-zinc-500 hover:text-zinc-700',
+          ? 'border-brand-600 text-brand-700'
+          : 'border-transparent text-text-muted hover:text-text',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
