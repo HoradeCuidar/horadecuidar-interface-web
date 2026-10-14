@@ -1,5 +1,7 @@
+import { FiShield, FiUser } from 'react-icons/fi'
 import { CabecalhoPerfil } from './CabecalhoPerfil'
 import { CampoDado } from './CampoDado'
+import { SecaoPerfil } from './SecaoPerfil'
 import { ROLE_LABEL, valorOuTraco } from './meuPerfil.helpers'
 import type { Role } from '@/types/auth'
 
@@ -19,22 +21,52 @@ export function PerfilAdmin({
   onFotoAtualizada,
 }: PerfilAdminProps) {
   return (
-    <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-6">
+    <div className="space-y-5">
       <CabecalhoPerfil
         nome={username}
-        subtitulo={`@${username}`}
+        username={username}
         badge={ROLE_LABEL[role]}
+        idLabel={`ID: #${userId}`}
         fotoUrl={fotoUrl}
         onFotoAtualizada={onFotoAtualizada}
       />
 
-      <div className="mt-4 border-t border-zinc-100 pt-3">
-        <dl className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
-          <CampoDado label="Username" valor={valorOuTraco(username)} />
-          <CampoDado label="Perfil" valor={ROLE_LABEL[role]} />
-          <CampoDado label="ID" valor={String(userId)} />
-        </dl>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <SecaoPerfil
+          titulo="Dados da conta"
+          subtitulo="Informações disponíveis para administradores"
+          icone={<FiUser className="size-5" aria-hidden />}
+        >
+          <dl className="grid gap-3 sm:grid-cols-2">
+            <CampoDado label="Nome de usuário" valor={valorOuTraco(username)} />
+            <CampoDado label="Perfil" valor={ROLE_LABEL[role]} />
+            <CampoDado
+              label="Identificador"
+              valor={`#${userId}`}
+              className="sm:col-span-2"
+            />
+          </dl>
+        </SecaoPerfil>
+
+        <SecaoPerfil
+          titulo="Acesso"
+          subtitulo="Escopo deste módulo web"
+          icone={<FiShield className="size-5" aria-hidden />}
+        >
+          <dl className="space-y-3">
+            <CampoDado
+              label="Permissão"
+              valor="Administrador"
+              dica="Gestão de profissionais e visão geral do sistema"
+            />
+            <CampoDado
+              label="Edição de dados pessoais"
+              valor="Indisponível"
+              dica="Contas administrativas não possuem endpoint de autoedição"
+            />
+          </dl>
+        </SecaoPerfil>
       </div>
-    </section>
+    </div>
   )
 }

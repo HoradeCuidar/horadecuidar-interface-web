@@ -29,6 +29,7 @@ export function apiToFormGenero(g?: string): string {
 }
 
 export type MeuPerfilFormState = {
+  id: number
   nome: string
   genero: string
   telefone: string
@@ -40,15 +41,18 @@ export type MeuPerfilFormState = {
   estado: string
   cidade: string
   username: string
+  status: string
 }
 
 export function mapProfissionalToForm(p: {
+  id: number
   nome: string
   username?: string
   email?: string
   telefone?: string
   dataNascimento?: string
   genero?: string
+  status?: string
   rua?: string
   numeroDaCasa?: string
   bairro?: string
@@ -56,6 +60,7 @@ export function mapProfissionalToForm(p: {
   estado?: string
 }): MeuPerfilFormState {
   return {
+    id: p.id,
     nome: p.nome ?? '',
     genero: apiToFormGenero(p.genero),
     telefone: p.telefone ? p.telefone.replace(/\D/g, '') : '',
@@ -67,7 +72,37 @@ export function mapProfissionalToForm(p: {
     estado: p.estado ?? '',
     cidade: p.cidade ?? '',
     username: p.username ?? '',
+    status: p.status ?? '',
   }
+}
+
+export function labelStatusSistema(status?: string): string | null {
+  if (!status?.trim()) return null
+  const normalizado = status
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+  if (normalizado.includes('ATIVO')) return 'Ativo no sistema'
+  if (normalizado.includes('INATIVO')) return 'Inativo no sistema'
+  return status
+}
+
+export function montarEndereco(partes: {
+  rua?: string
+  numeroCasa?: string
+  bairro?: string
+  cidade?: string
+  estado?: string
+}): string {
+  return [
+    partes.rua,
+    partes.numeroCasa && `nº ${partes.numeroCasa}`,
+    partes.bairro,
+    partes.cidade,
+    partes.estado,
+  ]
+    .filter(Boolean)
+    .join(', ')
 }
 
 export function formatarTelefoneExibicao(digits: string): string {
