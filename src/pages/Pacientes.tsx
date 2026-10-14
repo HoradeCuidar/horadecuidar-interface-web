@@ -1,96 +1,263 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { FiCheckCircle, FiEdit2, FiEye, FiSlash } from "react-icons/fi";
-import { 
-  EmptyState, 
-  ButtonCadastro, 
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
+import {
+  FiActivity,
+  FiCheckCircle,
+  FiEdit2,
+  FiEye,
+  FiSlash,
+  FiAlertTriangle,
+  FiUsers,
+} from 'react-icons/fi'
+import {
+  EmptyState,
+  ButtonCadastro,
   ModalCadastroPaciente,
   ModalEditarPaciente,
   ModalConfirmacaoStatusPaciente,
   DataTable,
   InputBusca,
-  Skeleton
-} from "@/components";
-import emptyPacienteSvg from "@/assets/empty-paciente.svg";
-import { pacienteService } from "@/services/paciente";
-import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { IconeUsuario } from "@/components/icons";
-import type { ColumnDef } from "@/components/DataTable";
+  Skeleton,
+} from '@/components'
+import emptyPacienteSvg from '@/assets/empty-paciente.svg'
+import { pacienteService } from '@/services/paciente'
+import { EmptyPesquisar } from '@/components/illustrations/EmptyPesquisar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import type { ColumnDef } from '@/components/DataTable'
 
-export interface Paciente {
-  id: number;
-  nome: string;
-  telefone: string;
-  cpf: string;
-  status: "active" | "inactive";
+type StatusParticipante = 'active' | 'inactive'
+
+type DoencaLista = { id: number; nome: string }
+
+export type ParticipanteLista = {
+  id: number
+  nome: string
+  telefone: string
+  email: string
+  status: StatusParticipante
+  classificacao?: string | null
+  doencas: DoencaLista[]
+}
+
+function mapItem(it: Record<string, unknown>): ParticipanteLista {
+  const statusRaw = String(it.status ?? '')
+  return {
+    id: Number(it.id),
+    nome: String(it.nome ?? ''),
+    telefone: String(it.telefone ?? ''),
+    email: String(it.email ?? ''),
+    status: statusRaw.toLowerCase().startsWith('a') ? 'active' : 'inactive',
+    classificacao:
+      typeof it.classificacao === 'string' ? it.classificacao : null,
+    doencas: Array.isArray(it.doencas)
+      ? (it.doencas as DoencaLista[]).map((d) => ({
+          id: Number(d.id),
+          nome: String(d.nome ?? ''),
+        }))
+      : [],
+  }
+}
+
+function labelClassificacao(classificacao?: string | null): {
+  texto: string
+  tom: string
+} {
+  switch (classificacao) {
+    case 'BAIXA_ADESAO':
+      return { texto: 'Baixa adesão', tom: 'bg-red-100 text-red-700' }
+    case 'ATENCAO':
+      return { texto: 'Atenção', tom: 'bg-orange-100 text-orange-700' }
+    case 'ADEQUADA':
+      return { texto: 'Adesão adequada', tom: 'bg-success/15 text-success-700' }
+    case 'DADOS_INSUFICIENTES':
+      return {
+        texto: 'Dados insuficientes',
+        tom: 'bg-surface-0 text-text-muted',
+      }
+    default:
+      return { texto: 'Sem classificação', tom: 'bg-surface-0 text-text-muted' }
+  }
+}
+
+function iniciais(nome: string): string {
+  return nome
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p.charAt(0).toUpperCase())
+    .join('')
+}
+
+function CartaoResumo({
+  titulo,
+  valor,
+  detalhe,
+  Icone,
+  tom,
+}: {
+  titulo: string
+  valor: number
+  detalhe: string
+  Icone: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>
+  tom: 'brand' | 'sucesso' | 'alerta'
+}) {
+  const tons = {
+    brand: 'bg-brand-100 text-brand-700',
+    sucesso: 'bg-success/15 text-success-700',
+    alerta: 'bg-red-100 text-red-700',
+  }
+
+  return (
+    <article className="flex items-center gap-4 rounded-2xl border border-surface-100 bg-white px-5 py-4 shadow-sm">
+      <span
+        className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${tons[tom]}`}
+      >
+        <Icone className="size-5" aria-hidden />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+          {titulo}
+        </p>
+        <p className="mt-0.5 font-heading text-2xl font-bold text-text">
+          {valor.toLocaleString('pt-BR')}
+        </p>
+        <p className="mt-0.5 text-xs text-text-muted">{detalhe}</p>
+      </div>
+    </article>
+  )
 }
 
 export function Pacientes() {
-  const navigate = useNavigate();
-  const [modalCadastroAberto, setModalCadastroAberto] = useState(false);
-  const [termoBusca, setTermoBusca] = useState("");
-  const [pacientes, setPacientes] = useState<Paciente[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [jaTevePacientes, setJaTevePacientes] = useState(false);
-  const buscaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigate = useNavigate()
+  const [modalCadastroAberto, setModalCadastroAberto] = useState(false)
+  const [termoBusca, setTermoBusca] = useState('')
+  const [participantes, setParticipantes] = useState<ParticipanteLista[]>([])
+  const [loading, setLoading] = useState(true)
+  const [jaTeveParticipantes, setJaTeveParticipantes] = useState(false)
+  const buscaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const [confirmacaoStatusAberto, setConfirmacaoStatusAberto] = useState(false);
-  const [pacienteAcaoId, setPacienteAcaoId] = useState<number | null>(null);
-  const [novoStatusAcao, setNovoStatusAcao] = useState<'active' | 'inactive' | null>(null);
-  const [modalEditarAberto, setModalEditarAberto] = useState(false);
-  const [pacienteEditarId, setPacienteEditarId] = useState<number | null>(null);
+  const [confirmacaoStatusAberto, setConfirmacaoStatusAberto] = useState(false)
+  const [participanteAcaoId, setParticipanteAcaoId] = useState<number | null>(
+    null
+  )
+  const [novoStatusAcao, setNovoStatusAcao] = useState<StatusParticipante | null>(
+    null
+  )
+  const [modalEditarAberto, setModalEditarAberto] = useState(false)
+  const [participanteEditarId, setParticipanteEditarId] = useState<number | null>(
+    null
+  )
 
-  function handleEditar(id: number) {
-    setPacienteEditarId(id);
-    setModalEditarAberto(true);
-  }
+  const resumo = useMemo(() => {
+    const total = participantes.length
+    const ativos = participantes.filter((p) => p.status === 'active').length
+    const baixaAdesao = participantes.filter(
+      (p) => p.classificacao === 'BAIXA_ADESAO'
+    ).length
+    const pctAtivos =
+      total > 0 ? ((ativos / total) * 100).toLocaleString('pt-BR', {
+        maximumFractionDigits: 1,
+      }) : '0'
+    return { total, ativos, baixaAdesao, pctAtivos }
+  }, [participantes])
 
-  const columns: ColumnDef<Paciente>[] = [
+  const columns: ColumnDef<ParticipanteLista>[] = [
     {
-      header: "Nome",
-      headerClassName: "text-left text-base font-bold text-text",
-      className: "py-4 text-left",
+      header: 'Nome do participante',
+      headerClassName: 'text-left text-xs font-bold uppercase tracking-wide text-text',
+      className: 'py-4 text-left',
       render: (item) => (
-        <div className="flex items-center gap-2.5">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
-            <IconeUsuario className="size-4 shrink-0" />
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
+            {iniciais(item.nome)}
           </span>
-          <span className="font-heading font-medium tracking-tight text-text-muted">
+          <p className="min-w-0 truncate font-heading text-sm font-semibold text-text">
             {item.nome}
-          </span>
+          </p>
         </div>
       ),
     },
-    { header: "Telefone", accessorKey: "telefone", className: "py-4 text-center text-text-muted" },
     {
-      header: "Status",
-      className: "py-4 text-center",
+      header: 'Contato',
+      headerClassName: 'text-left text-xs font-bold uppercase tracking-wide text-text',
+      className: 'py-4 text-left',
       render: (item) => (
-        <Badge
-          className={`rounded-xl border-0 px-4 py-1.5 text-[12px] font-semibold text-white ${
-            item.status === "active" ? "bg-success-500" : "bg-error-500"
-          }`}
-        >
-          {item.status === "active" ? "Ativo" : "Inativo"}
-        </Badge>
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate text-sm text-text">
+            {item.telefone || '—'}
+          </p>
+          <p className="truncate text-[11px] text-text-muted">
+            {item.email || 'Sem e-mail'}
+          </p>
+        </div>
       ),
     },
     {
-      header: "Ações",
-      className: "py-4 text-center",
+      header: 'Condições clínicas',
+      headerClassName: 'text-left text-xs font-bold uppercase tracking-wide text-text',
+      className: 'py-4 text-left',
+      render: (item) =>
+        item.doencas.length === 0 ? (
+          <span className="text-sm text-text-muted">—</span>
+        ) : (
+          <div className="flex flex-wrap gap-1.5">
+            {item.doencas.slice(0, 3).map((d) => (
+              <span
+                key={d.id}
+                className="rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-medium text-brand-700"
+              >
+                {d.nome}
+              </span>
+            ))}
+            {item.doencas.length > 3 ? (
+              <span className="rounded-full bg-surface-0 px-2.5 py-0.5 text-[11px] font-medium text-text-muted">
+                +{item.doencas.length - 3}
+              </span>
+            ) : null}
+          </div>
+        ),
+    },
+    {
+      header: 'Status / adesão',
+      headerClassName: 'text-left text-xs font-bold uppercase tracking-wide text-text',
+      className: 'py-4 text-left',
+      render: (item) => {
+        const classe = labelClassificacao(item.classificacao)
+        return (
+          <div className="flex flex-col items-start gap-1.5">
+            <Badge
+              className={`rounded-full border-0 px-3 py-1 text-[11px] font-semibold text-white ${
+                item.status === 'active' ? 'bg-success-500' : 'bg-error-500'
+              }`}
+            >
+              {item.status === 'active' ? 'Ativo' : 'Inativo'}
+            </Badge>
+            <span
+              className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${classe.tom}`}
+            >
+              {classe.texto}
+            </span>
+          </div>
+        )
+      },
+    },
+    {
+      header: 'Ações',
+      headerClassName: 'text-center text-xs font-bold uppercase tracking-wide text-text',
+      className: 'py-4 text-center',
       render: (item) => (
         <div className="flex items-center justify-center gap-0.5">
-          {item.status === "active" ? (
+          {item.status === 'active' ? (
             <Button
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-error-500 hover:bg-error-500/15 hover:text-error-700"
               title="Inativar"
+              aria-label="Inativar participante"
               onClick={() => {
-                setPacienteAcaoId(item.id)
+                setParticipanteAcaoId(item.id)
                 setNovoStatusAcao('inactive')
                 setConfirmacaoStatusAberto(true)
               }}
@@ -103,8 +270,9 @@ export function Pacientes() {
               size="icon"
               className="h-8 w-8 text-success-500 hover:bg-success-500/15 hover:text-success-700"
               title="Ativar"
+              aria-label="Ativar participante"
               onClick={() => {
-                setPacienteAcaoId(item.id)
+                setParticipanteAcaoId(item.id)
                 setNovoStatusAcao('active')
                 setConfirmacaoStatusAberto(true)
               }}
@@ -117,6 +285,7 @@ export function Pacientes() {
             size="icon"
             className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
             title="Visualizar"
+            aria-label="Visualizar participante"
             onClick={() => navigate(`/pacientes/${item.id}`)}
           >
             <FiEye className="size-4" aria-hidden />
@@ -126,235 +295,231 @@ export function Pacientes() {
             size="icon"
             className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
             title="Editar"
-            onClick={() => handleEditar(item.id)}
+            aria-label="Editar participante"
+            onClick={() => {
+              setParticipanteEditarId(item.id)
+              setModalEditarAberto(true)
+            }}
           >
             <FiEdit2 className="size-4" aria-hidden />
           </Button>
         </div>
       ),
     },
-  ];
+  ]
 
-  async function loadPacientes() {
-    setLoading(true);
+  async function loadParticipantes() {
+    setLoading(true)
     try {
-      const items = await pacienteService.listar();
-      const mapped: Paciente[] = items.map((it: any) => ({
-        id: it.id,
-        nome: it.nome,
-        telefone: it.telefone ?? "",
-        cpf: it.cpf ?? "",
-        status:
-          it.status && it.status.toLowerCase().startsWith("a")
-            ? "active"
-            : "inactive",
-      }));
-
-      setPacientes(mapped);
-
-      if (mapped.length > 0) {
-        setJaTevePacientes(true);
-      }
+      const items = await pacienteService.listar()
+      const mapped = items.map((it: Record<string, unknown>) => mapItem(it))
+      setParticipantes(mapped)
+      if (mapped.length > 0) setJaTeveParticipantes(true)
     } catch (e) {
       toast.error(
-        e instanceof Error ? e.message : "Erro ao buscar pacientes",
-      );
+        e instanceof Error ? e.message : 'Erro ao buscar participantes'
+      )
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   async function doBusca(termo: string) {
     try {
-      const items = await pacienteService.buscar(termo);
-      const mapped: Paciente[] = items.map((it: any) => ({
-        id: it.id,
-        nome: it.nome,
-        telefone: it.telefone ?? "",
-        cpf: it.cpf ?? "",
-        status:
-          it.status && it.status.toLowerCase().startsWith("a")
-            ? "active"
-            : "inactive",
-      }));
-
-      setPacientes(mapped);
+      const items = await pacienteService.buscar(termo)
+      setParticipantes(items.map((it: Record<string, unknown>) => mapItem(it)))
     } catch (e) {
       toast.error(
-        e instanceof Error ? e.message : "Erro ao buscar pacientes",
-      );
+        e instanceof Error ? e.message : 'Erro ao buscar participantes'
+      )
     }
   }
 
   function handleBusca(termo: string) {
-    setTermoBusca(termo);
+    setTermoBusca(termo)
+    if (buscaTimeout.current) clearTimeout(buscaTimeout.current)
 
-    if (buscaTimeout.current) {
-      clearTimeout(buscaTimeout.current);
-    }
-
-    if (termo.trim() === "") {
+    if (termo.trim() === '') {
       buscaTimeout.current = setTimeout(() => {
-        loadPacientes();
-      }, 150);
-      return;
+        void loadParticipantes()
+      }, 150)
+      return
     }
 
     buscaTimeout.current = setTimeout(() => {
-      doBusca(termo);
-    }, 300);
+      void doBusca(termo)
+    }, 300)
   }
 
-  function handleCadastrarPaciente() {
-    setModalCadastroAberto(true);
-  }
-
-  async function handleSubmitPaciente(dados: Record<string, unknown>) {
-    const { conviteEnviado } = await pacienteService.cadastrar(dados);
-    if (conviteEnviado) toast.success("Paciente cadastrado e convite enviado.");
-    else toast.warning("Paciente cadastrado, mas o convite por e-mail falhou. Verifique a configuração de envio.");
-    setModalCadastroAberto(false);
-    await loadPacientes();
+  async function handleSubmitParticipante(dados: Record<string, unknown>) {
+    const { conviteEnviado } = await pacienteService.cadastrar(dados)
+    if (conviteEnviado) {
+      toast.success('Participante cadastrado e convite enviado.')
+    } else {
+      toast.warning(
+        'Participante cadastrado, mas o convite por e-mail falhou. Verifique a configuração de envio.'
+      )
+    }
+    setModalCadastroAberto(false)
+    await loadParticipantes()
   }
 
   useEffect(() => {
-    loadPacientes();
-
+    void loadParticipantes()
     return () => {
-      if (buscaTimeout.current) {
-        clearTimeout(buscaTimeout.current);
-      }
-    };
-  }, []);
+      if (buscaTimeout.current) clearTimeout(buscaTimeout.current)
+    }
+  }, [])
 
   return (
-    <div className="flex flex-col pt-8 px-8 pb-0 overflow-visible">
-      <div className="flex flex-col gap-1">
-        <h1 className="font-heading text-2xl font-bold tracking-tight text-text">
-          Pacientes
-        </h1>
-        <p className="text-sm font-normal text-text-muted">
-          Acompanhe os pacientes cadastrados, seus planos de tratamento e monitoramentos ativos
-        </p>
-      </div>
+    <div className="flex flex-col px-4 pb-8 pt-6 sm:px-6 lg:px-8 lg:pt-8">
+      <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="font-heading text-2xl font-bold tracking-tight text-text">
+              Participantes
+            </h1>
+            {!loading ? (
+              <span className="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold text-brand-700">
+                {resumo.total} cadastrados
+              </span>
+            ) : null}
+          </div>
+          <p className="mt-1 max-w-2xl text-sm text-text-muted">
+            Acompanhe os participantes cadastrados, seus planos de tratamento e
+            monitoramentos ativos.
+          </p>
+        </div>
+        {jaTeveParticipantes && !loading ? (
+          <ButtonCadastro
+            label="Cadastrar participante"
+            onClick={() => setModalCadastroAberto(true)}
+          />
+        ) : null}
+      </header>
 
-      <div className="flex flex-col mt-6 overflow-visible">
-        {loading ? (
-          <div className="flex flex-col gap-4">
+      {loading ? (
+        <div className="flex flex-col gap-4">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-24 rounded-2xl" />
+            ))}
+          </div>
+          <Skeleton className="h-10 w-full rounded-xl" />
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5">
+          {jaTeveParticipantes ? (
+            <section
+              className="grid gap-4 sm:grid-cols-3"
+              aria-label="Resumo dos participantes"
+            >
+              <CartaoResumo
+                titulo="Total de participantes"
+                valor={resumo.total}
+                detalhe="Na listagem atual"
+                Icone={FiUsers}
+                tom="brand"
+              />
+              <CartaoResumo
+                titulo="Em acompanhamento ativo"
+                valor={resumo.ativos}
+                detalhe={`${resumo.pctAtivos}% do total`}
+                Icone={FiActivity}
+                tom="sucesso"
+              />
+              <CartaoResumo
+                titulo="Com alerta de baixa adesão"
+                valor={resumo.baixaAdesao}
+                detalhe={
+                  resumo.baixaAdesao > 0
+                    ? 'Ação prioritária'
+                    : 'Nenhum alerta no momento'
+                }
+                Icone={FiAlertTriangle}
+                tom="alerta"
+              />
+            </section>
+          ) : null}
+
+          {jaTeveParticipantes ? (
             <div className="flex w-full items-center gap-4">
               <div className="flex-1">
-                <Skeleton className="h-10 w-full rounded-xl" />
+                <InputBusca
+                  value={termoBusca}
+                  onChange={(e) => handleBusca(e.target.value)}
+                  placeholder="Buscar por nome..."
+                />
               </div>
-              <Skeleton className="h-10 w-40 rounded-xl" />
             </div>
+          ) : null}
 
-            <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="grid grid-cols-4 border-b border-zinc-200 bg-zinc-50 p-4 text-center dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="text-xs font-semibold text-zinc-500 uppercase">Nome</div>
-                <div className="text-xs font-semibold text-zinc-500 uppercase">Telefone</div>
-                <div className="text-xs font-semibold text-zinc-500 uppercase">Status</div>
-                <div className="text-xs font-semibold text-zinc-500 uppercase">Ações</div>
-              </div>
-              <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="grid grid-cols-4 items-center p-4">
-                    <div className="flex justify-center">
-                      <Skeleton className="h-4 w-40" />
-                    </div>
-                    <div className="flex justify-center">
-                      <Skeleton className="h-4 w-28" />
-                    </div>
-                    <div className="flex justify-center">
-                      <Skeleton className="h-6 w-20 rounded-full" />
-                    </div>
-                    <div className="flex justify-center gap-2">
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {jaTevePacientes && (
-              <div className="flex w-full items-center gap-4">
-                <div className="flex-1">
-                  <InputBusca
-                    value={termoBusca}
-                    onChange={(e) => handleBusca(e.target.value)}
+          {participantes.length > 0 ? (
+            <>
+              <DataTable data={participantes} columns={columns} />
+              <p className="text-xs text-text-muted">
+                Exibindo {participantes.length}{' '}
+                {participantes.length === 1
+                  ? 'participante'
+                  : 'participantes'}
+                {termoBusca.trim() ? ' na busca atual' : ' cadastrados'}.
+              </p>
+            </>
+          ) : termoBusca.trim() !== '' ? (
+            <EmptyState
+              illustration={<EmptyPesquisar />}
+              title="Nenhum resultado encontrado"
+              description="Nada encontrado. Verifique se esse participante está cadastrado."
+              illustrationClassName="mb-1"
+              className="min-h-[60vh]"
+            />
+          ) : (
+            <EmptyState
+              illustration={
+                <div className="rounded-xl bg-white p-6 shadow-lg">
+                  <img
+                    src={emptyPacienteSvg}
+                    alt=""
+                    className="mx-auto max-h-[32rem] w-auto"
                   />
                 </div>
-
-                <ButtonCadastro
-                  label="Cadastrar paciente"
-                  onClick={handleCadastrarPaciente}
-                />
-              </div>
-            )}
-
-            {pacientes.length > 0 ? (
-              <DataTable
-                data={pacientes}
-                columns={columns}
+              }
+              title="Nenhum participante encontrado!"
+              description="Cadastre um novo participante para visualizar suas informações."
+            >
+              <ButtonCadastro
+                label="Cadastrar participante"
+                onClick={() => setModalCadastroAberto(true)}
               />
-            ) : termoBusca.trim() !== "" ? (
-              <EmptyState
-                illustration={<EmptyPesquisar />}
-                title="Nenhum resultado encontrado"
-                description="Nada encontrado. Verifique se esse paciente está cadastrado."
-                illustrationClassName="mb-1"
-                className="min-h-[60vh]"
-              />
-            ) : (
-              <EmptyState
-                illustration={
-                  <div className="bg-white p-6 rounded-xl shadow-lg">
-                    <img
-                      src={emptyPacienteSvg}
-                      alt=""
-                      className="mx-auto max-h-[32rem] w-auto"
-                    />
-                  </div>
-                }
-                title="Nenhum paciente encontrado!"
-                description="Cadastre um novo paciente para visualizar suas informações."
-              >
-                <ButtonCadastro
-                  label="Cadastrar paciente"
-                  onClick={handleCadastrarPaciente}
-                />
-              </EmptyState>
-            )}
-          </div>
-        )}
-      </div>
+            </EmptyState>
+          )}
+        </div>
+      )}
 
       <ModalCadastroPaciente
         aberto={modalCadastroAberto}
         onFechar={() => setModalCadastroAberto(false)}
-        onSubmit={handleSubmitPaciente}
+        onSubmit={handleSubmitParticipante}
       />
 
       <ModalConfirmacaoStatusPaciente
         aberto={confirmacaoStatusAberto}
         onFechar={() => setConfirmacaoStatusAberto(false)}
-        onSucesso={() => loadPacientes()}
-        pacienteId={pacienteAcaoId}
+        onSucesso={() => void loadParticipantes()}
+        pacienteId={participanteAcaoId}
         novoStatus={novoStatusAcao}
       />
 
       <ModalEditarPaciente
         aberto={modalEditarAberto}
         onFechar={() => {
-          setModalEditarAberto(false);
-          setPacienteEditarId(null);
+          setModalEditarAberto(false)
+          setParticipanteEditarId(null)
         }}
-        pacienteId={pacienteEditarId}
-        onSucesso={() => loadPacientes()}
+        pacienteId={participanteEditarId}
+        onSucesso={() => void loadParticipantes()}
       />
     </div>
-  );
+  )
 }

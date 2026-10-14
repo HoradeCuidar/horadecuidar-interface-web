@@ -21,10 +21,10 @@ export function ModalConfirmacaoStatusPaciente({
   const [loading, setLoading] = useState(false)
 
   const isAtivacao = novoStatus === 'active'
-  const titulo = isAtivacao ? 'Ativar Paciente' : 'Inativar Paciente'
+  const titulo = isAtivacao ? 'Ativar Participante' : 'InAtivar Participante'
   const descricao = isAtivacao
-    ? 'Tem certeza que deseja ativar este paciente? O monitoramento e acompanhamento dele voltarão a ficar ativos.'
-    : 'Tem certeza que deseja inativar este paciente? O monitoramento e acompanhamento dele serão pausados temporariamente.'
+    ? 'Tem certeza que deseja ativar este participante? O monitoramento e acompanhamento dele voltarão a ficar ativos.'
+    : 'Tem certeza que deseja inativar este participante? O monitoramento e acompanhamento dele serão pausados temporariamente.'
   const labelBotaoConfirmar = isAtivacao ? 'Ativar' : 'Inativar'
 
   async function handleConfirmar() {
@@ -33,11 +33,11 @@ export function ModalConfirmacaoStatusPaciente({
     setLoading(true)
     try {
       await pacienteService.alterarStatus(pacienteId)
-      toast.success(isAtivacao ? 'Paciente ativado com sucesso.' : 'Paciente inativado com sucesso.')
+      toast.success(isAtivacao ? 'Participante ativado com sucesso.' : 'Participante inativado com sucesso.')
       onSucesso()
       onFechar()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Erro ao alterar o status do paciente.')
+      toast.error(error instanceof Error ? error.message : 'Erro ao alterar o status do participante.')
     } finally {
       setLoading(false)
     }

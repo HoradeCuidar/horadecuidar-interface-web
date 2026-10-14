@@ -52,7 +52,7 @@ export function ModalEditarPaciente({
       <Modal
         aberto={aberto}
         onFechar={handleFechar}
-        titulo="Editar Paciente"
+        titulo="Editar Participante"
         subtitulo={nomeOriginal}
         largura="md"
         altura="tall"

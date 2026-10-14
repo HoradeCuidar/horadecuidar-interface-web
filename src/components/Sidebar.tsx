@@ -57,7 +57,7 @@ const grupoExercicios: NavGroupItem = {
 const navPorRole: Record<Role, NavItem[]> = {
   ADMIN: [
     { kind: 'link', to: '/home', label: 'Dashboard', icon: FiGrid },
-    { kind: 'link', to: '/pacientes', label: 'Pacientes', icon: FiUsers },
+    { kind: 'link', to: '/pacientes', label: 'Participantes', icon: FiUsers },
     {
       kind: 'link',
       to: '/profissionais',
@@ -69,7 +69,7 @@ const navPorRole: Record<Role, NavItem[]> = {
   ],
   PROFISSIONAL_DA_SAUDE: [
     { kind: 'link', to: '/home', label: 'Dashboard', icon: FiGrid },
-    { kind: 'link', to: '/pacientes', label: 'Pacientes', icon: FiUsers },
+    { kind: 'link', to: '/pacientes', label: 'Participantes', icon: FiUsers },
     grupoExercicios,
     { kind: 'link', to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
@@ -80,9 +80,9 @@ const navPorRole: Record<Role, NavItem[]> = {
 }
 
 const linkClass = (isActive: boolean) =>
-  `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition sm:text-[15px] ${
+  `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700 sm:text-[15px] ${
     isActive
-      ? 'bg-brand-100 font-semibold text-brand-600'
+      ? 'bg-brand-100 font-semibold text-brand-700'
       : 'font-medium text-text-muted hover:bg-surface-100 hover:text-text'
   }`
 
@@ -173,11 +173,11 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   const fotoUrl = user?.fotoDePerfil ?? null
 
   return (
-    <aside className="flex h-full w-full flex-col border-r border-zinc-200 bg-white">
-      <div className="flex items-center gap-3 border-b border-zinc-200 px-5 py-5 sm:px-6">
+    <aside className="flex h-full w-full flex-col border-r border-surface-100 bg-white">
+      <div className="flex items-center gap-3 border-b border-surface-100 px-5 py-5 sm:px-6">
         <img src={logo} alt="" className="size-8 shrink-0 sm:size-9" />
         <div className="min-w-0 leading-tight">
-          <p className="text-[10px] font-medium uppercase tracking-wide text-brand-500 sm:text-[11px]">
+          <p className="text-[10px] font-medium uppercase tracking-wide text-brand-700 sm:text-[11px]">
             Hora de
           </p>
           <p className="font-heading text-sm font-bold uppercase tracking-tight text-text sm:text-base">
@@ -186,7 +186,10 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         </div>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5 sm:px-4">
+      <nav
+        className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5 sm:px-4"
+        aria-label="Menu principal"
+      >
         {navItems.map((item) =>
           item.kind === 'group' ? (
             <NavGroup key={item.label} item={item} onNavigate={onNavigate} />
