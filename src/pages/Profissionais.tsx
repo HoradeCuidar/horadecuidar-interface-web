@@ -73,9 +73,13 @@ export function Profissionais() {
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
             <IconeUsuario className="size-4 shrink-0" />
           </span>
-          <span className="font-heading font-medium tracking-tight text-text-muted">
+          <button
+            type="button"
+            onClick={() => setDetalhesId(item.id)}
+            className="font-heading font-medium tracking-tight text-text-muted hover:text-brand-600 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+          >
             {item.name}
-          </span>
+          </button>
         </div>
       ),
     },
