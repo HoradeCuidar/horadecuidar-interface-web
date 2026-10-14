@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import { EmptyState, ButtonCadastro } from '@/components'
 import emptyMedicamentosSvg from '@/assets/empty-medicamentos.svg'
+import { CalendarioAdesaoPainel } from '@/components/CalendarioSemana'
 import { CardPrescricaoNutricional } from '@/components/PrescricaoNutricional/CardPrescricaoNutricional'
 import {
   ModalConfirmacaoStatusPrescricaoNutricional,
@@ -16,16 +17,18 @@ import {
 type VisaoAlimentacao = 'ativas' | 'historico'
 
 const CLASSE_BOTAO_VISAO =
-  'inline-flex items-center gap-1.5 rounded-xl bg-brand-100 px-3.5 py-2 text-sm font-semibold text-brand-600 transition hover:bg-brand-200 hover:text-brand-700'
+  'inline-flex items-center gap-1.5 rounded-xl bg-brand-100 px-3.5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700'
 
 type AbaAlimentacaoProps = {
   pacienteId: number
   onNovaPrescricao: () => void
+  onEditarPrescricao: (prescricaoId: number) => void
 }
 
 export function AbaAlimentacao({
   pacienteId,
   onNovaPrescricao,
+  onEditarPrescricao,
 }: AbaAlimentacaoProps) {
   const [visao, setVisao] = useState<VisaoAlimentacao>('ativas')
   const [lista, setLista] = useState<PrescricaoNutricionalResumo[]>([])
@@ -50,13 +53,7 @@ export function AbaAlimentacao({
           : todas.filter((item) => !isStatusAtiva(item.status))
 
       setLista(filtradas)
-      setExpandidas(() => {
-        const proximo: Record<number, boolean> = {}
-        for (const p of filtradas) {
-          proximo[p.id] = isStatusAtiva(p.status)
-        }
-        return proximo
-      })
+      setExpandidas({})
     } catch (err) {
       setErro(
         err instanceof Error
@@ -98,16 +95,27 @@ export function AbaAlimentacao({
     />
   )
 
+  const calendario = (
+    <CalendarioAdesaoPainel
+      pacienteId={pacienteId}
+      dominio="nutricional"
+      enabled={visao === 'ativas'}
+    />
+  )
+
   if (loading) {
     return (
       <>
         {modalStatus}
-        <div className="flex min-h-[12rem] items-center justify-center rounded-2xl border border-zinc-200 bg-white">
-          <p className="text-sm text-text-muted">
-            {visao === 'ativas'
-              ? 'Carregando prescrições...'
-              : 'Carregando histórico...'}
-          </p>
+        <div className="flex flex-col gap-4">
+          {calendario}
+          <div className="flex min-h-[12rem] items-center justify-center rounded-2xl border border-surface-100 bg-white shadow-sm">
+            <p className="text-sm text-text-muted">
+              {visao === 'ativas'
+                ? 'Carregando prescrições...'
+                : 'Carregando histórico...'}
+            </p>
+          </div>
         </div>
       </>
     )
@@ -117,15 +125,20 @@ export function AbaAlimentacao({
     return (
       <>
         {modalStatus}
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-10">
-          <p className="text-center text-sm text-red-600">{erro}</p>
-          <button
-            type="button"
-            onClick={() => void carregar()}
-            className="text-sm font-medium text-brand-500 hover:text-brand-600"
-          >
-            Tentar novamente
-          </button>
+        <div className="flex flex-col gap-4">
+          {calendario}
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-surface-100 bg-white px-4 py-10 shadow-sm">
+            <p className="text-center text-sm text-error-500" role="alert">
+              {erro}
+            </p>
+            <button
+              type="button"
+              onClick={() => void carregar()}
+              className="text-sm font-medium text-brand-700 hover:text-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
+            >
+              Tentar novamente
+            </button>
+          </div>
         </div>
       </>
     )
@@ -136,6 +149,7 @@ export function AbaAlimentacao({
       <>
         {modalStatus}
         <div className="flex flex-col gap-4">
+          {calendario}
           {visao === 'historico' && (
             <div className="flex justify-start">
               <button
@@ -164,10 +178,10 @@ export function AbaAlimentacao({
             }
             description={
               visao === 'ativas'
-                ? 'Cadastre um plano alimentar para acompanhar a alimentação do paciente.'
+                ? 'Cadastre um plano alimentar para acompanhar a alimentação do participante.'
                 : 'Prescrições inativadas ou encerradas aparecerão aqui.'
             }
-            className="min-h-0 rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-sm"
+            className="min-h-0 rounded-2xl border border-surface-100 bg-white px-4 py-8 shadow-sm"
           >
             {visao === 'ativas' ? (
               <div className="flex flex-col items-center gap-3">
@@ -204,6 +218,8 @@ export function AbaAlimentacao({
     <>
       {modalStatus}
       <div className="flex flex-col gap-4">
+        {calendario}
+
         <div className="flex flex-wrap items-center justify-between gap-3">
           {visao === 'historico' ? (
             <button
@@ -215,9 +231,14 @@ export function AbaAlimentacao({
               Voltar às prescrições ativas
             </button>
           ) : (
-            <p className="text-sm font-medium text-zinc-600">
-              Prescrições ativas
-            </p>
+            <div>
+              <h2 className="font-heading text-base font-semibold text-text">
+                Prescrições ativas
+              </h2>
+              <p className="mt-0.5 text-xs text-text-muted">
+                Planos alimentares em acompanhamento
+              </p>
+            </div>
           )}
 
           {visao === 'ativas' && (
@@ -228,9 +249,14 @@ export function AbaAlimentacao({
           )}
 
           {visao === 'historico' && (
-            <p className="text-sm font-medium text-zinc-600">
-              Histórico de prescrições
-            </p>
+            <div>
+              <h2 className="font-heading text-base font-semibold text-text">
+                Histórico de prescrições
+              </h2>
+              <p className="mt-0.5 text-xs text-text-muted">
+                Planos inativos ou encerrados
+              </p>
+            </div>
           )}
         </div>
 
@@ -241,6 +267,11 @@ export function AbaAlimentacao({
               prescricao={item}
               expandida={Boolean(expandidas[item.id])}
               onToggle={() => toggle(item.id)}
+              onEditar={
+                visao === 'ativas'
+                  ? () => onEditarPrescricao(item.id)
+                  : undefined
+              }
               onInativar={
                 visao === 'ativas'
                   ? () => setConfirmacao({ id: item.id, acao: 'inativar' })

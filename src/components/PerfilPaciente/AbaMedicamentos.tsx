@@ -1,7 +1,8 @@
-﻿import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 import { EmptyState, ButtonCadastro } from '@/components'
 import emptyMedicamentosSvg from '@/assets/empty-medicamentos.svg'
+import { CalendarioAdesaoPainel } from '@/components/CalendarioSemana'
 import { CardPrescricao } from '@/components/PrescricaoMedicamentos/CardPrescricao'
 import { ModalConfirmacaoEncerrarPrescricao } from '@/components/PrescricaoMedicamentos/ModalConfirmacaoEncerrarPrescricao'
 import type { PrescricaoListagem } from '@/components/PrescricaoMedicamentos/prescricaoListagem.types'
@@ -10,7 +11,7 @@ import { prescricaoMedicamentoService } from '@/services'
 type VisaoMedicamentos = 'ativas' | 'historico'
 
 const CLASSE_BOTAO_VISAO =
-  'inline-flex items-center gap-1.5 rounded-xl bg-brand-100 px-3.5 py-2 text-sm font-semibold text-brand-600 transition hover:bg-brand-200 hover:text-brand-700'
+  'inline-flex items-center gap-1.5 rounded-xl bg-brand-100 px-3.5 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700'
 
 type AbaMedicamentosProps = {
   pacienteId: number
@@ -41,13 +42,7 @@ export function AbaMedicamentos({
           ? await prescricaoMedicamentoService.listarAtivas(pacienteId)
           : await prescricaoMedicamentoService.listarHistorico(pacienteId)
       setLista(dados)
-      setExpandidas(() => {
-        const proximo: Record<string, boolean> = {}
-        for (const p of dados) {
-          proximo[p.id] = p.status === 'ativa'
-        }
-        return proximo
-      })
+      setExpandidas({})
     } catch (err) {
       setErro(
         err instanceof Error
@@ -87,14 +82,27 @@ export function AbaMedicamentos({
     />
   )
 
+  const calendario = (
+    <CalendarioAdesaoPainel
+      pacienteId={pacienteId}
+      dominio="medicamentos"
+      enabled={visao === 'ativas'}
+    />
+  )
+
   if (loading) {
     return (
       <>
         {modalEncerrar}
-        <div className="flex min-h-[12rem] items-center justify-center rounded-2xl border border-zinc-200 bg-white">
-          <p className="text-sm text-text-muted">
-            {visao === 'ativas' ? 'Carregando prescrições...' : 'Carregando histórico...'}
-          </p>
+        <div className="flex flex-col gap-4">
+          {calendario}
+          <div className="flex min-h-[12rem] items-center justify-center rounded-2xl border border-zinc-200 bg-white">
+            <p className="text-sm text-text-muted">
+              {visao === 'ativas'
+                ? 'Carregando prescrições...'
+                : 'Carregando histórico...'}
+            </p>
+          </div>
         </div>
       </>
     )
@@ -104,15 +112,18 @@ export function AbaMedicamentos({
     return (
       <>
         {modalEncerrar}
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-10">
-          <p className="text-center text-sm text-red-600">{erro}</p>
-          <button
-            type="button"
-            onClick={() => void carregar()}
-            className="text-sm font-medium text-brand-500 hover:text-brand-600"
-          >
-            Tentar novamente
-          </button>
+        <div className="flex flex-col gap-4">
+          {calendario}
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-10">
+            <p className="text-center text-sm text-error-500">{erro}</p>
+            <button
+              type="button"
+              onClick={() => void carregar()}
+              className="text-sm font-medium text-brand-700 hover:text-brand-800"
+            >
+              Tentar novamente
+            </button>
+          </div>
         </div>
       </>
     )
@@ -123,6 +134,7 @@ export function AbaMedicamentos({
       <>
         {modalEncerrar}
         <div className="flex flex-col gap-4">
+          {calendario}
           {visao === 'historico' && (
             <div className="flex justify-start">
               <button
@@ -151,7 +163,7 @@ export function AbaMedicamentos({
             }
             description={
               visao === 'ativas'
-                ? 'Adicione uma nova prescrição para acompanhar o tratamento do paciente.'
+                ? 'Adicione uma nova prescrição para acompanhar o tratamento do participante.'
                 : 'Prescrições encerradas ou vencidas aparecerão aqui.'
             }
             className="min-h-0 rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-sm"
@@ -191,6 +203,8 @@ export function AbaMedicamentos({
     <>
       {modalEncerrar}
       <div className="flex flex-col gap-4">
+        {calendario}
+
         <div className="flex flex-wrap items-center justify-between gap-3">
           {visao === 'historico' ? (
             <button
@@ -202,7 +216,7 @@ export function AbaMedicamentos({
               Voltar às prescrições ativas
             </button>
           ) : (
-            <p className="text-sm font-medium text-zinc-600">Prescrições ativas</p>
+            <p className="text-sm font-medium text-text-muted">Prescrições ativas</p>
           )}
 
           {visao === 'ativas' && (
@@ -210,7 +224,7 @@ export function AbaMedicamentos({
           )}
 
           {visao === 'historico' && (
-            <p className="text-sm font-medium text-zinc-600">Histórico de prescrições</p>
+            <p className="text-sm font-medium text-text-muted">Histórico de prescrições</p>
           )}
         </div>
 
