@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { BotaoVoltar, Skeleton } from '@/components'
 import {
@@ -7,6 +7,7 @@ import {
   responseToForm,
   type ValoresFormAvaliacao,
 } from '@/components/AvaliacaoFisica'
+import { usePerfilPaciente } from '@/hooks/usePerfilPaciente'
 import { authService, avaliacaoFisicaService } from '@/services'
 import type { AvaliacaoFisicaRequest } from '@/services/avaliacaoFisica.types'
 
@@ -20,6 +21,7 @@ export function EditarAvaliacaoFisica() {
   const [erro, setErro] = useState<string | null>(null)
   const [salvando, setSalvando] = useState(false)
   const [valores, setValores] = useState<ValoresFormAvaliacao | null>(null)
+  const { paciente } = usePerfilPaciente(id)
 
   const pacienteId = Number(id)
   const avId = Number(avaliacaoId)
@@ -100,17 +102,51 @@ export function EditarAvaliacaoFisica() {
     )
   }
 
+  const nomeComIdade =
+    paciente?.nome &&
+    [
+      paciente.nome,
+      paciente.idade != null ? `(${paciente.idade} anos)` : null,
+    ]
+      .filter(Boolean)
+      .join(' ')
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8">
         <BotaoVoltar onClick={voltar}>Voltar</BotaoVoltar>
+        <nav className="text-xs text-text-muted" aria-label="Breadcrumb">
+          <ol className="flex flex-wrap items-center gap-1.5">
+            <li>
+              <Link
+                to="/pacientes"
+                className="font-medium text-brand-700 hover:text-brand-800"
+              >
+                Participantes
+              </Link>
+            </li>
+            <li aria-hidden>/</li>
+            <li>
+              <Link
+                to={`/pacientes/${id}`}
+                state={{ aba: 'avaliacao' }}
+                className="font-medium text-brand-700 hover:text-brand-800"
+              >
+                Ficha clínica
+              </Link>
+            </li>
+            <li aria-hidden>/</li>
+            <li className="font-medium text-text">Editar avaliação</li>
+          </ol>
+        </nav>
       </div>
       <main className="mt-3 flex-1 overflow-y-auto p-4 sm:mt-4 sm:p-6 lg:p-8">
         <div className="mx-auto w-full max-w-3xl">
           <FormularioAvaliacaoFisica
             titulo="Editar avaliação física"
-            descricaoPagina="Atualize os dados da avaliação física."
+            descricaoPagina="Atualize os dados da avaliação física do participante."
             labelSalvar="Salvar alterações"
+            nomeParticipante={nomeComIdade || paciente?.nome}
             valoresIniciais={valores}
             salvando={salvando}
             onSubmit={handleSubmit}
