@@ -9,6 +9,8 @@ type PacienteApiResponse = {
   email: string
   username: string
   dataDeNascimento?: string
+  idade?: number | null
+  status?: string
   telefone?: string
   rua?: string
   bairro?: string
@@ -28,6 +30,8 @@ function mapDetalhes(data: PacienteApiResponse): PacienteDetalhes {
     email: data.email,
     username: data.username,
     dataDeNascimento: data.dataDeNascimento ?? '',
+    idade: data.idade ?? null,
+    status: data.status,
     telefone: data.telefone ?? '',
     rua: data.rua,
     bairro: data.bairro,
@@ -45,7 +49,7 @@ export const pacienteService = {
   async cadastrar(dados: Record<string, unknown>): Promise<{ conviteEnviado: boolean }> {
     const token = authService.getToken()
     if (!token) {
-      throw new Error('Faça login para cadastrar um paciente.')
+      throw new Error('Faça login para cadastrar um participante.')
     }
 
     const payload = formToPayload(dados)
@@ -62,7 +66,7 @@ export const pacienteService = {
 
     if (!res.ok) {
       const text = await res.text()
-      throw new Error(parseApiError(text, 'Erro ao cadastrar paciente.'))
+      throw new Error(parseApiError(text, 'Erro ao Cadastrar Participante.'))
     }
 
     await res.json()
@@ -71,7 +75,7 @@ export const pacienteService = {
 
   async listar(): Promise<any[]> {
     const token = authService.getToken()
-    if (!token) throw new Error('Faça login para listar pacientes.')
+    if (!token) throw new Error('Faça login para listar participantes.')
 
     const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.listar}?pagina=0&limite=100`
     const res = await fetch(url, {
@@ -82,7 +86,7 @@ export const pacienteService = {
     })
 
     if (!res.ok) {
-      throw new Error('Erro ao buscar pacientes.')
+      throw new Error('Erro ao buscar participantes.')
     }
 
     const data = await res.json()
@@ -91,7 +95,7 @@ export const pacienteService = {
 
   async buscar(nome: string): Promise<any[]> {
     const token = authService.getToken()
-    if (!token) throw new Error('Faça login para buscar pacientes.')
+    if (!token) throw new Error('Faça login para buscar participantes.')
 
     const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.buscar}?nome=${encodeURIComponent(nome)}&pagina=0&limite=100`
     const res = await fetch(url, {
@@ -102,7 +106,7 @@ export const pacienteService = {
     })
 
     if (!res.ok) {
-      throw new Error('Erro ao buscar pacientes por nome.')
+      throw new Error('Erro ao buscar participantes por nome.')
     }
 
     const data = await res.json()
@@ -111,7 +115,7 @@ export const pacienteService = {
 
   async alterarStatus(id: number): Promise<void> {
     const token = authService.getToken()
-    if (!token) throw new Error('Faça login para alterar o status do paciente.')
+    if (!token) throw new Error('Faça login para alterar o status do participante.')
 
     const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.alterarStatus(id)}`
     const res = await fetch(url, {
@@ -124,13 +128,13 @@ export const pacienteService = {
     if (!res.ok) {
       if (res.status === 403) throw new Error('Acesso negado. Faça login e tente novamente.')
       const text = await res.text()
-      throw new Error(parseApiError(text, 'Erro ao alterar o status do paciente.'))
+      throw new Error(parseApiError(text, 'Erro ao alterar o status do participante.'))
     }
   },
 
   async buscarPorId(id: number): Promise<PacienteDetalhes> {
     const token = authService.getToken()
-    if (!token) throw new Error('Faça login para visualizar o paciente.')
+    if (!token) throw new Error('Faça login para visualizar o participante.')
 
     const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.detalhes(id)}`
     const res = await fetch(url, {
@@ -142,7 +146,7 @@ export const pacienteService = {
 
     if (!res.ok) {
       const text = await res.text()
-      throw new Error(parseApiError(text, 'Erro ao buscar detalhes do paciente.'))
+      throw new Error(parseApiError(text, 'Erro ao buscar detalhes do participante.'))
     }
 
     const data = (await res.json()) as PacienteApiResponse
@@ -151,7 +155,7 @@ export const pacienteService = {
 
   async editar(id: number, dados: Record<string, unknown>): Promise<void> {
     const token = authService.getToken()
-    if (!token) throw new Error('Faça login para editar um paciente.')
+    if (!token) throw new Error('Faça login para editar um participante.')
 
     const payload = formToEdicaoPayload(dados)
     const url = `${API_BASE_URL}${API_ENDPOINTS.paciente.editar(id)}`
@@ -167,7 +171,7 @@ export const pacienteService = {
 
     if (!res.ok) {
       const text = await res.text()
-      throw new Error(parseApiError(text, 'Erro ao editar paciente.'))
+      throw new Error(parseApiError(text, 'Erro ao editar participante.'))
     }
   },
 }
