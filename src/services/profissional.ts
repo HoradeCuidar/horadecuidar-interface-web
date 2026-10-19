@@ -214,8 +214,7 @@ export const profissionalService = {
     if (erroValidacao) throw new Error(erroValidacao)
 
     const payload = formToPayload(dados)
-    const updatePayload = { ...payload }
-    delete (updatePayload as any).senha
+    const updatePayload = { ...payload, senha: undefined }
 
     const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.editar(id)}`
 

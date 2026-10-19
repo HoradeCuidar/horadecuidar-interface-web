@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   criarAlimentoVazio,
   criarFormularioVazio,
@@ -17,15 +17,15 @@ export function usePrescricaoNutricionalForm(
     inicial ?? criarFormularioVazio()
   )
 
-  function setFormCompleto(proximo: PrescricaoNutricionalFormData) {
+  const setFormCompleto = useCallback((proximo: PrescricaoNutricionalFormData) => {
     setForm(proximo)
-  }
+  }, [])
 
-  function handleChangeCampo<
+  const handleChangeCampo = useCallback(<
     K extends keyof Omit<PrescricaoNutricionalFormData, 'refeicoes'>,
-  >(campo: K, valor: PrescricaoNutricionalFormData[K]) {
+  >(campo: K, valor: PrescricaoNutricionalFormData[K]) => {
     setForm((prev) => ({ ...prev, [campo]: valor }))
-  }
+  }, [])
 
   function handleChangeRefeicao(
     refeicaoId: string,

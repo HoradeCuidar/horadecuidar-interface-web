@@ -73,7 +73,7 @@ export const pacienteService = {
     return { conviteEnviado: res.headers.get('X-Invitation-Status') === 'sent' }
   },
 
-  async listar(): Promise<any[]> {
+  async listar(): Promise<PacienteApiResponse[]> {
     const token = authService.getToken()
     if (!token) throw new Error('Faça login para listar participantes.')
 
@@ -93,7 +93,7 @@ export const pacienteService = {
     return data.content || []
   },
 
-  async buscar(nome: string): Promise<any[]> {
+  async buscar(nome: string): Promise<PacienteApiResponse[]> {
     const token = authService.getToken()
     if (!token) throw new Error('Faça login para buscar participantes.')
 

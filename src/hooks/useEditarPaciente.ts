@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useEffectEvent } from 'react'
 import { toast } from 'sonner'
 import { doencaService } from '@/services/doenca'
 import { pacienteService } from '@/services/paciente'
@@ -61,6 +61,7 @@ export function useEditarPaciente({
   const [doencasModal, setDoencasModal] = useState<DoencasModalState>(DOENCAS_MODAL_INICIAL)
   const [loading, setLoading] = useState(false)
   const [salvando, setSalvando] = useState(false)
+  const fecharEmErro = useEffectEvent(onFechar)
 
   const currentIndex = PASSOS_EDICAO.findIndex((p) => p.id === stepId)
   const isLastStep = currentIndex === PASSOS_EDICAO.length - 1
@@ -110,7 +111,7 @@ export function useEditarPaciente({
       } catch (err) {
         if (!cancelado) {
           toast.error(err instanceof Error ? err.message : 'Erro inesperado.')
-          onFechar()
+          fecharEmErro()
         }
       } finally {
         if (!cancelado) setLoading(false)

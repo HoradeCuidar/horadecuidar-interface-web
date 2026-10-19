@@ -1,3 +1,4 @@
+import { createElement } from 'react'
 import { FiPlus, FiTrash2 } from 'react-icons/fi'
 import { Input } from '@/components'
 import {
@@ -59,7 +60,6 @@ export function SecaoRefeicao({
   onRemoverAlimento,
   onRemoverRefeicao,
 }: SecaoRefeicaoProps) {
-  const Icone = iconeRefeicaoPorNome(refeicao.nome || 'refeição')
   const titulo =
     refeicao.nome.trim() || `Refeição ${indice + 1}`
   const qtdOpcoes = refeicao.opcoes.length
@@ -69,7 +69,7 @@ export function SecaoRefeicao({
       <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-700">
-            <Icone className="size-4" aria-hidden />
+            {createElement(iconeRefeicaoPorNome(refeicao.nome || 'refeição'), { className: 'size-4', 'aria-hidden': true })}
           </span>
           <div className="min-w-0">
             <h3 className="font-heading text-sm font-bold text-text">

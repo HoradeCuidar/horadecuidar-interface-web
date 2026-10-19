@@ -20,6 +20,7 @@ export function ModalConfirmacaoExcluirDoenca({
       await onConfirmar()
       onFechar()
     } catch {
+      // O componente que executa a exclusão já apresenta a mensagem de erro.
     } finally {
       setConfirmando(false)
     }

@@ -14,12 +14,13 @@ export function CadastroPrescricaoNutricional() {
   const { paciente, loading, erro } = usePerfilPaciente(id)
   const [salvando, setSalvando] = useState(false)
   const formState = usePrescricaoNutricionalForm()
+  const { handleChangeCampo } = formState
 
   useEffect(() => {
     if (paciente?.nome) {
-      formState.handleChangeCampo('nomeParticipante', paciente.nome)
+      handleChangeCampo('nomeParticipante', paciente.nome)
     }
-  }, [paciente?.nome])
+  }, [paciente?.nome, handleChangeCampo])
 
   function voltarParaPerfil() {
     navigate(`/pacientes/${id}`, { state: { aba: 'alimentacao' } })

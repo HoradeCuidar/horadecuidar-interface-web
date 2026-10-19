@@ -60,15 +60,13 @@ export function CardPrescricaoNutricional({
     if (!expandida) return
 
     let cancelado = false
-    setCarregandoDetalhe(true)
-    setErroDetalhe(null)
-
-    void prescricaoNutricionalService
-      .buscarPorId(prescricao.id)
-      .then((dados) => {
+    async function carregarDetalhe() {
+      setCarregandoDetalhe(true)
+      setErroDetalhe(null)
+      try {
+        const dados = await prescricaoNutricionalService.buscarPorId(prescricao.id)
         if (!cancelado) setDetalhe(dados)
-      })
-      .catch((error) => {
+      } catch (error) {
         if (!cancelado) {
           setDetalhe(null)
           setErroDetalhe(
@@ -77,10 +75,11 @@ export function CardPrescricaoNutricional({
               : 'Não foi possível carregar o detalhe.'
           )
         }
-      })
-      .finally(() => {
+      } finally {
         if (!cancelado) setCarregandoDetalhe(false)
-      })
+      }
+    }
+    void carregarDetalhe()
 
     return () => {
       cancelado = true

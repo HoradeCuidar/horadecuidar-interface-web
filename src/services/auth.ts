@@ -114,6 +114,7 @@ export const authService = {
           errorMsg = errorData.message
         }
       } catch {
+        // Mantém a mensagem genérica quando a resposta não é JSON.
       }
       throw new Error(errorMsg)
     }

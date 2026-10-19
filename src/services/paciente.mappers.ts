@@ -150,8 +150,22 @@ export function formToPayload(dados: Record<string, unknown>): CadastroPacienteP
 export type EdicaoPacientePayload = Omit<CadastroPacientePayload, 'senha'>
 
 export function formToEdicaoPayload(dados: Record<string, unknown>): EdicaoPacientePayload {
-  const { senha: _senha, ...payload } = formToPayload({ ...dados, senha: 'placeholder' })
-  return payload
+  const payload = formToPayload({ ...dados, senha: 'placeholder' })
+  return {
+    nome: payload.nome,
+    username: payload.username,
+    dataDeNascimento: payload.dataDeNascimento,
+    telefone: payload.telefone,
+    genero: payload.genero,
+    email: payload.email,
+    rua: payload.rua,
+    bairro: payload.bairro,
+    estado: payload.estado,
+    cidade: payload.cidade,
+    numeroDaCasa: payload.numeroDaCasa,
+    doencas: payload.doencas,
+    observacoes: payload.observacoes,
+  }
 }
 
 function normalizeDigits(val: string): string {
