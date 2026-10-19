@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -34,7 +34,7 @@ export function ResetPassword() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -44,7 +44,7 @@ export function ResetPassword() {
     },
   })
 
-  const watchNovaSenha = watch('novaSenha', '')
+  const watchNovaSenha = useWatch({ control, name: 'novaSenha', defaultValue: '' })
   const hasEightChars = watchNovaSenha.length >= 8
 
   async function onSubmit(data: FormData) {

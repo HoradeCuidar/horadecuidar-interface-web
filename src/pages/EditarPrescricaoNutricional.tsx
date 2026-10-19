@@ -20,6 +20,7 @@ export function EditarPrescricaoNutricional() {
   const { paciente, loading: loadingPaciente, erro: erroPaciente } =
     usePerfilPaciente(id)
   const formState = usePrescricaoNutricionalForm()
+  const { setFormCompleto } = formState
   const [carregando, setCarregando] = useState(true)
   const [erroCarregar, setErroCarregar] = useState<string | null>(null)
   const [salvando, setSalvando] = useState(false)
@@ -43,7 +44,7 @@ export function EditarPrescricaoNutricional() {
       .buscarPorId(Number(prescricaoId))
       .then((dto) => {
         if (!ativo) return
-        formState.setFormCompleto(
+        setFormCompleto(
           responseToPrescricaoNutricionalForm(dto, paciente.nome)
         )
       })
@@ -62,7 +63,7 @@ export function EditarPrescricaoNutricional() {
     return () => {
       ativo = false
     }
-  }, [id, prescricaoId, paciente, loadingPaciente, erroPaciente])
+  }, [id, prescricaoId, paciente, loadingPaciente, erroPaciente, setFormCompleto])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

@@ -45,15 +45,13 @@ export function CardPrescricao({
     if (!expandida) return
 
     let cancelado = false
-    setCarregandoRelatorio(true)
-    setErroRelatorio(null)
-
-    void prescricaoMedicamentoService
-      .relatorioAdesao(pacienteId, prescricao.id)
-      .then((dados) => {
+    async function carregarRelatorio() {
+      setCarregandoRelatorio(true)
+      setErroRelatorio(null)
+      try {
+        const dados = await prescricaoMedicamentoService.relatorioAdesao(pacienteId, prescricao.id)
         if (!cancelado) setRelatorio(dados)
-      })
-      .catch((error) => {
+      } catch (error) {
         if (!cancelado) {
           setRelatorio(null)
           setErroRelatorio(
@@ -62,10 +60,11 @@ export function CardPrescricao({
               : 'Não foi possível carregar a adesão.'
           )
         }
-      })
-      .finally(() => {
+      } finally {
         if (!cancelado) setCarregandoRelatorio(false)
-      })
+      }
+    }
+    void carregarRelatorio()
 
     return () => {
       cancelado = true

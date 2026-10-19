@@ -65,24 +65,23 @@ export function ModalDetalhesProfissional({
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!aberto || profissionalId == null) {
+    if (!aberto || profissionalId == null) return;
+    let ativo = true;
+    async function carregar(id: number) {
       setDados(null);
       setErro(null);
-      return;
+      setLoading(true);
+      try {
+        const res = await profissionalService.buscarPorId(id);
+        if (ativo) setDados(res);
+      } catch (e) {
+        if (ativo) setErro(e instanceof Error ? e.message : "Erro ao carregar detalhes.");
+      } finally {
+        if (ativo) setLoading(false);
+      }
     }
-    setLoading(true);
-    setErro(null);
-    profissionalService
-      .buscarPorId(profissionalId)
-      .then((res) => {
-        setDados(res as DetalhesProfissional);
-      })
-      .catch((e) => {
-        setErro(e instanceof Error ? e.message : "Erro ao carregar detalhes.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    void carregar(profissionalId);
+    return () => { ativo = false; };
   }, [aberto, profissionalId]);
 
   return (

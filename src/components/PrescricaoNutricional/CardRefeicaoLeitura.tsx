@@ -1,3 +1,4 @@
+import { createElement } from 'react'
 import { LinhaAlimentoLeitura } from './LinhaAlimentoLeitura'
 import { iconeRefeicaoPorNome } from './prescricaoNutricional.listagem.utils'
 import type { RefeicaoResponse } from '@/services/prescricaoNutricional.types'
@@ -7,7 +8,6 @@ type CardRefeicaoLeituraProps = {
 }
 
 export function CardRefeicaoLeitura({ refeicao }: CardRefeicaoLeituraProps) {
-  const Icone = iconeRefeicaoPorNome(refeicao.nome)
   const opcoes = [...(refeicao.opcoes ?? [])].sort(
     (a, b) => (a.ordem ?? 0) - (b.ordem ?? 0)
   )
@@ -18,7 +18,7 @@ export function CardRefeicaoLeitura({ refeicao }: CardRefeicaoLeituraProps) {
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-2.5">
           <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-700">
-            <Icone className="size-4" aria-hidden />
+            {createElement(iconeRefeicaoPorNome(refeicao.nome), { className: 'size-4', 'aria-hidden': true })}
           </span>
           <div className="min-w-0">
             <h3 className="font-heading text-sm font-bold uppercase tracking-wide text-text">

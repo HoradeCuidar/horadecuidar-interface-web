@@ -103,11 +103,8 @@ function NavGroup({
 }) {
   const location = useLocation()
   const grupoAtivo = location.pathname.startsWith(item.matchPrefix)
-  const [aberto, setAberto] = useState(grupoAtivo)
-
-  useEffect(() => {
-    if (grupoAtivo) setAberto(true)
-  }, [grupoAtivo])
+  const [abertoManual, setAbertoManual] = useState<boolean | null>(null)
+  const aberto = abertoManual ?? grupoAtivo
 
   const Icon = item.icon
 
@@ -115,7 +112,7 @@ function NavGroup({
     <div className="flex flex-col gap-1">
       <button
         type="button"
-        onClick={() => setAberto((v) => !v)}
+        onClick={() => setAbertoManual(!aberto)}
         aria-expanded={aberto}
         className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition sm:text-[15px] ${
           grupoAtivo
@@ -138,7 +135,10 @@ function NavGroup({
               key={child.to}
               to={child.to}
               end={child.to === '/atividades'}
-              onClick={onNavigate}
+              onClick={() => {
+                setAbertoManual(null)
+                onNavigate?.()
+              }}
               className={({ isActive }) => childLinkClass(isActive)}
             >
               {child.label}

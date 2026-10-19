@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useEffectEvent } from 'react'
 import { toast } from 'sonner'
 import {
   Modal,
@@ -74,6 +74,7 @@ export function ModalEditarProfissional({
 
   const [loading, setLoading] = useState(false)
   const [salvando, setSalvando] = useState(false)
+  const fecharEmErro = useEffectEvent(onFechar)
 
   useEffect(() => {
     if (!aberto || !profissionalId) return
@@ -96,7 +97,7 @@ export function ModalEditarProfissional({
         setBairro(p.bairro ?? '')
         setEstado(p.estado ?? '')
         setCidade(p.cidade ?? '')
-        setUsername((p as any).username ?? '')
+        setUsername(p.username ?? '')
         setDadosIniciais({
           nome: p.nome ?? '',
           genero: parsedGenero,
@@ -108,12 +109,12 @@ export function ModalEditarProfissional({
           bairro: p.bairro ?? '',
           estado: p.estado ?? '',
           cidade: p.cidade ?? '',
-          username: (p as any).username ?? '',
+          username: p.username ?? '',
         })
         setStepId('dados')
       } catch (e) {
         toast.error(e instanceof Error ? e.message : 'Erro ao buscar detalhes do profissional.')
-        onFechar()
+        fecharEmErro()
       } finally {
         setLoading(false)
       }

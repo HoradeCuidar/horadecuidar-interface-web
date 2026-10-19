@@ -19,7 +19,6 @@ export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteCli
 
   useEffect(() => {
     if (!open) return
-    setSearchTerm('')
     function handleClickFora(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
@@ -38,7 +37,10 @@ export function SelectDoenca({ options, value, onSelect, onAddClick, onDeleteCli
       </label>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (!open) setSearchTerm('')
+          setOpen((v) => !v)
+        }}
         className="flex w-full items-center justify-between rounded-lg bg-surface-100 px-3 py-2.5 text-left text-sm text-text focus:outline-none focus:ring-2 focus:ring-brand-500"
         aria-expanded={open}
         aria-haspopup="listbox"
