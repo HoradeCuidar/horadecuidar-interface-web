@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { BiCapsule } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { MdRestaurant } from 'react-icons/md'
@@ -38,7 +38,6 @@ const focoLink =
 
 export function RelatorioAdesao() {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
   const pacienteId = id ? Number(id) : NaN
   const { paciente, loading: carregandoPaciente, erro: erroPaciente } =
     usePerfilPaciente(id)
