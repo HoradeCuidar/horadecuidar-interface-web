@@ -30,7 +30,12 @@ function dataApiParaIso(data: string): string {
 }
 
 function parseUnidade(valor: string): UnidadeDeMedida | '' {
+  const rotulos: Record<string, UnidadeDeMedida> = {
+    G: 'G', KG: 'KG', ML: 'ML', LITRO: 'L', UNIDADE: 'UNIDADE',
+    FATIA: 'FATIA', COLHER: 'COLHER', XÍCARA: 'XICARA',
+  }
   const normalizado = valor.trim().toUpperCase()
+  if (rotulos[normalizado]) return rotulos[normalizado]
   return UNIDADES.includes(normalizado as UnidadeDeMedida)
     ? (normalizado as UnidadeDeMedida)
     : ''
@@ -95,6 +100,16 @@ export function validarPrescricaoNutricionalForm(
         if (!alimento.unidade) {
           return `Selecione a unidade do alimento ${p} (opção ${m}, refeição ${n}).`
         }
+        for (const [indice, sub] of alimento.substituicoes.entries()) {
+          if (
+            !sub.descricao.trim() ||
+            parseQuantidade(sub.quantidade) == null ||
+            !sub.unidade ||
+            parseOrdem(sub.ordem) == null
+          ) {
+            return `Preencha a substituição ${indice + 1} do alimento ${p} (opção ${m}, refeição ${n}).`
+          }
+        }
       }
     }
   }
@@ -104,13 +119,28 @@ export function validarPrescricaoNutricionalForm(
 
 function mapearRefeicoesForm(form: PrescricaoNutricionalFormData) {
   return form.refeicoes.map((refeicao) => ({
+    id: refeicao.persistedId,
+    horario: refeicao.horario || null,
     nome: refeicao.nome.trim(),
     ordem: parseOrdem(refeicao.ordem) ?? 1,
     observacoes: refeicao.observacoes.trim() || null,
     opcoes: refeicao.opcoes.map((opcao) => ({
+      id: opcao.persistedId,
+      orientacoesPreparo: opcao.orientacoesPreparo.trim() || null,
       ordem: parseOrdem(opcao.ordem) ?? 1,
       descricao: opcao.descricao.trim() || null,
       alimentos: opcao.alimentos.map((alimento) => ({
+        id: alimento.persistedId,
+        medidaCaseira: alimento.medidaCaseira.trim() || null,
+        substituicoes: alimento.substituicoes.map((sub) => ({
+          id: sub.persistedId,
+          ordem: parseOrdem(sub.ordem) ?? 1,
+          descricao: sub.descricao.trim(),
+          quantidade: parseQuantidade(sub.quantidade) ?? 0,
+          unidade: sub.unidade as UnidadeDeMedida,
+          medidaCaseira: sub.medidaCaseira.trim() || null,
+          observacao: sub.observacao.trim() || null,
+        })),
         descricao: alimento.descricao.trim(),
         quantidade: parseQuantidade(alimento.quantidade) ?? 0,
         unidade: alimento.unidade as UnidadeDeMedida,
@@ -172,6 +202,8 @@ export function responseToPrescricaoNutricionalForm(
       )
       return {
         id: crypto.randomUUID(),
+        persistedId: refeicao.id,
+        horario: refeicao.horario ?? '',
         nome: refeicao.nome ?? '',
         ordem: String(refeicao.ordem ?? 1),
         observacoes: refeicao.observacoes ?? '',
@@ -182,11 +214,14 @@ export function responseToPrescricaoNutricionalForm(
                   id: crypto.randomUUID(),
                   ordem: '1',
                   descricao: '',
+                  orientacoesPreparo: '',
                   alimentos: [criarAlimentoVazio()],
                 },
               ]
             : opcoes.map((opcao) => ({
                 id: crypto.randomUUID(),
+                persistedId: opcao.id,
+                orientacoesPreparo: opcao.orientacoesPreparo ?? '',
                 ordem: String(opcao.ordem ?? 1),
                 descricao: opcao.descricao ?? '',
                 alimentos:
@@ -194,6 +229,14 @@ export function responseToPrescricaoNutricionalForm(
                     ? [criarAlimentoVazio()]
                     : (opcao.alimentos ?? []).map((alimento) => ({
                         id: crypto.randomUUID(),
+                        persistedId: alimento.id,
+                        medidaCaseira: alimento.medidaCaseira ?? '',
+                        substituicoes: (alimento.substituicoes ?? []).map((sub) => ({
+                          id: crypto.randomUUID(), persistedId: sub.id, ordem: String(sub.ordem),
+                          descricao: sub.descricao, quantidade: String(sub.quantidade),
+                          unidade: parseUnidade(sub.unidade), medidaCaseira: sub.medidaCaseira ?? '',
+                          observacao: sub.observacao ?? '',
+                        })),
                         descricao: alimento.descricao ?? '',
                         quantidade: String(alimento.quantidade ?? ''),
                         unidade: parseUnidade(alimento.unidade ?? ''),

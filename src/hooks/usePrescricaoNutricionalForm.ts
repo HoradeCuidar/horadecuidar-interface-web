@@ -5,6 +5,7 @@ import {
   criarOpcaoVazia,
   criarRefeicaoVazia,
   type AlimentoForm,
+  type SubstituicaoForm,
   type OpcaoRefeicaoForm,
   type PrescricaoNutricionalFormData,
   type RefeicaoForm,
@@ -66,7 +67,7 @@ export function usePrescricaoNutricionalForm(
     opcaoId: string,
     alimentoId: string,
     campo: keyof AlimentoForm,
-    valor: string
+    valor: string | SubstituicaoForm[]
   ) {
     setForm((prev) => ({
       ...prev,

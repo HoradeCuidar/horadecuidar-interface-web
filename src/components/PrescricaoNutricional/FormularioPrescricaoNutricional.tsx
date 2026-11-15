@@ -9,6 +9,7 @@ import {
 import { SecaoRefeicao } from './SecaoRefeicao'
 import type {
   AlimentoForm,
+  SubstituicaoForm,
   OpcaoRefeicaoForm,
   PrescricaoNutricionalFormData,
   RefeicaoForm,
@@ -36,7 +37,7 @@ type FormularioPrescricaoNutricionalProps = {
     opcaoId: string,
     alimentoId: string,
     campo: keyof AlimentoForm,
-    valor: string
+    valor: string | SubstituicaoForm[]
   ) => void
   onAdicionarRefeicao: () => void
   onRemoverRefeicao: (refeicaoId: string) => void

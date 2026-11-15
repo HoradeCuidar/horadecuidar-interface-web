@@ -16,4 +16,5 @@ export type {
   RefeicaoForm,
   OpcaoRefeicaoForm,
   AlimentoForm,
+  SubstituicaoForm,
 } from './prescricaoNutricional.types'

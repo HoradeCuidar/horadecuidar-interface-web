@@ -1,14 +1,14 @@
-import { FiTrash2 } from 'react-icons/fi'
+import { FiPlus, FiTrash2 } from 'react-icons/fi'
 import { Input, Select } from '@/components'
 import { OPCOES_UNIDADE_MEDIDA } from '@/services/prescricaoNutricional.types'
 import { BOTAO_REMOVER } from './formularioNutricional.styles'
-import type { AlimentoForm } from './prescricaoNutricional.types'
+import { criarSubstituicaoVazia, type AlimentoForm, type SubstituicaoForm } from './prescricaoNutricional.types'
 
 type ItemAlimentoProps = {
   alimento: AlimentoForm
   indice: number
   podeRemover: boolean
-  onChange: (id: string, campo: keyof AlimentoForm, valor: string) => void
+  onChange: (id: string, campo: keyof AlimentoForm, valor: string | SubstituicaoForm[]) => void
   onRemover: (id: string) => void
 }
 
@@ -68,6 +68,32 @@ export function ItemAlimento({
           onChange={(e) => onChange(alimento.id, 'observacao', e.target.value)}
           placeholder="Opcional"
         />
+      </div>
+      <div className="mt-3">
+        <Input label="Medida caseira" size="compact" value={alimento.medidaCaseira}
+          onChange={(e) => onChange(alimento.id, 'medidaCaseira', e.target.value)}
+          placeholder="Ex.: 5 colheres de sopa cheias" />
+        <p className="mt-3 text-xs font-semibold text-text">Substituições deste alimento</p>
+        {alimento.substituicoes.map((sub) => (
+          <div key={sub.id} className="mt-2 rounded-xl border border-surface-100 bg-white p-3">
+            <button type="button" className={BOTAO_REMOVER}
+              onClick={() => onChange(alimento.id, 'substituicoes', alimento.substituicoes.filter((x) => x.id !== sub.id))}>
+              <FiTrash2 className="size-3.5" aria-hidden /> Remover substituição
+            </button>
+            <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {([['Descrição', 'descricao'], ['Ordem', 'ordem'], ['Quantidade', 'quantidade'], ['Medida caseira', 'medidaCaseira'], ['Observação', 'observacao']] as const).map(([label, campo]) => (
+                <Input key={campo} label={label} size="compact" value={sub[campo]}
+                  onChange={(e) => onChange(alimento.id, 'substituicoes', alimento.substituicoes.map((x) => x.id === sub.id ? { ...x, [campo]: e.target.value } : x))} />
+              ))}
+              <Select label="Unidade" size="compact" options={OPCOES_UNIDADE_MEDIDA} value={sub.unidade}
+                onChange={(e) => onChange(alimento.id, 'substituicoes', alimento.substituicoes.map((x) => x.id === sub.id ? { ...x, unidade: e.target.value as SubstituicaoForm['unidade'] } : x))} />
+            </div>
+          </div>
+        ))}
+        <button type="button" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-600"
+          onClick={() => onChange(alimento.id, 'substituicoes', [...alimento.substituicoes, criarSubstituicaoVazia(alimento.substituicoes.length + 1)])}>
+          <FiPlus className="size-4" aria-hidden /> Adicionar substituição
+        </button>
       </div>
     </div>
   )
