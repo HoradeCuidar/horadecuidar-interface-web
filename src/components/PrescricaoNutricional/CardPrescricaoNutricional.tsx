@@ -125,7 +125,7 @@ export function CardPrescricaoNutricional({
         </div>
 
         <div className="flex items-center gap-0.5 sm:gap-1">
-          {ativa && onEditar ? (
+          {onEditar ? (
             <button
               type="button"
               onClick={onEditar}

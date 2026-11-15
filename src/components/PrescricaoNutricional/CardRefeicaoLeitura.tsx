@@ -23,6 +23,7 @@ export function CardRefeicaoLeitura({ refeicao }: CardRefeicaoLeituraProps) {
           <div className="min-w-0">
             <h3 className="font-heading text-sm font-bold uppercase tracking-wide text-text">
               {refeicao.nome}
+              {refeicao.horario ? ` · ${refeicao.horario.slice(0, 5)}` : ''}
             </h3>
             {refeicao.observacoes?.trim() ? (
               <p className="mt-0.5 text-xs text-text-muted">
@@ -51,6 +52,11 @@ export function CardRefeicaoLeitura({ refeicao }: CardRefeicaoLeituraProps) {
                 Opção {opcao.ordem}
                 {opcao.descricao?.trim() ? ` — ${opcao.descricao}` : ''}
               </p>
+              {opcao.orientacoesPreparo?.trim() ? (
+                <p className="mt-1 text-xs text-text-muted">
+                  {opcao.orientacoesPreparo}
+                </p>
+              ) : null}
               {(opcao.alimentos ?? []).length === 0 ? (
                 <p className="mt-2 text-sm text-text-muted">
                   Sem alimentos nesta opção.

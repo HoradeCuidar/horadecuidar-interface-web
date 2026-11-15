@@ -25,6 +25,20 @@ type AbaAlimentacaoProps = {
   onEditarPrescricao: (prescricaoId: number) => void
 }
 
+function podeEditarAntesDaVigencia(dataInicio: string): boolean {
+  const match = dataInicio.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  const iso = match
+    ? `${match[3]}-${match[2]}-${match[1]}`
+    : dataInicio.slice(0, 10)
+  const hoje = new Date()
+  const hojeIso = [
+    hoje.getFullYear(),
+    String(hoje.getMonth() + 1).padStart(2, '0'),
+    String(hoje.getDate()).padStart(2, '0'),
+  ].join('-')
+  return /^\d{4}-\d{2}-\d{2}$/.test(iso) && iso > hojeIso
+}
+
 export function AbaAlimentacao({
   pacienteId,
   onNovaPrescricao,
@@ -268,7 +282,8 @@ export function AbaAlimentacao({
               expandida={Boolean(expandidas[item.id])}
               onToggle={() => toggle(item.id)}
               onEditar={
-                visao === 'ativas'
+                String(item.status).toUpperCase() !== 'ENCERRADA' &&
+                podeEditarAntesDaVigencia(item.dataInicio)
                   ? () => onEditarPrescricao(item.id)
                   : undefined
               }
