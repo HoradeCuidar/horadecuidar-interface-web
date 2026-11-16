@@ -50,71 +50,77 @@ function parseQuantidade(valor: string): number | null {
 
 function parseOrdem(valor: string): number | null {
   const trim = valor.trim()
-  if (!trim) return null
-  const n = Number.parseInt(trim, 10)
-  return Number.isFinite(n) && n >= 1 ? n : null
+  if (!/^[1-9]\d*$/.test(trim)) return null
+  const n = Number(trim)
+  return Number.isSafeInteger(n) ? n : null
 }
 
-export function validarPrescricaoNutricionalForm(
-  form: PrescricaoNutricionalFormData
-): string | null {
-  if (!form.dataInicio.trim()) return 'Informe a data de início.'
-  if (!form.dataFim.trim()) return 'Informe a data de término.'
-  if (form.dataFim < form.dataInicio) {
-    return 'A data de término não pode ser anterior à data de início.'
+export type ErrosPrescricaoNutricional = Record<string, string>
+
+export function obterErrosPrescricaoNutricionalForm(
+  form: PrescricaoNutricionalFormData,
+  validarDatas = true
+): ErrosPrescricaoNutricional {
+  const erros: ErrosPrescricaoNutricional = {}
+  if (validarDatas && !form.dataInicio.trim()) erros.dataInicio = 'Informe a data de início.'
+  if (validarDatas && !form.dataFim.trim()) erros.dataFim = 'Informe a data de término.'
+  if (validarDatas && form.dataInicio && form.dataFim && form.dataFim < form.dataInicio) {
+    erros.dataFim = 'A data de término não pode ser anterior à data de início.'
   }
-  if (form.refeicoes.length === 0) {
-    return 'Adicione pelo menos uma refeição.'
-  }
+  if (form.refeicoes.length === 0) erros.refeicoes = 'Adicione pelo menos uma refeição.'
 
   for (let i = 0; i < form.refeicoes.length; i++) {
     const refeicao = form.refeicoes[i]
     const n = i + 1
-    if (!refeicao.nome.trim()) return `Informe o nome da refeição ${n}.`
+    if (!refeicao.nome.trim()) erros[`${refeicao.id}.nome`] = `Informe o nome da refeição ${n}.`
     if (parseOrdem(refeicao.ordem) == null) {
-      return `Informe a ordem da refeição ${n} (mínimo 1).`
+      erros[`${refeicao.id}.ordem`] = `Informe a ordem da refeição ${n} (mínimo 1).`
     }
     if (refeicao.opcoes.length === 0) {
-      return `A refeição ${n} deve ter pelo menos uma opção.`
+      erros[`${refeicao.id}.opcoes`] = `A refeição ${n} deve ter pelo menos uma opção.`
     }
 
     for (let j = 0; j < refeicao.opcoes.length; j++) {
       const opcao = refeicao.opcoes[j]
       const m = j + 1
       if (parseOrdem(opcao.ordem) == null) {
-        return `Informe a ordem da opção ${m} da refeição ${n}.`
+        erros[`${opcao.id}.ordem`] = `Informe a ordem da opção ${m} da refeição ${n}.`
       }
       if (opcao.alimentos.length === 0) {
-        return `A opção ${m} da refeição ${n} deve ter pelo menos um alimento.`
+        erros[`${opcao.id}.alimentos`] = `A opção ${m} da refeição ${n} deve ter pelo menos um alimento.`
       }
 
       for (let k = 0; k < opcao.alimentos.length; k++) {
         const alimento = opcao.alimentos[k]
         const p = k + 1
         if (!alimento.descricao.trim()) {
-          return `Informe a descrição do alimento ${p} (opção ${m}, refeição ${n}).`
+          erros[`${alimento.id}.descricao`] = `Informe a descrição do alimento ${p} (opção ${m}, refeição ${n}).`
         }
         if (parseQuantidade(alimento.quantidade) == null) {
-          return `Informe a quantidade válida do alimento ${p} (opção ${m}, refeição ${n}).`
+          erros[`${alimento.id}.quantidade`] = `Informe a quantidade válida do alimento ${p} (opção ${m}, refeição ${n}).`
         }
         if (!alimento.unidade) {
-          return `Selecione a unidade do alimento ${p} (opção ${m}, refeição ${n}).`
+          erros[`${alimento.id}.unidade`] = `Selecione a unidade do alimento ${p} (opção ${m}, refeição ${n}).`
         }
         for (const [indice, sub] of alimento.substituicoes.entries()) {
-          if (
-            !sub.descricao.trim() ||
-            parseQuantidade(sub.quantidade) == null ||
-            !sub.unidade ||
-            parseOrdem(sub.ordem) == null
-          ) {
-            return `Preencha a substituição ${indice + 1} do alimento ${p} (opção ${m}, refeição ${n}).`
-          }
+          const contexto = `substituição ${indice + 1} do alimento ${p} (opção ${m}, refeição ${n})`
+          if (!sub.descricao.trim()) erros[`${sub.id}.descricao`] = `Informe a descrição da ${contexto}.`
+          if (parseOrdem(sub.ordem) == null) erros[`${sub.id}.ordem`] = `Informe a ordem da ${contexto}.`
+          if (parseQuantidade(sub.quantidade) == null) erros[`${sub.id}.quantidade`] = `Informe a quantidade válida da ${contexto}.`
+          if (!sub.unidade) erros[`${sub.id}.unidade`] = `Selecione a unidade da ${contexto}.`
         }
       }
     }
   }
 
-  return null
+  return erros
+}
+
+export function validarPrescricaoNutricionalForm(
+  form: PrescricaoNutricionalFormData,
+  validarDatas = true
+): string | null {
+  return Object.values(obterErrosPrescricaoNutricionalForm(form, validarDatas))[0] ?? null
 }
 
 function mapearRefeicoesForm(form: PrescricaoNutricionalFormData) {
@@ -245,5 +251,34 @@ export function responseToPrescricaoNutricionalForm(
               })),
       }
     }),
+  }
+}
+
+/** Copia apenas o plano; a nova prescrição recebe IDs e vigência próprios. */
+export function copiarPrescricaoNutricionalParaNova(
+  dto: PrescricaoNutricionalResponse,
+  nomeParticipante: string
+): PrescricaoNutricionalFormData {
+  const form = responseToPrescricaoNutricionalForm(dto, nomeParticipante)
+  return {
+    ...form,
+    dataInicio: '',
+    dataFim: '',
+    refeicoes: form.refeicoes.map((refeicao) => ({
+      ...refeicao,
+      persistedId: undefined,
+      opcoes: refeicao.opcoes.map((opcao) => ({
+        ...opcao,
+        persistedId: undefined,
+        alimentos: opcao.alimentos.map((alimento) => ({
+          ...alimento,
+          persistedId: undefined,
+          substituicoes: alimento.substituicoes.map((substituicao) => ({
+            ...substituicao,
+            persistedId: undefined,
+          })),
+        })),
+      })),
+    })),
   }
 }

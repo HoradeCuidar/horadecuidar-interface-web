@@ -33,6 +33,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         <select
           ref={ref}
           id={selectId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${selectId}-erro` : undefined}
           className={`w-full min-w-0 appearance-auto border-0 bg-transparent pr-6 text-text focus:ring-0 focus:outline-none ${isCompact ? 'text-sm' : ''} ${className}`}
           {...rest}
         >
@@ -44,7 +46,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           ))}
         </select>
       </div>
-      {error && <p className="mt-1 text-sm text-error">{error}</p>}
+      {error && <p id={`${selectId}-erro`} className="mt-1 text-sm text-error-500" role="alert">{error}</p>}
     </div>
   )
 })

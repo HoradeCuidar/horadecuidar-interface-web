@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { FiCalendar, FiPlus, FiUser } from 'react-icons/fi'
 import { MdRestaurant } from 'react-icons/md'
 import { Input, BotaoSalvar, BotaoCancelar } from '@/components'
@@ -7,6 +8,8 @@ import {
   TEXTAREA_FORM,
 } from './formularioNutricional.styles'
 import { SecaoRefeicao } from './SecaoRefeicao'
+import { focarPrimeiroErroNutricional } from './focarPrimeiroErro'
+import { obterErrosPrescricaoNutricionalForm } from '@/services/prescricaoNutricional.mappers'
 import type {
   AlimentoForm,
   SubstituicaoForm,
@@ -72,12 +75,23 @@ export function FormularioPrescricaoNutricional({
   salvando = false,
   modo = 'criar',
 }: FormularioPrescricaoNutricionalProps) {
+  const [tentouSalvar, setTentouSalvar] = useState(false)
   const editando = modo === 'editar'
   const qtdRefeicoes = form.refeicoes.length
+  const erros = tentouSalvar ? obterErrosPrescricaoNutricionalForm(form) : {}
+
+  function enviar(evento: React.FormEvent) {
+    setTentouSalvar(true)
+    if (Object.keys(obterErrosPrescricaoNutricionalForm(form)).length > 0) {
+      focarPrimeiroErroNutricional()
+    }
+    onSubmit(evento)
+  }
 
   return (
     <form
-      onSubmit={onSubmit}
+      onSubmit={enviar}
+      noValidate
       className="flex min-h-0 flex-1 flex-col overflow-y-auto rounded-2xl border border-surface-100 bg-white p-5 shadow-sm sm:p-6 md:p-8"
     >
       <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -117,7 +131,9 @@ export function FormularioPrescricaoNutricional({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
+              id="nutricional-data-inicio"
               label="Data de início"
+              error={erros.dataInicio}
               size="compact"
               type="date"
               value={form.dataInicio}
@@ -127,7 +143,9 @@ export function FormularioPrescricaoNutricional({
               className={editando ? 'cursor-default' : undefined}
             />
             <Input
+              id="nutricional-data-fim"
               label="Data de término"
+              error={erros.dataFim}
               size="compact"
               type="date"
               value={form.dataFim}
@@ -170,6 +188,7 @@ export function FormularioPrescricaoNutricional({
                 refeicao={refeicao}
                 indice={i}
                 podeRemover={form.refeicoes.length > 1}
+                erros={erros}
                 onChangeRefeicao={onChangeRefeicao}
                 onChangeOpcao={onChangeOpcao}
                 onChangeAlimento={onChangeAlimento}
@@ -181,6 +200,7 @@ export function FormularioPrescricaoNutricional({
               />
             ))}
           </div>
+          {erros.refeicoes ? <p role="alert" className="text-sm text-error-500">{erros.refeicoes}</p> : null}
 
           <button
             type="button"

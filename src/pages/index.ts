@@ -19,3 +19,5 @@ export { EditarAvaliacaoFisica } from './EditarAvaliacaoFisica'
 export { CadastroPrescricaoNutricional } from './CadastroPrescricaoNutricional'
 export { EditarPrescricaoNutricional } from './EditarPrescricaoNutricional'
 export { RelatorioAdesao } from './RelatorioAdesao'
+
+export { ModelosNutricionais } from './ModelosNutricionais'

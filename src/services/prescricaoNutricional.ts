@@ -33,12 +33,17 @@ async function parseJson<T>(res: Response, fallback: string): Promise<T> {
 export const prescricaoNutricionalService = {
   async criar(
     pacienteId: number,
-    form: PrescricaoNutricionalFormData
+    form: PrescricaoNutricionalFormData,
+    origemModelo?: { id: number; versao: number }
   ): Promise<PrescricaoNutricionalResponse> {
     const erro = validarPrescricaoNutricionalForm(form)
     if (erro) throw new Error(erro)
 
     const payload = formToPrescricaoNutricionalRequest(pacienteId, form)
+    if (origemModelo) {
+      payload.modeloOrigemId = origemModelo.id
+      payload.modeloOrigemVersao = origemModelo.versao
+    }
     const url = `${API_BASE_URL}${API_ENDPOINTS.prescricaoNutricional.cadastrar}`
 
     const res = await fetch(url, {

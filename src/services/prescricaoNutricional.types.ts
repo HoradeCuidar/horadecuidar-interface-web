@@ -48,6 +48,8 @@ export type RefeicaoRequest = {
 }
 
 export type PrescricaoNutricionalRequest = {
+  modeloOrigemId?: number | null
+  modeloOrigemVersao?: number | null
   pacienteId: number
   dataInicio: string
   dataFim: string
@@ -96,6 +98,9 @@ export type PrescricaoNutricionalResumo = {
 }
 
 export type PrescricaoNutricionalResponse = {
+  modeloOrigemId?: number | null
+  modeloOrigemVersao?: number | null
+  modeloOrigemNome?: string | null
   id?: number
   pacienteId: number
   profissionalId: number
