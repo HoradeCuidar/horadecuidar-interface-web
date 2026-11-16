@@ -10,7 +10,20 @@ export type UnidadeDeMedida =
 
 export type StatusPrescricaoNutricional = 'ATIVA' | 'INATIVA' | 'ENCERRADA'
 
+export type SubstituicaoAlimentarRequest = {
+  id?: number
+  ordem: number
+  descricao: string
+  quantidade: number
+  unidade: UnidadeDeMedida
+  medidaCaseira?: string | null
+  observacao?: string | null
+}
+
 export type AlimentoPrescritoRequest = {
+  id?: number
+  medidaCaseira?: string | null
+  substituicoes: SubstituicaoAlimentarRequest[]
   descricao: string
   quantidade: number
   unidade: UnidadeDeMedida
@@ -18,12 +31,16 @@ export type AlimentoPrescritoRequest = {
 }
 
 export type OpcaoRefeicaoRequest = {
+  id?: number
+  orientacoesPreparo?: string | null
   ordem: number
   descricao?: string | null
   alimentos: AlimentoPrescritoRequest[]
 }
 
 export type RefeicaoRequest = {
+  id?: number
+  horario?: string | null
   nome: string
   ordem: number
   observacoes?: string | null
@@ -38,7 +55,11 @@ export type PrescricaoNutricionalRequest = {
   refeicoes: RefeicaoRequest[]
 }
 
+export type SubstituicaoAlimentarResponse = SubstituicaoAlimentarRequest
+
 export type AlimentoPrescritoResponse = {
+  medidaCaseira?: string | null
+  substituicoes?: SubstituicaoAlimentarResponse[]
   id?: number
   descricao: string
   quantidade: number
@@ -47,12 +68,16 @@ export type AlimentoPrescritoResponse = {
 }
 
 export type OpcaoRefeicaoResponse = {
+  id?: number
+  orientacoesPreparo?: string | null
   ordem: number
   descricao?: string | null
   alimentos: AlimentoPrescritoResponse[]
 }
 
 export type RefeicaoResponse = {
+  id?: number
+  horario?: string | null
   nome: string
   ordem: number
   observacoes?: string | null

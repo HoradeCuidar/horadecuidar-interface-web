@@ -10,6 +10,7 @@ import { iconeRefeicaoPorNome } from './prescricaoNutricional.listagem.utils'
 import { SecaoOpcaoRefeicao } from './SecaoOpcaoRefeicao'
 import type {
   AlimentoForm,
+  SubstituicaoForm,
   OpcaoRefeicaoForm,
   RefeicaoForm,
 } from './prescricaoNutricional.types'
@@ -34,7 +35,7 @@ type SecaoRefeicaoProps = {
     opcaoId: string,
     alimentoId: string,
     campo: keyof AlimentoForm,
-    valor: string
+    valor: string | SubstituicaoForm[]
   ) => void
   onAdicionarOpcao: (refeicaoId: string) => void
   onRemoverOpcao: (refeicaoId: string, opcaoId: string) => void
@@ -110,6 +111,7 @@ export function SecaoRefeicao({
             onChangeRefeicao(refeicao.id, 'ordem', e.target.value)
           }
         />
+        <Input label="Horário" type="time" size="compact" value={refeicao.horario} onChange={(e) => onChangeRefeicao(refeicao.id, 'horario', e.target.value)} />
         <div className="sm:col-span-2">
           <label
             htmlFor={`obs-refeicao-${refeicao.id}`}

@@ -5,7 +5,7 @@ import {
   BOTAO_TRACEJADO,
 } from './formularioNutricional.styles'
 import { ItemAlimento } from './ItemAlimento'
-import type { AlimentoForm, OpcaoRefeicaoForm } from './prescricaoNutricional.types'
+import type { AlimentoForm, SubstituicaoForm, OpcaoRefeicaoForm } from './prescricaoNutricional.types'
 
 type SecaoOpcaoRefeicaoProps = {
   opcao: OpcaoRefeicaoForm
@@ -20,7 +20,7 @@ type SecaoOpcaoRefeicaoProps = {
     opcaoId: string,
     alimentoId: string,
     campo: keyof AlimentoForm,
-    valor: string
+    valor: string | SubstituicaoForm[]
   ) => void
   onAdicionarAlimento: (opcaoId: string) => void
   onRemoverAlimento: (opcaoId: string, alimentoId: string) => void
@@ -80,7 +80,15 @@ export function SecaoOpcaoRefeicao({
         />
       </div>
 
-      <div className="flex flex-col gap-2.5">
+      <Input
+        label="Orientações de preparo"
+        size="compact"
+        value={opcao.orientacoesPreparo}
+        onChange={(e) => onChangeOpcao(opcao.id, 'orientacoesPreparo', e.target.value)}
+        placeholder="Opcional"
+      />
+
+      <div className="mt-3 flex flex-col gap-2.5">
         {opcao.alimentos.map((alimento, i) => (
           <ItemAlimento
             key={alimento.id}
