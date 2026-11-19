@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { FiBarChart2, FiUser } from 'react-icons/fi'
+import { FiBarChart2, FiEdit2, FiSlash, FiCheckCircle, FiUser } from 'react-icons/fi'
 import { FotoPerfilUpload } from '@/components/MeuPerfil/FotoPerfilUpload'
 import { Button } from '@/components/ui/button'
 import type { PacienteDetalhes } from '@/services/paciente.mappers'
@@ -10,6 +9,9 @@ type CabecalhoPacienteProps = {
   paciente: PacienteDetalhes
   usuarioSessao: string
   onRelatorio?: () => void
+  onEditar: () => void
+  onAlterarStatus: (novoStatus: 'active' | 'inactive') => void
+  onFotoAtualizada: () => void
 }
 
 const focoBotao =
@@ -19,18 +21,20 @@ export function CabecalhoPaciente({
   paciente,
   usuarioSessao,
   onRelatorio,
+  onEditar,
+  onAlterarStatus,
+  onFotoAtualizada,
 }: CabecalhoPacienteProps) {
   const idade = calcularIdadeParticipante(
     paciente.dataDeNascimento,
     paciente.idade
   )
-  const [fotoUrl, setFotoUrl] = useState(paciente.fotoDePerfil ?? null)
 
   const statusAtivo = (paciente.status ?? '')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .includes('ativo')
+    .startsWith('ativo')
 
   return (
     <header className="rounded-2xl border border-surface-100 bg-white p-5 shadow-sm sm:p-6">
@@ -38,9 +42,9 @@ export function CabecalhoPaciente({
         <div className="flex min-w-0 items-start gap-4 sm:gap-5">
           <FotoPerfilUpload
             nome={paciente.nome}
-            fotoUrl={fotoUrl}
+            fotoUrl={paciente.fotoDePerfil ?? null}
             usuarioId={paciente.id}
-            onFotoAtualizada={setFotoUrl}
+            onFotoAtualizada={onFotoAtualizada}
           />
 
           <div className="min-w-0 flex-1">
@@ -103,6 +107,12 @@ export function CabecalhoPaciente({
           </div>
         </div>
 
+        <div className="flex flex-wrap gap-2">
+        <Button type="button" variant="outline" onClick={onEditar}><FiEdit2 className="size-4" aria-hidden /> Editar</Button>
+        <Button type="button" variant="outline" onClick={() => onAlterarStatus(statusAtivo ? 'inactive' : 'active')}>
+          {statusAtivo ? <FiSlash className="size-4" aria-hidden /> : <FiCheckCircle className="size-4" aria-hidden />}
+          {statusAtivo ? 'Inativar' : 'Ativar'}
+        </Button>
         <Button
           type="button"
           variant="outline"
@@ -113,6 +123,7 @@ export function CabecalhoPaciente({
           <FiBarChart2 className="size-4" aria-hidden />
           Relatório de adesão
         </Button>
+        </div>
       </div>
     </header>
   )

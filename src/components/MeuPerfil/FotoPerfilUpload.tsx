@@ -54,7 +54,9 @@ export function FotoPerfilUpload({
     setEnviando(true)
     try {
       const url = await uploadService.uploadFotoPerfil(file, usuarioId)
-      if (usuarioId == null) authService.updateUser({ fotoDePerfil: url })
+      if (usuarioId == null || usuarioId === authService.getUser()?.id) {
+        authService.updateUser({ fotoDePerfil: url })
+      }
       onFotoAtualizada(url)
       toast.success('Foto de perfil atualizada.')
     } catch (err) {

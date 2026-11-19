@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Modal, Skeleton } from "@/components";
 import { Avatar } from "@/components/ui/Avatar";
 import { profissionalService } from "@/services";
+import { Button } from "@/components/ui/button";
+import { FiEdit2, FiSlash, FiCheckCircle } from "react-icons/fi";
 import {
   IconeEmail,
   IconeTelefone,
@@ -33,6 +35,8 @@ type ModalDetalhesProfissionalProps = {
   aberto: boolean;
   onFechar: () => void;
   profissionalId: number | null;
+  onEditar: (id: number) => void;
+  onAlterarStatus: (id: number, status: 'active' | 'inactive') => void;
 };
 
 function formatarData(value?: string): string {
@@ -59,6 +63,8 @@ export function ModalDetalhesProfissional({
   aberto,
   onFechar,
   profissionalId,
+  onEditar,
+  onAlterarStatus,
 }: ModalDetalhesProfissionalProps) {
   const [dados, setDados] = useState<DetalhesProfissional | null>(null);
   const [loading, setLoading] = useState(false);
@@ -121,6 +127,14 @@ export function ModalDetalhesProfissional({
         <div className="py-8 text-center text-sm text-red-600">{erro}</div>
       )}
       {!loading && !erro && dados && (
+        <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button variant="outline" onClick={() => onEditar(dados.id)}><FiEdit2 className="size-4" aria-hidden /> Editar</Button>
+          <Button variant="outline" onClick={() => onAlterarStatus(dados.id, dados.status?.toLowerCase().startsWith('a') ? 'inactive' : 'active')}>
+            {dados.status?.toLowerCase().startsWith('a') ? <FiSlash className="size-4" aria-hidden /> : <FiCheckCircle className="size-4" aria-hidden />}
+            {dados.status?.toLowerCase().startsWith('a') ? 'Inativar' : 'Ativar'}
+          </Button>
+        </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
           <div className="flex shrink-0 flex-col items-center justify-center gap-1.5 sm:w-52">
             <Avatar
@@ -204,6 +218,7 @@ export function ModalDetalhesProfissional({
               </ul>
             </section>
           </div>
+        </div>
         </div>
       )}
     </Modal>

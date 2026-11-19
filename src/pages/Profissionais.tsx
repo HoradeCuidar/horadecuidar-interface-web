@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { FiCheckCircle, FiEdit2, FiEye, FiSlash } from "react-icons/fi";
 
 import {
   EmptyState,
@@ -15,7 +14,6 @@ import {
 } from "@/components";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { IconeUsuario } from "@/components/icons";
 import type { ColumnDef } from "@/components/DataTable";
 
@@ -24,6 +22,7 @@ export interface Professional {
   name: string;
   phone: string;
   status: "active" | "inactive";
+  fotoDePerfil?: string | null;
 }
 
 import { profissionalService } from "@/services";
@@ -31,7 +30,7 @@ import { profissionalService } from "@/services";
 import emptystateSvg from "@/assets/emptystate.svg";
 import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
 
-type ProfissionalApiItem = { id: number; nome: string; telefone?: string; status?: string }
+type ProfissionalApiItem = { id: number; nome: string; telefone?: string; status?: string; fotoDePerfil?: string | null }
 
 function mapToProfessional(it: ProfissionalApiItem): Professional {
   return {
@@ -39,6 +38,7 @@ function mapToProfessional(it: ProfissionalApiItem): Professional {
     name: it.nome,
     phone: it.telefone ?? "",
     status: it.status?.toLowerCase().startsWith("a") ? "active" : "inactive",
+    fotoDePerfil: it.fotoDePerfil ?? null,
   }
 }
 
@@ -59,6 +59,7 @@ export function Profissionais() {
   const [profissionalEditarId, setProfissionalEditarId] = useState<number | null>(null);
 
   function handleEditar(id: number) {
+    setDetalhesId(null);
     setProfissionalEditarId(id);
     setModalEditarAberto(true);
   }
@@ -70,9 +71,7 @@ export function Profissionais() {
       className: "py-4 text-left",
       render: (item) => (
         <div className="flex items-center gap-2.5">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
-            <IconeUsuario className="size-4 shrink-0" />
-          </span>
+          {item.fotoDePerfil ? <img src={item.fotoDePerfil} alt="" className="size-8 shrink-0 rounded-full object-cover" /> : <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600"><IconeUsuario className="size-4 shrink-0" /></span>}
           <button
             type="button"
             onClick={() => setDetalhesId(item.id)}
@@ -97,61 +96,7 @@ export function Profissionais() {
         </Badge>
       ),
     },
-    {
-      header: "Ações",
-      className: "py-4 text-center",
-      render: (item) => (
-        <div className="flex items-center justify-center gap-0.5">
-          {item.status === "active" ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-error-500 hover:bg-error-500/15 hover:text-error-700"
-              title="Inativar"
-              onClick={() => {
-                setProfissionalAcaoId(item.id)
-                setNovoStatusAcao('inactive')
-                setConfirmacaoStatusAberto(true)
-              }}
-            >
-              <FiSlash className="size-4" aria-hidden />
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-success-500 hover:bg-success-500/15 hover:text-success-700"
-              title="Ativar"
-              onClick={() => {
-                setProfissionalAcaoId(item.id)
-                setNovoStatusAcao('active')
-                setConfirmacaoStatusAberto(true)
-              }}
-            >
-              <FiCheckCircle className="size-4" aria-hidden />
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
-            title="Visualizar"
-            onClick={() => setDetalhesId(item.id)}
-          >
-            <FiEye className="size-4" aria-hidden />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
-            title="Editar"
-            onClick={() => handleEditar(item.id)}
-          >
-            <FiEdit2 className="size-4" aria-hidden />
-          </Button>
-        </div>
-      ),
-    },
+
   ];
 
   async function loadProfissionais() {
@@ -251,15 +196,14 @@ export function Profissionais() {
             </div>
 
             <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="grid grid-cols-4 border-b border-zinc-200 bg-zinc-50 p-4 text-center dark:border-zinc-800 dark:bg-zinc-950">
+              <div className="grid grid-cols-3 border-b border-zinc-200 bg-zinc-50 p-4 text-center dark:border-zinc-800 dark:bg-zinc-950">
                 <div className="text-xs font-semibold text-zinc-500 uppercase">Nome</div>
                 <div className="text-xs font-semibold text-zinc-500 uppercase">Telefone</div>
                 <div className="text-xs font-semibold text-zinc-500 uppercase">Status</div>
-                <div className="text-xs font-semibold text-zinc-500 uppercase">Ações</div>
               </div>
               <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="grid grid-cols-4 items-center p-4">
+                  <div key={i} className="grid grid-cols-3 items-center p-4">
                     <div className="flex justify-center">
                       <Skeleton className="h-4 w-40" />
                     </div>
@@ -268,11 +212,6 @@ export function Profissionais() {
                     </div>
                     <div className="flex justify-center">
                       <Skeleton className="h-6 w-20 rounded-full" />
-                    </div>
-                    <div className="flex justify-center gap-2">
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <Skeleton className="h-8 w-8 rounded-full" />
                     </div>
                   </div>
                 ))}
@@ -345,6 +284,8 @@ export function Profissionais() {
         aberto={detalhesId !== null}
         onFechar={() => setDetalhesId(null)}
         profissionalId={detalhesId}
+        onEditar={handleEditar}
+        onAlterarStatus={(id, status) => { setDetalhesId(null); setProfissionalAcaoId(id); setNovoStatusAcao(status); setConfirmacaoStatusAberto(true) }}
       />
 
       <ModalConfirmacaoStatus

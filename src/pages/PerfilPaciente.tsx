@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
 import { authService } from '@/services/auth'
 import { usePerfilPaciente } from '@/hooks/usePerfilPaciente'
 import { CabecalhoPaciente } from '@/components/PerfilPaciente/CabecalhoPaciente'
+import { ModalEditarPaciente, ModalConfirmacaoStatusPaciente } from '@/components'
 import { PerfilPacienteAbas } from '@/components/PerfilPaciente/PerfilPacienteAbas'
 import { PerfilPacienteSkeleton } from '@/components/PerfilPaciente/PerfilPacienteSkeleton'
 import type { AbaPerfil } from '@/components/PerfilPaciente/perfilPaciente.types'
@@ -17,6 +18,8 @@ export function PerfilPaciente() {
   const abaInicial =
     (location.state as { aba?: AbaPerfil } | null)?.aba ?? 'dados'
   const [aba, setAba] = useState<AbaPerfil>(abaInicial)
+  const [editarAberto, setEditarAberto] = useState(false)
+  const [confirmarStatus, setConfirmarStatus] = useState<'active' | 'inactive' | null>(null)
   const { paciente, loading, erro, recarregar } = usePerfilPaciente(id)
   const usuarioSessao = authService.getUser()?.username ?? '—'
 
@@ -85,6 +88,9 @@ export function PerfilPaciente() {
         paciente={paciente}
         usuarioSessao={usuarioSessao}
         onRelatorio={() => navigate(`/pacientes/${id}/relatorios/adesao`)}
+        onEditar={() => setEditarAberto(true)}
+        onAlterarStatus={setConfirmarStatus}
+        onFotoAtualizada={() => void recarregar()}
       />
 
       <PerfilPacienteAbas
@@ -106,6 +112,8 @@ export function PerfilPaciente() {
           )
         }
       />
+      <ModalEditarPaciente aberto={editarAberto} onFechar={() => setEditarAberto(false)} pacienteId={paciente.id} onSucesso={() => { setEditarAberto(false); void recarregar() }} />
+      <ModalConfirmacaoStatusPaciente aberto={confirmarStatus !== null} onFechar={() => setConfirmarStatus(null)} onSucesso={() => { setConfirmarStatus(null); void recarregar() }} pacienteId={paciente.id} novoStatus={confirmarStatus} />
     </div>
   )
 }
