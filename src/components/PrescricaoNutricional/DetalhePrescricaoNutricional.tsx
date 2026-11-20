@@ -16,6 +16,12 @@ export function DetalhePrescricaoNutricional({
 
   return (
     <div className="mt-4 space-y-3">
+      {detalhe.modeloOrigemNome ? (
+        <p className="rounded-xl border border-brand-100 bg-brand-50 px-3.5 py-2.5 text-xs text-brand-800">
+          Base utilizada: {detalhe.modeloOrigemNome}
+          {detalhe.modeloOrigemVersao ? ` · versão ${detalhe.modeloOrigemVersao}` : ''}
+        </p>
+      ) : null}
       {observacoes ? (
         <div className="flex gap-2.5 rounded-xl border border-brand-100 bg-brand-50 px-3.5 py-3">
           <FiInfo

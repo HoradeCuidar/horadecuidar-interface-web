@@ -6,6 +6,10 @@ O **Hora de Cuidar (HDC)** é um sistema voltado para o acompanhamento de pessoa
 
 O objetivo do sistema é auxiliar profissionais de saúde no planejamento e monitoramento dos tratamentos, ao mesmo tempo em que incentiva os pacientes a seguirem corretamente as recomendações definidas.
 
+## Orientações alimentares
+
+A rota `/modelos-nutricionais`, disponível para profissionais de saúde e administradores, reúne a biblioteca de modelos nutricionais e a preparação de prescrições. É possível criar ou editar modelos, duplicá-los e iniciar uma prescrição individual a partir de um modelo ou de uma prescrição anterior do participante. A emissão usa o formulário em `/pacientes/{id}/prescricoes-nutricionais/nova`, com parâmetros opcionais `?modelo={id}` ou `?base={id}`. Os modelos são consultados na API `/api/modelos-nutricionais`.
+
 ---
 
 ## Padrão de Commits
@@ -15,8 +19,6 @@ O projeto utiliza um padrão de commits baseado no **Conventional Commits**, com
 Cada commit deve seguir o formato: `<emoji><tipo>(escopo): <descrição curta>`
 
 Exemplo: ✨feat(backend): adicionar cadastro de pacientes
-
-<<<<<<< feat/setup
 
 A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, associando cada tipo a um **emoji** correspondente.
 
@@ -32,7 +34,6 @@ A tabela abaixo define o padrão de **tipos de commit** adotado no projeto, asso
 | build    | 📦    | `:package:`             |
 | ci       | 👷    | `:construction_worker:` |
 | chore    | 🔧    | `:wrench:`              |
-=======
 
 --- 
 

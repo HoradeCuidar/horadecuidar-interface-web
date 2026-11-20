@@ -8,6 +8,7 @@ import {
   FiBriefcase,
 } from 'react-icons/fi'
 import { LuDumbbell } from 'react-icons/lu'
+import { MdRestaurantMenu } from 'react-icons/md'
 import { authService } from '@/services'
 import { LogoutButton } from '@/components/LogoutButton'
 import { Avatar } from '@/components'
@@ -65,12 +66,14 @@ const navPorRole: Record<Role, NavItem[]> = {
       icon: FiBriefcase,
     },
     grupoExercicios,
+    { kind: 'link', to: '/modelos-nutricionais', label: 'Orientações alimentares', icon: MdRestaurantMenu },
     { kind: 'link', to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PROFISSIONAL_DA_SAUDE: [
     { kind: 'link', to: '/home', label: 'Dashboard', icon: FiGrid },
     { kind: 'link', to: '/pacientes', label: 'Participantes', icon: FiUsers },
     grupoExercicios,
+    { kind: 'link', to: '/modelos-nutricionais', label: 'Orientações alimentares', icon: MdRestaurantMenu },
     { kind: 'link', to: '/meu-perfil', label: 'Meu perfil', icon: FiUser },
   ],
   PACIENTE: [
@@ -202,7 +205,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
               className={({ isActive }) => linkClass(isActive)}
             >
               <item.icon className="size-5 shrink-0" aria-hidden />
-              <span className="truncate">{item.label}</span>
+              <span className="min-w-0 whitespace-normal break-words leading-tight">{item.label}</span>
             </NavLink>
           )
         )}

@@ -69,11 +69,22 @@ export function rotuloUnidade(unidade: string): string {
   return encontrada?.label ?? unidade
 }
 
+export function formatarQuantidadeComUnidade(quantidade: number, unidade: string): string {
+  const rotulosPlurais: Record<string, string> = {
+    COLHER: 'colheres (sem tipo)',
+    COLHER_SOPA: 'colheres de sopa',
+    COLHER_CHA: 'colheres de chá',
+    COLHER_SOBREMESA: 'colheres de sobremesa',
+  }
+  const rotulo = quantidade !== 1 ? rotulosPlurais[unidade.toUpperCase()] : undefined
+  return `${quantidade} ${rotulo ?? rotuloUnidade(unidade)}`.trim()
+}
+
 export function formatarQuantidadeAlimento(
   alimento: AlimentoPrescritoResponse
 ): string {
   if (alimento.quantidade == null) return ''
-  return `${alimento.quantidade} ${rotuloUnidade(alimento.unidade)}`.trim()
+  return formatarQuantidadeComUnidade(alimento.quantidade, alimento.unidade)
 }
 
 export function iconeRefeicaoPorNome(nome: string): IconType {

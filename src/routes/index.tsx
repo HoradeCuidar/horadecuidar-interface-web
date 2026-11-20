@@ -23,6 +23,7 @@ import {
   CadastroPrescricaoNutricional,
   EditarPrescricaoNutricional,
   RelatorioAdesao,
+  ModelosNutricionais,
 } from '@/pages'
 
 const router = createBrowserRouter([
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
       { path: 'home', element: <Home /> },
       { path: 'profissionais', element: <Profissionais /> },
       { path: 'pacientes', element: <Pacientes /> },
+      { path: 'modelos-nutricionais', element: <ModelosNutricionais /> },
       { path: 'pacientes/:id', element: <PerfilPaciente /> },
       { path: 'pacientes/:id/prescricoes/nova', element: <CadastroPrescricaoMedicamentos /> },
       { path: 'pacientes/:id/prescricoes/:prescricaoId/editar', element: <EditarPrescricaoMedicamentos /> },

@@ -6,6 +6,9 @@ export type UnidadeDeMedida =
   | 'UNIDADE'
   | 'FATIA'
   | 'COLHER'
+  | 'COLHER_SOPA'
+  | 'COLHER_CHA'
+  | 'COLHER_SOBREMESA'
   | 'XICARA'
 
 export type StatusPrescricaoNutricional = 'ATIVA' | 'INATIVA' | 'ENCERRADA'
@@ -48,6 +51,8 @@ export type RefeicaoRequest = {
 }
 
 export type PrescricaoNutricionalRequest = {
+  modeloOrigemId?: number | null
+  modeloOrigemVersao?: number | null
   pacienteId: number
   dataInicio: string
   dataFim: string
@@ -96,6 +101,9 @@ export type PrescricaoNutricionalResumo = {
 }
 
 export type PrescricaoNutricionalResponse = {
+  modeloOrigemId?: number | null
+  modeloOrigemVersao?: number | null
+  modeloOrigemNome?: string | null
   id?: number
   pacienteId: number
   profissionalId: number
@@ -155,6 +163,9 @@ export const OPCOES_UNIDADE_MEDIDA: { value: UnidadeDeMedida; label: string }[] 
     { value: 'L', label: 'Litro' },
     { value: 'UNIDADE', label: 'Unidade' },
     { value: 'FATIA', label: 'Fatia' },
-    { value: 'COLHER', label: 'Colher' },
+    { value: 'COLHER', label: 'Colher (sem tipo)' },
+    { value: 'COLHER_SOPA', label: 'Colher de sopa' },
+    { value: 'COLHER_CHA', label: 'Colher de chá' },
+    { value: 'COLHER_SOBREMESA', label: 'Colher de sobremesa' },
     { value: 'XICARA', label: 'Xícara' },
   ]

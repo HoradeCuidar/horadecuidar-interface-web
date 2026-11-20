@@ -8,6 +8,7 @@ export const API_BASE_URL = configuredApiBaseUrl
 export const API_ENDPOINTS = {
   auth: {
     login: '/api/auth/logar',
+    profile: '/api/user/profile',
     recuperacaoSenha: '/api/auth/recuperacao-senha',
     resetarSenha: '/api/auth/resetar-senha',
   },

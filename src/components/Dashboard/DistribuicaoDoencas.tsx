@@ -171,7 +171,7 @@ function GraficoDoencas({
             </span>
             <span>{modo === 'absoluto' ? '0' : '0%'}</span>
           </div>
-          <div className="relative flex h-[13.5rem] items-end gap-4 overflow-visible border-b border-l border-surface-100 px-3">
+          <div className="relative flex h-[13.5rem] items-end gap-12 overflow-visible border-b border-l border-surface-100 px-3">
             <div className="pointer-events-none absolute inset-0 flex flex-col justify-between pb-12">
               {[0, 1].map((linha) => (
                 <span
@@ -218,10 +218,10 @@ export function DistribuicaoDoencas({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="font-heading text-base font-semibold text-text">
-            Distribuição de doenças nos participantes
+            Distribuição de condições clínicas
           </h2>
           <p className="mt-1 text-xs text-text-muted">
-            Frequência e prevalência diagnóstica na coorte atual
+            Frequência e prevalência diagnóstica nos participantes atuais
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

@@ -3,10 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   FiActivity,
-  FiCheckCircle,
-  FiEdit2,
-  FiEye,
-  FiSlash,
   FiAlertTriangle,
   FiUsers,
 } from 'react-icons/fi'
@@ -14,8 +10,6 @@ import {
   EmptyState,
   ButtonCadastro,
   ModalCadastroPaciente,
-  ModalEditarPaciente,
-  ModalConfirmacaoStatusPaciente,
   DataTable,
   InputBusca,
   Skeleton,
@@ -24,7 +18,6 @@ import emptyPacienteSvg from '@/assets/empty-paciente.svg'
 import { pacienteService } from '@/services/paciente'
 import { EmptyPesquisar } from '@/components/illustrations/EmptyPesquisar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import type { ColumnDef } from '@/components/DataTable'
 
 type StatusParticipante = 'active' | 'inactive'
@@ -138,18 +131,6 @@ export function Pacientes() {
   const [jaTeveParticipantes, setJaTeveParticipantes] = useState(false)
   const buscaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const [confirmacaoStatusAberto, setConfirmacaoStatusAberto] = useState(false)
-  const [participanteAcaoId, setParticipanteAcaoId] = useState<number | null>(
-    null
-  )
-  const [novoStatusAcao, setNovoStatusAcao] = useState<StatusParticipante | null>(
-    null
-  )
-  const [modalEditarAberto, setModalEditarAberto] = useState(false)
-  const [participanteEditarId, setParticipanteEditarId] = useState<number | null>(
-    null
-  )
-
   const resumo = useMemo(() => {
     const total = participantes.length
     const ativos = participantes.filter((p) => p.status === 'active').length
@@ -170,12 +151,10 @@ export function Pacientes() {
       className: 'py-4 text-left',
       render: (item) => (
         <div className="flex min-w-0 items-center gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
-            {iniciais(item.nome)}
-          </span>
-          <p className="min-w-0 truncate font-heading text-sm font-semibold text-text">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{iniciais(item.nome)}</span>
+          <button type="button" onClick={() => navigate(`/pacientes/${item.id}`)} className="min-w-0 truncate text-left font-heading text-sm font-semibold text-text hover:text-brand-700 hover:underline focus-visible:outline-brand-700">
             {item.nome}
-          </p>
+          </button>
         </div>
       ),
     },
@@ -220,91 +199,21 @@ export function Pacientes() {
         ),
     },
     {
-      header: 'Status / adesão',
-      headerClassName: 'text-left text-xs font-bold uppercase tracking-wide text-text',
+      header: 'Status',
+      className: 'py-4 text-left',
+      render: (item) => (
+        <Badge className={`rounded-full border-0 px-3 py-1 text-[11px] font-semibold text-white ${item.status === 'active' ? 'bg-success-500' : 'bg-error-500'}`}>
+          {item.status === 'active' ? 'Ativo' : 'Inativo'}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Classificação',
       className: 'py-4 text-left',
       render: (item) => {
         const classe = labelClassificacao(item.classificacao)
-        return (
-          <div className="flex flex-col items-start gap-1.5">
-            <Badge
-              className={`rounded-full border-0 px-3 py-1 text-[11px] font-semibold text-white ${
-                item.status === 'active' ? 'bg-success-500' : 'bg-error-500'
-              }`}
-            >
-              {item.status === 'active' ? 'Ativo' : 'Inativo'}
-            </Badge>
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${classe.tom}`}
-            >
-              {classe.texto}
-            </span>
-          </div>
-        )
+        return <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${classe.tom}`}>{classe.texto}</span>
       },
-    },
-    {
-      header: 'Ações',
-      headerClassName: 'text-center text-xs font-bold uppercase tracking-wide text-text',
-      className: 'py-4 text-center',
-      render: (item) => (
-        <div className="flex items-center justify-center gap-0.5">
-          {item.status === 'active' ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-error-500 hover:bg-error-500/15 hover:text-error-700"
-              title="Inativar"
-              aria-label="Inativar participante"
-              onClick={() => {
-                setParticipanteAcaoId(item.id)
-                setNovoStatusAcao('inactive')
-                setConfirmacaoStatusAberto(true)
-              }}
-            >
-              <FiSlash className="size-4" aria-hidden />
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-success-500 hover:bg-success-500/15 hover:text-success-700"
-              title="Ativar"
-              aria-label="Ativar participante"
-              onClick={() => {
-                setParticipanteAcaoId(item.id)
-                setNovoStatusAcao('active')
-                setConfirmacaoStatusAberto(true)
-              }}
-            >
-              <FiCheckCircle className="size-4" aria-hidden />
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
-            title="Visualizar"
-            aria-label="Visualizar participante"
-            onClick={() => navigate(`/pacientes/${item.id}`)}
-          >
-            <FiEye className="size-4" aria-hidden />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-brand-600 hover:bg-brand-100 hover:text-brand-700"
-            title="Editar"
-            aria-label="Editar participante"
-            onClick={() => {
-              setParticipanteEditarId(item.id)
-              setModalEditarAberto(true)
-            }}
-          >
-            <FiEdit2 className="size-4" aria-hidden />
-          </Button>
-        </div>
-      ),
     },
   ]
 
@@ -503,23 +412,6 @@ export function Pacientes() {
         onSubmit={handleSubmitParticipante}
       />
 
-      <ModalConfirmacaoStatusPaciente
-        aberto={confirmacaoStatusAberto}
-        onFechar={() => setConfirmacaoStatusAberto(false)}
-        onSucesso={() => void loadParticipantes()}
-        pacienteId={participanteAcaoId}
-        novoStatus={novoStatusAcao}
-      />
-
-      <ModalEditarPaciente
-        aberto={modalEditarAberto}
-        onFechar={() => {
-          setModalEditarAberto(false)
-          setParticipanteEditarId(null)
-        }}
-        pacienteId={participanteEditarId}
-        onSucesso={() => void loadParticipantes()}
-      />
     </div>
   )
 }
