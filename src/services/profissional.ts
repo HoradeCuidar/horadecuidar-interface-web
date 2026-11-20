@@ -40,7 +40,7 @@ export const profissionalService = {
     await res.json()
     return { conviteEnviado: res.headers.get('X-Invitation-Status') === 'sent' }
   },
-  async listar(): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string; fotoDePerfil?: string | null }>> {
+  async listar(): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string }>> {
     const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.visualizarTodos}?page=0&size=100`
     const token = authService.getToken()
     const headers: Record<string, string> = {
@@ -65,7 +65,7 @@ export const profissionalService = {
 
     return json.content ?? []
   },
-  async buscar(nome: string): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string; fotoDePerfil?: string | null }>> {
+  async buscar(nome: string): Promise<Array<{ id: number; nome: string; telefone?: string; status?: string }>> {
     const url = `${API_BASE_URL}${API_ENDPOINTS.profissional.buscar}?nome=${encodeURIComponent(nome)}&page=0&size=100`
     const token = authService.getToken()
     const headers: Record<string, string> = {

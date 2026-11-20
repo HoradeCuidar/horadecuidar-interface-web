@@ -43,6 +43,27 @@ export const authService = {
       username,
     })
 
+    try {
+      const perfilRes = await fetch(`${API_BASE_URL}${API_ENDPOINTS.auth.profile}`, {
+        headers: { Authorization: `Bearer ${data.token}` },
+        cache: 'no-store',
+      })
+      if (perfilRes.ok) {
+        const perfil: Pick<UserStorage, 'id' | 'nome' | 'username' | 'fotoDePerfil'> = await perfilRes.json()
+        if (perfil.id === data.id) {
+          persistUser({
+            id: data.id,
+            role: data.role,
+            username: perfil.username || username,
+            nome: perfil.nome,
+            fotoDePerfil: perfil.fotoDePerfil ?? null,
+          })
+        }
+      }
+    } catch {
+      // O login permanece válido quando os dados complementares não estão disponíveis.
+    }
+
     return data
   },
 

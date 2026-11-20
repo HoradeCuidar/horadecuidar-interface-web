@@ -29,7 +29,6 @@ export type ParticipanteLista = {
   nome: string
   telefone: string
   email: string
-  fotoDePerfil?: string | null
   status: StatusParticipante
   classificacao?: string | null
   doencas: DoencaLista[]
@@ -42,7 +41,6 @@ function mapItem(it: Record<string, unknown>): ParticipanteLista {
     nome: String(it.nome ?? ''),
     telefone: String(it.telefone ?? ''),
     email: String(it.email ?? ''),
-    fotoDePerfil: typeof it.fotoDePerfil === 'string' ? it.fotoDePerfil : null,
     status: statusRaw.toLowerCase().startsWith('a') ? 'active' : 'inactive',
     classificacao:
       typeof it.classificacao === 'string' ? it.classificacao : null,
@@ -153,7 +151,7 @@ export function Pacientes() {
       className: 'py-4 text-left',
       render: (item) => (
         <div className="flex min-w-0 items-center gap-3">
-          {item.fotoDePerfil ? <img src={item.fotoDePerfil} alt="" className="size-10 shrink-0 rounded-full object-cover" /> : <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{iniciais(item.nome)}</span>}
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{iniciais(item.nome)}</span>
           <button type="button" onClick={() => navigate(`/pacientes/${item.id}`)} className="min-w-0 truncate text-left font-heading text-sm font-semibold text-text hover:text-brand-700 hover:underline focus-visible:outline-brand-700">
             {item.nome}
           </button>

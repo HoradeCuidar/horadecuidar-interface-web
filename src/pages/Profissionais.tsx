@@ -22,7 +22,6 @@ export interface Professional {
   name: string;
   phone: string;
   status: "active" | "inactive";
-  fotoDePerfil?: string | null;
 }
 
 import { profissionalService } from "@/services";
@@ -30,7 +29,7 @@ import { profissionalService } from "@/services";
 import emptystateSvg from "@/assets/emptystate.svg";
 import { EmptyPesquisar } from "@/components/illustrations/EmptyPesquisar";
 
-type ProfissionalApiItem = { id: number; nome: string; telefone?: string; status?: string; fotoDePerfil?: string | null }
+type ProfissionalApiItem = { id: number; nome: string; telefone?: string; status?: string; }
 
 function mapToProfessional(it: ProfissionalApiItem): Professional {
   return {
@@ -38,7 +37,6 @@ function mapToProfessional(it: ProfissionalApiItem): Professional {
     name: it.nome,
     phone: it.telefone ?? "",
     status: it.status?.toLowerCase().startsWith("a") ? "active" : "inactive",
-    fotoDePerfil: it.fotoDePerfil ?? null,
   }
 }
 
@@ -71,7 +69,7 @@ export function Profissionais() {
       className: "py-4 text-left",
       render: (item) => (
         <div className="flex items-center gap-2.5">
-          {item.fotoDePerfil ? <img src={item.fotoDePerfil} alt="" className="size-8 shrink-0 rounded-full object-cover" /> : <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600"><IconeUsuario className="size-4 shrink-0" /></span>}
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600"><IconeUsuario className="size-4 shrink-0" /></span>
           <button
             type="button"
             onClick={() => setDetalhesId(item.id)}
