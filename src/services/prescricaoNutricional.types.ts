@@ -6,6 +6,9 @@ export type UnidadeDeMedida =
   | 'UNIDADE'
   | 'FATIA'
   | 'COLHER'
+  | 'COLHER_SOPA'
+  | 'COLHER_CHA'
+  | 'COLHER_SOBREMESA'
   | 'XICARA'
 
 export type StatusPrescricaoNutricional = 'ATIVA' | 'INATIVA' | 'ENCERRADA'
@@ -160,6 +163,9 @@ export const OPCOES_UNIDADE_MEDIDA: { value: UnidadeDeMedida; label: string }[] 
     { value: 'L', label: 'Litro' },
     { value: 'UNIDADE', label: 'Unidade' },
     { value: 'FATIA', label: 'Fatia' },
-    { value: 'COLHER', label: 'Colher' },
+    { value: 'COLHER', label: 'Colher (sem tipo)' },
+    { value: 'COLHER_SOPA', label: 'Colher de sopa' },
+    { value: 'COLHER_CHA', label: 'Colher de chá' },
+    { value: 'COLHER_SOBREMESA', label: 'Colher de sobremesa' },
     { value: 'XICARA', label: 'Xícara' },
   ]

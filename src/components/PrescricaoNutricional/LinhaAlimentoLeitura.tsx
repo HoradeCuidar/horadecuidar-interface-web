@@ -1,5 +1,6 @@
 import {
   formatarQuantidadeAlimento,
+  formatarQuantidadeComUnidade,
 } from './prescricaoNutricional.listagem.utils'
 import type { AlimentoPrescritoResponse } from '@/services/prescricaoNutricional.types'
 
@@ -30,7 +31,7 @@ export function LinhaAlimentoLeitura({ alimento }: LinhaAlimentoLeituraProps) {
           <span className="font-semibold">Pode substituir por: </span>
           {substituicoes
             .map((sub) =>
-              [sub.descricao, `${sub.quantidade} ${sub.unidade}`, sub.medidaCaseira, sub.observacao]
+              [sub.descricao, formatarQuantidadeComUnidade(sub.quantidade, sub.unidade), sub.medidaCaseira, sub.observacao]
                 .filter(Boolean)
                 .join(' · ')
             )

@@ -18,6 +18,9 @@ const UNIDADES: UnidadeDeMedida[] = [
   'UNIDADE',
   'FATIA',
   'COLHER',
+  'COLHER_SOPA',
+  'COLHER_CHA',
+  'COLHER_SOBREMESA',
   'XICARA',
 ]
 
@@ -33,6 +36,8 @@ function parseUnidade(valor: string): UnidadeDeMedida | '' {
   const rotulos: Record<string, UnidadeDeMedida> = {
     G: 'G', KG: 'KG', ML: 'ML', LITRO: 'L', UNIDADE: 'UNIDADE',
     FATIA: 'FATIA', COLHER: 'COLHER', XÍCARA: 'XICARA',
+    'COLHER DE SOPA': 'COLHER_SOPA', 'COLHER DE CHÁ': 'COLHER_CHA',
+    'COLHER DE SOBREMESA': 'COLHER_SOBREMESA',
   }
   const normalizado = valor.trim().toUpperCase()
   if (rotulos[normalizado]) return rotulos[normalizado]
